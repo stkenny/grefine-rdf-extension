@@ -3,3 +3,4 @@
 *.lock
 *.DS_Store
 module/MOD-INF/classes/*
+target
