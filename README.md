@@ -2,12 +2,11 @@ This project adds a graphical user interface(GUI) for exporting data of OpenRefi
 
 ## INSTALL
 
-- Follow the installation instructions for the [openrefine-maven-shim](https://github.com/DTL-FAIRData/openrefine-maven-shim#usage) project
-  - **NOTE:** for this fork of the extension to work you need to use the branch of OpenRefine from here https://github.com/stkenny/openrefine/tree/rdf-extension. This is needed due to conflicts caused by Xerces-J jar files.
-- Clone the extension repository to your local machine
+- Clone and build the branch of OpenRefine from here https://github.com/stkenny/openrefine/tree/rdf-extension. This is needed due to conflicts caused by Xerces-J and HttpClient jar files.
+- Clone this extension repository to your local machine
 - Run `mvn clean compile` and `mvn assembly:single`
-- Unpack the zip file in `target` to an `openrefine/extensions/rdf-extension` folder
-  
+- Unpack the zip file in `target` to a sub-directory of the extensions folder in the OpenRefine fork e.g., `extensions/rdf-extension`
+
 To run
 
   ./refine run
