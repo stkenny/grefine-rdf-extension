@@ -15,7 +15,7 @@
         <slf4j.version>1.7.5</slf4j.version>
         <any23.version>2.0</any23.version>
         <guava.version>22.0</guava.version>
-        <jena.version>3.3.0</jena.version>
+        <jena.version>3.6.0</jena.version>
         <rdf4j.version>2.2.2</rdf4j.version>
         <simmetrics.version>1.6.2</simmetrics.version>
         <xerces.version>2.11.0</xerces.version>
@@ -28,7 +28,7 @@
         </repository>
         <repository>
           <id>maven-repository</id>
-          <url>file:///${project.basedir}/maven-repository</url>
+          <url>file:///${project.basedir}/project-repository</url>
         </repository>
     </repositories> 
 
@@ -39,6 +39,13 @@
             <version>${openrefine.version}</version>
             <scope>provided</scope>
         </dependency>
+ 
+        <dependency>
+            <groupId>edu.mit.simile</groupId>
+            <artifactId>butterfly</artifactId>
+            <version>1.0.1</version>
+            <scope>provided</scope>
+        </dependency> 
 
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -63,12 +70,22 @@
                     <artifactId>slf4j-api</artifactId>
                 </exclusion>
             </exclusions>
+            <scope>provided</scope>
         </dependency>
+        <!--
         <dependency>
 	    <groupId>xerces</groupId>
             <artifactId>xercesImpl</artifactId>
             <version>${xerces.version}</version>
+            <scope>provided</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>xerces</groupId>
+                    <artifactId>xml-apis</artifactId>
+                </exclusion>
+            </exclusions> 
         </dependency>
+        -->
         <dependency>
             <groupId>org.apache.jena</groupId>
             <artifactId>jena-arq</artifactId>
@@ -83,6 +100,7 @@
                   <artifactId>xercesImpl</artifactId>
                 </exclusion>
             </exclusions>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.jena</groupId>
@@ -106,19 +124,49 @@
             <version>${any23.version}</version>
             <exclusions>
                 <exclusion>
+                    <groupId>xerces</groupId>
+                    <artifactId>xercesImpl</artifactId>
+                </exclusion>
+                <exclusion>
                     <groupId>org.json</groupId>
                     <artifactId>json</artifactId>
                 </exclusion>
                 <exclusion>
-                    <groupId>xerces</groupId>
-                    <artifactId>xercesImpl</artifactId>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
                 </exclusion> 
+                <exclusion>
+                    <groupId>commons-loggingi-api</groupId>
+                    <artifactId>commons-logging-api</artifactId>
+                </exclusion>
             </exclusions> 
         </dependency>
         <dependency>
             <groupId>org.apache.any23</groupId>
             <artifactId>apache-any23-mime</artifactId>
             <version>${any23.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20160810</version>
+            <scope>provided</scope>
+        </dependency>
+ 
+        <dependency>
+            <groupId>commons-fileupload</groupId>
+            <artifactId>commons-fileupload</artifactId>
+            <version>1.2.1</version>
+            <scope>provided</scope>
+         </dependency>
+
+       <!-- https://mvnrepository.com/artifact/org.apache.velocity/velocity-engine-core -->
+       <dependency>
+           <groupId>org.apache.velocity</groupId>
+           <artifactId>velocity</artifactId>
+           <version>1.5</version>
+           <scope>provided</scope>
         </dependency>
         
         <dependency>
@@ -224,10 +272,23 @@
         </dependency>
 
         <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>3.1.0</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
             <groupId>xalan</groupId>
             <artifactId>xalan</artifactId>
             <version>2.7.2</version>
             <scope>runtime</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>xalan</groupId>
+                    <artifactId>serializer</artifactId> 
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <!-- test dependencies -->

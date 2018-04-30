@@ -2,10 +2,10 @@ This project adds a graphical user interface(GUI) for exporting data of OpenRefi
 
 ## INSTALL
 
-- Clone and build the branch of OpenRefine from here https://github.com/stkenny/openrefine/tree/rdf-extension. This is needed due to conflicts caused by Xerces-J and HttpClient jar files.
+- Check out and build the latest version of OpenRefine from the Github repository, https://github.com/OpenRefine/OpenRefine
 - Clone this extension repository to your local machine
 - Run `mvn clean compile` and `mvn assembly:single`
-- Unpack the zip file in `target` to a sub-directory of the extensions folder in the OpenRefine fork e.g., `extensions/rdf-extension`
+- Unpack the zip file created in the `target` directory to a sub-directory of the extensions folder in the OpenRefine fork e.g., `extensions/rdf-extension`
 
 To run
 
