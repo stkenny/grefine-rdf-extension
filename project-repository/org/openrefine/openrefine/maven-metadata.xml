@@ -3,10 +3,11 @@
   <groupId>org.openrefine</groupId>
   <artifactId>openrefine</artifactId>
   <versioning>
-    <release>2.8</release>
+    <release>3.0-beta</release>
     <versions>
       <version>2.8</version>
+      <version>3.0-beta</version>
     </versions>
-    <lastUpdated>20180430113703</lastUpdated>
+    <lastUpdated>20180529145703</lastUpdated>
   </versioning>
 </metadata>
