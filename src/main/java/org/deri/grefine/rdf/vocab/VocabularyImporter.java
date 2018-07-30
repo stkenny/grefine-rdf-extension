@@ -6,12 +6,10 @@ import java.util.Set;
 
 import org.apache.any23.Any23;
 import org.apache.any23.http.HTTPClient;
-import org.apache.any23.source.DocumentSource;
 import org.apache.any23.source.HTTPDocumentSource;
 import org.apache.any23.writer.ReportingTripleHandler;
 import org.apache.any23.writer.RepositoryWriter;
-import org.apache.any23.configuration.DefaultConfiguration;
-import org.apache.any23.configuration.ModifiableConfiguration;
+
 import org.eclipse.rdf4j.model.Value;
 import org.eclipse.rdf4j.query.BindingSet;
 import org.eclipse.rdf4j.query.QueryLanguage;
@@ -29,34 +27,36 @@ public class VocabularyImporter {
 	
 	public void importVocabulary(String name, String uri, String fetchUrl, List<RDFSClass> classes, List<RDFSProperty> properties) throws VocabularyImportException{
 		boolean strictlyRdf = faultyContentNegotiation(uri);
-		Repository repos = getModel(fetchUrl, strictlyRdf);
-		getTerms(repos, name, uri, classes, properties);
+		Repository repository = getModel(fetchUrl, strictlyRdf);
+		getTerms(repository, name, uri, classes, properties);
 	}
 	
-	public void importVocabulary(String name, String uri,Repository repository, List<RDFSClass> classes, List<RDFSProperty> properties) throws VocabularyImportException{
+	public void importVocabulary(String name, String uri, Repository repository, List<RDFSClass> classes, List<RDFSProperty> properties) throws VocabularyImportException{
 		getTerms(repository, name, uri, classes, properties);
 	}
 	
 	private static final String PREFIXES = "PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#> "
 			+ "PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#> "
+			+ "PREFIX owl:<http://www.w3.org/2002/07/owl#> "
 			+ "PREFIX skos:<http://www.w3.org/2004/02/skos/core#> ";
 	private static final String CLASSES_QUERY_P1 = PREFIXES
 			+ "SELECT ?resource ?label ?en_label ?description ?en_description ?definition ?en_definition "
 			+ "WHERE { "
-			+ "?resource rdf:type rdfs:Class. "
+			+ "?resource rdf:type ?type . "
 			+ "OPTIONAL {?resource rdfs:label ?label.} "
 			+ "OPTIONAL {?resource rdfs:label ?en_label. FILTER langMatches( lang(?en_label), \"EN\" )  } "
 			+ "OPTIONAL {?resource rdfs:comment ?description.} "
 			+ "OPTIONAL {?resource rdfs:comment ?en_description. FILTER langMatches( lang(?en_description), \"EN\" )  } "
 			+ "OPTIONAL {?resource skos:definition ?definition.} "
 			+ "OPTIONAL {?resource skos:definition ?en_definition. FILTER langMatches( lang(?en_definition), \"EN\" )  } "
+			+ "VALUES ?type { rdfs:Class owl:Class } "
 			+ "FILTER regex(str(?resource), \"^";
 	private static final String CLASSES_QUERY_P2 = "\")}";
 
 	private static final String PROPERTIES_QUERY_P1 = PREFIXES
 			+ "SELECT ?resource ?label ?en_label ?description ?en_description ?definition ?en_definition "
 			+ "WHERE { "
-			+ "?resource rdf:type rdf:Property. "
+			+ "?resource rdf:type rdf:Property . "
 			+ "OPTIONAL {?resource rdfs:label ?label.} "
 			+ "OPTIONAL {?resource rdfs:label ?en_label. FILTER langMatches( lang(?en_label), \"EN\" )  } "
 			+ "OPTIONAL {?resource rdfs:comment ?description.} "

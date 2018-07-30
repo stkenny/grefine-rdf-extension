@@ -68,7 +68,7 @@ div.dialog-body img.validation {
 }
 
 div.dialog-body input[type=text], div.dialog-body input[type=password] {
-    width: 300px;
+    width: 80%;
     margin-left: 1em;
     padding: 3px;
     font-size: 1em;

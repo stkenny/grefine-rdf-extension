@@ -6,7 +6,7 @@ ManageVocabsWidget.prototype.show = function(){
 	var self = this;
     var frame = DialogSystem.createDialog();
     
-    frame.width("450px");
+    frame.width("40%");
     
 	var header = $('<div></div>').addClass("dialog-header").text("List of defined prefixes").appendTo(frame);
     self._body = $('<div></div>').addClass("dialog-body").appendTo(frame);

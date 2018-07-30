@@ -6,7 +6,7 @@ NewPrefixWidget.prototype.show = function(msg,def_prefix,onDone){
 	var self = this;
     var frame = DialogSystem.createDialog();
     
-    frame.width("350px");
+    frame.width("40%");
 
     var html = $(DOM.loadHTML("rdf-extension","scripts/new-prefix-widget.html"));
     
@@ -40,6 +40,7 @@ NewPrefixWidget.prototype.show = function(msg,def_prefix,onDone){
     		dismissBusy = DialogSystem.showBusy('Uploading vocabulary ');
     		self._elmts.file_upload_form.ajaxSubmit({
     				dataType:  'json',
+    				data: { project: theProject.id },
     				success:    function(data) {
     					if (data.code === "error"){
     		    			alert('Error:' + data.message)
@@ -55,18 +56,19 @@ NewPrefixWidget.prototype.show = function(msg,def_prefix,onDone){
     		return;
     	}
 		dismissBusy = DialogSystem.showBusy('Trying to import vocabulary from ' + uri);
-    	$.post("command/rdf-extension/add-prefix",{name:name,uri:uri,"fetch-url":uri,project: theProject.id,fetch:fetchOption},function(data){
-    		if (data.code === "error"){
-    			alert('Error:' + data.message)
-    		}else{
-    			DialogSystem.dismissUntil(level - 1);
-    			if(onDone){
-    				onDone(name,uri);
-    			}
-    		}
-			dismissBusy();
-    	});
-    };
+    	$.post("command/rdf-extension/add-prefix", { name: name,uri: uri, "fetch-url": uri,project: theProject.id, fetch: fetchOption },
+    	    function(data){
+    		    if (data.code === "error"){
+    			   alert('Error:' + data.message)
+    		    } else {
+    			   DialogSystem.dismissUntil(level - 1);
+    			   if(onDone){
+    			       onDone(name,uri);
+    			   }
+    		    }
+			    dismissBusy();
+    	    });
+        };
     
     $('<button></button>').addClass('button').html("&nbsp;&nbsp;OK&nbsp;&nbsp;").click(function() {
     	var fetchOption = self._elmts.fetching_options_table.find('input[name="vocab_fetch_method"]:checked').val();
@@ -77,13 +79,11 @@ NewPrefixWidget.prototype.show = function(msg,def_prefix,onDone){
         DialogSystem.dismissUntil(level - 1);
     }).appendTo(footer);
     
-    $('<button></button>').attr('id','advanced_options_button').attr("disabled","").attr("style","float:right").text("Advanced...").click(function() {
+    $('<button></button>').attr('id','advanced_options_button').attr("style","float:right").text("Advanced...").click(function() {
         self._elmts.fetching_options_table.show();
         $('#advanced_options_button').attr("disabled", "disabled");
     }).appendTo(footer);
-    
-    
-    
+
     var level = DialogSystem.showDialog(frame);
     
     self._elmts.fetching_options_table

@@ -13,7 +13,7 @@ import org.deri.grefine.rdf.Util;
 import org.deri.grefine.rdf.app.ApplicationContext;
 import org.deri.grefine.rdf.vocab.Vocabulary;
 import org.deri.grefine.rdf.vocab.VocabularyIndexException;
-//import org.eclipse.rdf4j.model.*;
+
 import org.eclipse.rdf4j.model.Statement;
 import org.eclipse.rdf4j.model.Namespace;
 import org.eclipse.rdf4j.model.BNode;
@@ -40,7 +40,7 @@ import com.google.refine.model.Row;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class RdfExporter implements WriterExporter{
+public class RdfExporter implements WriterExporter {
 
     private RDFFormat format;
     private ApplicationContext applicationContext;
@@ -69,18 +69,18 @@ public class RdfExporter implements WriterExporter{
 						RDFWriter writer) throws IOException {
     	RdfSchema schema;
     	try{
-    		schema = Util.getProjectSchema(applicationContext,project);
+    		schema = Util.getProjectSchema(applicationContext, project);
     	}catch(VocabularyIndexException ve){
     		throw new IOException("Unable to create index for RDF schema",ve);
     	}
         try{
-		for(Vocabulary v:schema.getPrefixesMap().values()){
+		  for(Vocabulary v:schema.getPrefixesMap().values()){
 		        writer.handleNamespace(v.getName(), v.getUri());
-		}
+		  }
 
-		exportModel(project, engine, schema, writer);
+		  exportModel(project, engine, schema, writer);
         }catch(RDFHandlerException ex){
-        	throw new RuntimeException(ex);
+            throw new RuntimeException(ex);
         }
     }
 
@@ -90,7 +90,7 @@ public class RdfExporter implements WriterExporter{
 			@Override
 			public boolean visit(Project project, int rowIndex, Row row) {
 				for(Node root:roots){
-					root.createNode(baseUri, factory, con, project, row, rowIndex,blanks);
+					root.createNode(baseUri, factory, con, project, row, rowIndex, blanks);
 
 					try {
 					    // flush here to preserve root ordering in the output file
@@ -109,17 +109,15 @@ public class RdfExporter implements WriterExporter{
     }
     
     public static Repository buildModel(Project project, Engine engine, RdfRowVisitor visitor) {
-//    	RdfSchema schema = Util.getProjectSchema(project);
         FilteredRows filteredRows = engine.getAllFilteredRows();
         filteredRows.accept(project, visitor);
-        return visitor.getModel();
-        
+        return visitor.getModel();       
     }
     
     public String getContentType() {
         if(format.equals(RDFFormat.TURTLE)){
             return "text/turtle";
-        }else{
+        } else {
             return "application/rdf+xml";
         }
     }
@@ -149,7 +147,7 @@ public class RdfExporter implements WriterExporter{
         	baseUri = schema.getBaseUri();
             roots = schema.getRoots();
 
-            //initilaizing repository
+            //initializing repository
             model = new SailRepository(new MemoryStore());
             try{
             	model.initialize();
@@ -167,6 +165,7 @@ public class RdfExporter implements WriterExporter{
             	throw new RuntimeException(ex);
             }
         }
+
         public void end(Project project) {
         	try {
 		        writer.endRDF();
@@ -198,8 +197,7 @@ public class RdfExporter implements WriterExporter{
 			    } finally {
 		            nsIter.close();
 		        }
-
-        	}catch(RepositoryException ex){
+        	} catch(RepositoryException ex){
         		throw new RuntimeException("",ex);
         	} catch (RDFHandlerException e) {
 		        e.printStackTrace();
@@ -227,6 +225,7 @@ public class RdfExporter implements WriterExporter{
 	    }
 
         abstract public boolean visit(Project project, int rowIndex, Row row);
+
         public RdfSchema getRdfSchema(){
         	return schema;
         }

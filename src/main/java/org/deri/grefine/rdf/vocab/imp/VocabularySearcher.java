@@ -75,11 +75,11 @@ public class VocabularySearcher implements IVocabularySearcher {
 
 	@Override
 	public void importAndIndexVocabulary(String name, String uri, String fetchUrl,VocabularyImporter importer)throws VocabularyImportException, VocabularyIndexException,PrefixExistException, CorruptIndexException, IOException {
-		importAndIndexVocabulary(name, uri, fetchUrl, GLOBAL_VOCABULARY_PLACE_HOLDER,importer);
+		importAndIndexVocabulary(name, uri, fetchUrl, GLOBAL_VOCABULARY_PLACE_HOLDER, importer);
 	}
 
 	@Override
-	public void importAndIndexVocabulary(String name, String uri, String fetchUrl, String projectId,VocabularyImporter importer) throws VocabularyImportException,VocabularyIndexException, PrefixExistException,
+	public void importAndIndexVocabulary(String name, String uri, String fetchUrl, String projectId, VocabularyImporter importer) throws VocabularyImportException,VocabularyIndexException, PrefixExistException,
 			CorruptIndexException, IOException {
 		List<RDFSClass> classes = new ArrayList<RDFSClass>();
 		List<RDFSProperty> properties = new ArrayList<RDFSProperty>();
@@ -89,7 +89,7 @@ public class VocabularySearcher implements IVocabularySearcher {
 
 	
 	@Override
-	public void importAndIndexVocabulary(String name, String uri, Repository repository, String projectId,VocabularyImporter importer) throws VocabularyImportException, VocabularyIndexException,
+	public void importAndIndexVocabulary(String name, String uri, Repository repository, String projectId, VocabularyImporter importer) throws VocabularyImportException, VocabularyIndexException,
 			PrefixExistException, CorruptIndexException, IOException {
 		List<RDFSClass> classes = new ArrayList<RDFSClass>();
 		List<RDFSProperty> properties = new ArrayList<RDFSProperty>();

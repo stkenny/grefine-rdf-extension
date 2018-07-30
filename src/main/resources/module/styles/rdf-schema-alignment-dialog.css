@@ -155,7 +155,7 @@ fieldset.rdf-reconcile-fieldset{
 	margin-top:1.5em;
 }
 table.rdf-prefixes-table{
-	width:100%;
+    width:100%;
 	}
 table.rdf-prefixes-table, table.rdf-prefixes-table td{
 	border:1px dotted #DDDDDD;
