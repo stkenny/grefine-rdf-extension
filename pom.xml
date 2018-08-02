@@ -72,20 +72,6 @@
             </exclusions>
             <scope>provided</scope>
         </dependency>
-        <!--
-        <dependency>
-	    <groupId>xerces</groupId>
-            <artifactId>xercesImpl</artifactId>
-            <version>${xerces.version}</version>
-            <scope>provided</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>xerces</groupId>
-                    <artifactId>xml-apis</artifactId>
-                </exclusion>
-            </exclusions> 
-        </dependency>
-        -->
         <dependency>
             <groupId>org.apache.jena</groupId>
             <artifactId>jena-arq</artifactId>
