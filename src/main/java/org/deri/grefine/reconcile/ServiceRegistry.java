@@ -182,7 +182,7 @@ public class ServiceRegistry {
 	
 	public void loadFromFile(FileInputStream in) throws JSONException, IOException{
 		try {
-            JSONTokener tokener = new JSONTokener(new InputStreamReader(in));
+			JSONTokener tokener = new JSONTokener(new InputStreamReader(in));
             JSONObject obj = (JSONObject) tokener.nextValue();
             JSONArray services = obj.getJSONArray("services");
             for(int i=0;i<services.length();i++){
@@ -216,7 +216,7 @@ public class ServiceRegistry {
 	}
 	
 	private RdfReconciliationService loadRdfServiceFromJSON(JSONObject serviceObj) throws JSONException{
-		String serviceId = serviceObj.getString("id");
+	    String serviceId = serviceObj.getString("id");
 		List<String> searchPropertyUris = new ArrayList<String>();
 		JSONArray propertiesArray = serviceObj.getJSONArray("searchPropertyUris");
 		for(int i=0;i<propertiesArray.length();i++){

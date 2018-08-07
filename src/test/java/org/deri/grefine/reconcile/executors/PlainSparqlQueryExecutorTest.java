@@ -30,7 +30,9 @@ public class PlainSparqlQueryExecutorTest {
 
 	QueryExecutor executor;
 	PlainSparqlQueryFactory factory;
-	
+
+	private String classPrefix = "/org/deri/grefine/reconcile/resources/";
+
 	//query
 	int limit =8;
 	String queryString = "godfather";
@@ -41,7 +43,7 @@ public class PlainSparqlQueryExecutorTest {
 	@BeforeClass
 	public void setUp(){
 		Model m = ModelFactory.createDefaultModel();
-		InputStream in = this.getClass().getResourceAsStream("../files/films.ttl");
+		InputStream in = this.getClass().getResourceAsStream(classPrefix + "films.ttl");
 		m.read(in,null,"TTL");
 		
 		executor = new DumpQueryExecutor(m);

@@ -41,16 +41,15 @@ public class JenaTextSparqlQueryFactoryTest {
 
         String expected =
                 "PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#> " +
-                        "PREFIX pf:<http://jena.hpl.hp.com/ARQ/property#> " +
+                        "PREFIX text:<http://jena.apache.org/text#> " +
                         "PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#> "+
-                        "SELECT ?entity ?label (MAX(?score) AS ?score1) " +
+                        "SELECT ?entity ?label " +
                         "WHERE" +
                         "{" +
-                        "?entity ?p ?label." +
-                        "(?label ?score) pf:textMatch 'Fadi Maali'. " +
+                        "?entity ?p (?label 'Fadi Maali' 20).?entity ?p ?label." +
                         "FILTER (?p=<http://www.w3.org/2000/01/rdf-schema#label> || ?p=<http://www.w3.org/2004/02/skos/core#prefLabel>)" +
-                        " FILTER (isIRI(?entity))}GROUP BY ?entity ?label " +
-                        "ORDER BY DESC(?score1) LIMIT "  + String.valueOf(limit * searchPropertyUris.size());
+                        " FILTER (isIRI(?entity))}GROUP BY ?entity ?label" +
+                        " LIMIT "  + String.valueOf(limit * searchPropertyUris.size());
 
         assertEquals(sparql, expected);
     }
@@ -64,13 +63,12 @@ public class JenaTextSparqlQueryFactoryTest {
 
         String expected =
                 "PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#> " +
-                        "PREFIX pf:<http://jena.hpl.hp.com/ARQ/property#> " +
+                        "PREFIX text:<http://jena.apache.org/text#> " +
                         "PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#> "+
-                        "SELECT ?entity ?label (MAX(?score) AS ?score1) " +
+                        "SELECT ?entity ?label " +
                         "WHERE" +
                         "{" +
-                        "?entity ?p ?label." +
-                        "(?label ?score) pf:textMatch 'Fadi Maali'. " +
+                        "?entity ?p (?label 'Fadi Maali' 20).?entity ?p ?label." +
                         "FILTER (?p=<http://www.w3.org/2000/01/rdf-schema#label> || ?p=<http://www.w3.org/2004/02/skos/core#prefLabel>) " +
                         "{" +
                         "{?entity rdf:type <http://xmlns.com/foaf/0.1/Person>. } " +
@@ -78,7 +76,7 @@ public class JenaTextSparqlQueryFactoryTest {
                         "{?entity rdf:type <http://example.org/ontology/Person>. }" +
                         "} FILTER (isIRI(?entity))" +
                         "}GROUP BY ?entity ?label " +
-                        "ORDER BY DESC(?score1) LIMIT "  + String.valueOf(limit * searchPropertyUris.size());
+                        "LIMIT "  + String.valueOf(limit * searchPropertyUris.size());
 
         assertEquals(sparql, expected);
     }
@@ -96,13 +94,12 @@ public class JenaTextSparqlQueryFactoryTest {
 
         String expected =
                 "PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#> " +
-                        "PREFIX pf:<http://jena.hpl.hp.com/ARQ/property#> " +
+                        "PREFIX text:<http://jena.apache.org/text#> " +
                         "PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#> "+
-                        "SELECT ?entity ?label (MAX(?score) AS ?score1) " +
+                        "SELECT ?entity ?label " +
                         "WHERE" +
                         "{" +
-                        "?entity ?p ?label." +
-                        "(?label ?score) pf:textMatch 'Fadi Maali'. " +
+                        "?entity ?p (?label 'Fadi Maali' 20).?entity ?p ?label." +
                         "FILTER (?p=<http://www.w3.org/2000/01/rdf-schema#label> || ?p=<http://www.w3.org/2004/02/skos/core#prefLabel>) " +
                         "{" +
                         "{?entity rdf:type <http://xmlns.com/foaf/0.1/Person>. } " +
@@ -112,7 +109,7 @@ public class JenaTextSparqlQueryFactoryTest {
                         "?entity <http://example.org/ontology/worksFor> <http://example.org/resource/DERI>. " +
                         "?entity <http://xmlns.com/foaf/0.1/nick> 'fadmaa'.  FILTER (isIRI(?entity))" +
                         "}GROUP BY ?entity ?label " +
-                        "ORDER BY DESC(?score1) LIMIT "  + String.valueOf(limit * searchPropertyUris.size());
+                        "LIMIT "  + String.valueOf(limit * searchPropertyUris.size());
 
         assertEquals(sparql, expected);
     }
@@ -130,13 +127,13 @@ public class JenaTextSparqlQueryFactoryTest {
 
         String expected =
                 "PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#> " +
-                        "PREFIX pf:<http://jena.hpl.hp.com/ARQ/property#> " +
+                        "PREFIX text:<http://jena.apache.org/text#> " +
                         "PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#> "+
-                        "SELECT ?entity ?label (MAX(?score) AS ?score1) " +
-                        "WHERE" +
-                        "{" +
-                        "?entity <http://www.w3.org/2000/01/rdf-schema#label> ?label." +
-                        "(?label ?score) pf:textMatch 'Fadi Maali'. " +
+                        "SELECT ?entity ?label " +
+                        "WHERE " +
+                        "{ " +
+                        "?entity text:query (<http://www.w3.org/2000/01/rdf-schema#label> 'Fadi Maali' 10) . " +
+                        "?entity <http://www.w3.org/2000/01/rdf-schema#label> ?label ." +
                         "}GROUP BY ?entity ?label " +
                         "ORDER BY DESC(?score1) LIMIT "  + String.valueOf(limit * searchPropertyUris.size());
 
@@ -152,20 +149,15 @@ public class JenaTextSparqlQueryFactoryTest {
 
         String expected =
                 "PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#> " +
-                        "PREFIX pf:<http://jena.hpl.hp.com/ARQ/property#> " +
+                        "PREFIX text:<http://jena.apache.org/text#> " +
                         "PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#> "+
-                        "SELECT ?entity ?label (MAX(?score) AS ?score1) " +
-                        "WHERE" +
-                        "{" +
-                        "?entity <http://www.w3.org/2004/02/skos/core#prefLabel> ?label." +
-                        "(?label ?score) pf:textMatch 'Fadi Maali'. " +
-                        " {" +
-                        "{?entity rdf:type <http://xmlns.com/foaf/0.1/Person>. } " +
+                        "SELECT ?entity ?label "  +
+                        "WHERE { ?entity text:query (<http://www.w3.org/2004/02/skos/core#prefLabel> 'Fadi Maali' 10) . " +
+                        "?entity <http://www.w3.org/2004/02/skos/core#prefLabel> ?label . " +
+                        "{{?entity rdf:type <http://xmlns.com/foaf/0.1/Person>. } " +
                         "UNION " +
-                        "{?entity rdf:type <http://example.org/ontology/Person>. }" +
-                        "}" +
-                        "}GROUP BY ?entity ?label " +
-                        "ORDER BY DESC(?score1) LIMIT "  + String.valueOf(limit * searchPropertyUris.size());
+                        "{?entity rdf:type <http://example.org/ontology/Person>. }}}" +
+                        "GROUP BY ?entity ?label ORDER BY DESC(?score1) LIMIT " + String.valueOf(limit * searchPropertyUris.size());
 
         assertEquals(sparql, expected);
     }
@@ -195,18 +187,14 @@ public class JenaTextSparqlQueryFactoryTest {
         String sparql = factory.getTypeSuggestSparqlQuery(prefix, limit);
 
         String expected =
-                "PREFIX pf:<http://jena.hpl.hp.com/ARQ/property#> " +
-                        "SELECT DISTINCT ?type ?label1 ?score1 ?label2 ?score2 " +
-                        "WHERE{" +
-                        "[] a ?type. " +
-                        "{" +
-                        "OPTIONAL {?type <http://www.w3.org/2000/01/rdf-schema#label> ?label1. " +
-                        "(?label1 ?score1) pf:textMatch '" + prefix + "*'. }" +
-                        "OPTIONAL {?type <http://www.w3.org/2004/02/skos/core#prefLabel> ?label2. " +
-                        "(?label2 ?score2) pf:textMatch '" + prefix + "*'. } " +
-                        "FILTER (bound(?label1) || bound(?label2))" +
-                        "}" +
-                        "} ORDER BY desc(?score1) LIMIT " + limit;
+                "PREFIX text:<http://jena.apache.org/text#> " +
+                "SELECT DISTINCT ?type ?label1 ?label2  " +
+                "WHERE{[] a ?type. " +
+                "{OPTIONAL {?type <http://www.w3.org/2000/01/rdf-schema#label> (?label1  '" + prefix + "*' 10 ) . " +
+                "?type <http://www.w3.org/2000/01/rdf-schema#label>  ?label1 . }" +
+                "OPTIONAL {?type <http://www.w3.org/2004/02/skos/core#prefLabel> (?label2 '" + prefix + "*' 10 )." +
+                "?type <http://www.w3.org/2004/02/skos/core#prefLabel> ?label2.} " +
+                "FILTER (bound(?label1) || bound(?label2))}} LIMIT " + limit;
 
         assertEquals(sparql, expected);
     }
@@ -216,25 +204,20 @@ public class JenaTextSparqlQueryFactoryTest {
      */
 
     @Test
-    public void suggestPropertyWithSpecificSiubjectsTypeTest(){
+    public void suggestPropertyWithSpecificSubjectsTypeTest(){
         String prefix = "labe";
         String typeUri = "http://xmlns.com/foaf/0.1/Person";
         String sparql = factory.getPropertySuggestSparqlQuery(prefix, typeUri, limit);
 
         String expected =
-                "PREFIX pf:<http://jena.hpl.hp.com/ARQ/property#> " +
-                        "SELECT DISTINCT ?p ?label1 ?score1 ?label2 ?score2 " +
-                        "WHERE{" +
-                        "[] a <http://xmlns.com/foaf/0.1/Person>; " +
-                        "?p ?v. " +
-                        "{" +
-                        "OPTIONAL {?p <http://www.w3.org/2000/01/rdf-schema#label> ?label1. " +
-                        "(?label1 ?score1) pf:textMatch '" + prefix + "*'. }" +
-                        "OPTIONAL {?p <http://www.w3.org/2004/02/skos/core#prefLabel> ?label2. " +
-                        "(?label2 ?score2) pf:textMatch '" + prefix + "*'. } " +
-                        "FILTER (bound(?label1) || bound(?label2))" +
-                        "}" +
-                        "} ORDER BY desc(?score1) LIMIT " + limit;
+                "PREFIX text:<http://jena.apache.org/text#> " +
+                "SELECT DISTINCT ?p ?label1  ?label2 " +
+                "WHERE{[] a <http://xmlns.com/foaf/0.1/Person>; ?p ?v. " +
+                "{OPTIONAL {?p <http://www.w3.org/2000/01/rdf-schema#label> (?label1 '" + prefix + "*' 10). " +
+                "?p <http://www.w3.org/2000/01/rdf-schema#label> ?label1. }" +
+                "OPTIONAL {?p <http://www.w3.org/2004/02/skos/core#prefLabel> (?label2 '" + prefix + "*' 10). " +
+                        "?p <http://www.w3.org/2004/02/skos/core#prefLabel> ?label2. }" +
+                        "FILTER (bound(?label1) || bound(?label2))}} LIMIT " + limit;
 
         assertEquals(sparql, expected);
     }
@@ -245,18 +228,14 @@ public class JenaTextSparqlQueryFactoryTest {
         String sparql = factory.getPropertySuggestSparqlQuery(prefix, limit);
 
         String expected =
-                "PREFIX pf:<http://jena.hpl.hp.com/ARQ/property#> " +
-                        "SELECT DISTINCT ?p ?label1 ?score1 ?label2 ?score2 " +
-                        "WHERE{" +
-                        "[] ?p ?v. " +
-                        "{" +
-                        "OPTIONAL {?p <http://www.w3.org/2000/01/rdf-schema#label> ?label1. " +
-                        "(?label1 ?score1) pf:textMatch '" + prefix + "*'. }" +
-                        "OPTIONAL {?p <http://www.w3.org/2004/02/skos/core#prefLabel> ?label2. " +
-                        "(?label2 ?score2) pf:textMatch '" + prefix + "*'. } " +
-                        "FILTER (bound(?label1) || bound(?label2))" +
-                        "}" +
-                        "} ORDER BY desc(?score1) LIMIT " + limit;
+                "PREFIX text:<http://jena.apache.org/text#> "+
+                "SELECT DISTINCT ?p ?label1 ?label2 " +
+                "WHERE{[] ?p ?v. " +
+                "{OPTIONAL {?p <http://www.w3.org/2000/01/rdf-schema#label> (?label1 '" + prefix + "*'  10). " +
+                "?p <http://www.w3.org/2000/01/rdf-schema#label> ?label1. }" +
+                "OPTIONAL {?p <http://www.w3.org/2004/02/skos/core#prefLabel> (?label2 '" + prefix + "*' 10). " +
+                "?p <http://www.w3.org/2004/02/skos/core#prefLabel> ?label2. }" +
+                "FILTER (bound(?label1) || bound(?label2))}} LIMIT " + limit;
 
         assertEquals(sparql, expected);
     }
@@ -287,13 +266,12 @@ public class JenaTextSparqlQueryFactoryTest {
         String prefix = "fad";
         String sparql = factory.getEntitySearchSparqlQuery(prefix,searchPropertyUris, 10);
         String expected =
-                "PREFIX pf:<http://jena.hpl.hp.com/ARQ/property#> " +
+                "PREFIX text:<http://jena.apache.org/text#> " +
                         "SELECT ?entity ?label " +
                         "WHERE{" +
-                        "?entity ?label_prop ?label. " +
+                        "?entity ?label_prop (?label '"+ prefix + "*' 20) . ?entity ?label_prop ?label . " +
                         "FILTER (?label_prop=<http://www.w3.org/2000/01/rdf-schema#label> || ?label_prop=<http://www.w3.org/2004/02/skos/core#prefLabel>). " +
-                        "(?label ?score1) pf:textMatch '" + prefix + "*'. " +
-                        "} ORDER BY desc(?score1) LIMIT " + limit*2;
+                        "} LIMIT " + limit*2;
         ;
         assertEquals(sparql, expected);
     }

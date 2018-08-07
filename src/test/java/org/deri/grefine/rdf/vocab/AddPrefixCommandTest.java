@@ -3,23 +3,23 @@ package org.deri.grefine.rdf.vocab;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.lucene.index.CorruptIndexException;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
+import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import org.deri.grefine.rdf.RdfSchema;
 import org.deri.grefine.rdf.app.ApplicationContext;
 import org.deri.grefine.rdf.commands.AddPrefixCommand;
-import org.deri.grefine.rdf.vocab.PrefixExistException;
-import org.deri.grefine.rdf.vocab.VocabularyImportException;
-import org.deri.grefine.rdf.vocab.VocabularyImporter;
-import org.deri.grefine.rdf.vocab.VocabularyIndexException;
 import org.deri.grefine.rdf.vocab.imp.VocabularySearcher;
 
 import static org.testng.Assert.*;
@@ -33,17 +33,23 @@ public class AddPrefixCommandTest{
 	String name= "foaf";
 	String uri = "http://xmlns.com/foaf/0.1/";
 	String projectId = "1";
+
+	Path tempDir;
 	
 	@BeforeClass
-	public void init() throws VocabularyIndexException, IOException, PrefixExistException{
-		//gurad assert 
-		assertFalse(new File(TEMP_TEST_DIRECTORY).exists());
+	public void init() throws IOException{
+		tempDir = Files.createTempDirectory("tmp_VocabularySearchRelatedCommandsTest");
 		importer = new FakeImporter();
-		searcher = new FakeVocabularySearcher(new File(TEMP_TEST_DIRECTORY),this.importer);
+		searcher = new FakeVocabularySearcher(tempDir.toFile(),this.importer);
 		ctxt = new ApplicationContext();
 		ctxt.setVocabularySearcher(searcher);
 	}
-	
+
+	@AfterClass
+    public void tearDown() throws IOException {
+        FileUtils.deleteDirectory(tempDir.toFile());
+    }
+
 	@Test
 	public void testAddPrefixCommand() throws Exception{
 		RdfSchema schema = new RdfSchema();

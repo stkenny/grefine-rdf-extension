@@ -14,8 +14,6 @@ import org.json.JSONWriter;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import org.deri.grefine.reconcile.GRefineServiceManager;
-import org.deri.grefine.reconcile.ServiceRegistry;
 import org.deri.grefine.reconcile.model.ReconciliationRequest;
 import org.deri.grefine.reconcile.model.ReconciliationService;
 import org.deri.grefine.reconcile.rdf.RdfReconciliationService;
@@ -26,6 +24,7 @@ import org.deri.grefine.reconcile.rdf.factories.JenaTextSparqlQueryFactory;
 import org.deri.grefine.reconcile.util.GRefineJsonUtilitiesImpl;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.commons.io.FileUtils;
 
 public class GRefineServiceManagerTest {
 
@@ -36,20 +35,9 @@ public class GRefineServiceManagerTest {
 	public void setUp() throws IOException{
 		//empty dir if it exists
 		if(dir.exists()){
-			String[] children = dir.list();
-			for (int i=0; i<children.length; i++) {
-                boolean success = new File(dir, children[i]).delete();
-                if (!success) {
-                    throw new IOException("unable to delete " + children[i]);
-                }
-            }
-			boolean success = dir.delete();
-			if(!success){
-				throw new IOException("unable to delete " + dir);
-			}
+			FileUtils.deleteDirectory(dir);
 		}
-		
-		
+
 		boolean res = dir.mkdir();
 		if(!res){
 			throw new IOException("unable to create " + dir);
@@ -66,7 +54,13 @@ public class GRefineServiceManagerTest {
 		ServiceRegistry registry = new ServiceRegistry(new GRefineJsonUtilitiesImpl(),null);
 		GRefineServiceManager manager = new GRefineServiceManager(registry, dir);
 		
-		ReconciliationService service = new RdfReconciliationService(id, id, new QueryEndpointImpl(new JenaTextSparqlQueryFactory(), new RemoteQueryExecutor(url, null)), 0);
+		ReconciliationService service = new RdfReconciliationService(
+		        id,
+                id,
+                new QueryEndpointImpl(
+                        new JenaTextSparqlQueryFactory(),
+                        new RemoteQueryExecutor(url, null)),
+                0);
 		manager.addService(service);
 		
 		assertTrue(registry.hasService(id));

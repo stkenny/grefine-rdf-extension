@@ -4,11 +4,14 @@ import static org.testng.Assert.assertTrue;
 
 import org.deri.grefine.rdf.Node;
 import org.deri.grefine.rdf.vocab.Vocabulary;
+
+import org.eclipse.rdf4j.model.Resource;
+import org.eclipse.rdf4j.model.Statement;
 import org.eclipse.rdf4j.repository.RepositoryException;
+import org.eclipse.rdf4j.repository.RepositoryResult;
 import org.eclipse.rdf4j.rio.RDFHandlerException;
 import org.eclipse.rdf4j.rio.RDFWriter;
 import org.eclipse.rdf4j.rio.Rio;
-import org.json.JSONObject;
 import org.eclipse.rdf4j.model.URI;
 import org.eclipse.rdf4j.model.ValueFactory;
 import org.eclipse.rdf4j.model.vocabulary.RDF;
@@ -19,9 +22,12 @@ import org.eclipse.rdf4j.repository.sail.SailRepository;
 import org.eclipse.rdf4j.repository.util.RepositoryUtil;
 import org.eclipse.rdf4j.rio.RDFFormat;
 import org.eclipse.rdf4j.sail.memory.MemoryStore;
+
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import static org.testng.Assert.*;
+
+import org.json.JSONObject;
 
 import com.google.refine.browsing.Engine;
 import com.google.refine.expr.ExpressionUtils;
@@ -37,6 +43,7 @@ import org.deri.grefine.rdf.expr.RdfBinder;
 import org.deri.grefine.rdf.expr.functions.strings.Urlify;
 
 import java.io.StringWriter;
+import java.util.List;
 
 public class RdfExporterFacultyDataTest {
 
@@ -47,9 +54,11 @@ public class RdfExporterFacultyDataTest {
 	
 	Repository expected;
 	RdfSchema schema;
+
 	@BeforeClass
-	public void init()throws Exception{
+	public void init() throws Exception{
 		expected = buildExpectedModel();
+
 		ApplicationContext ctxt = new ApplicationContext();
 		schema = getRdfSchema();
 		project = buildTheSampleProject(schema);
@@ -57,7 +66,6 @@ public class RdfExporterFacultyDataTest {
 		exporter = new RdfExporter(ctxt,RDFFormat.RDFXML);
 		ControlFunctionRegistry.registerFunction("urlify", new Urlify());
 		ExpressionUtils.registerBinder(new RdfBinder(ctxt));
-
 
 		StringWriter sw = new StringWriter();
 		RDFWriter w = Rio.createWriter(RDFFormat.TURTLE, sw);
@@ -76,7 +84,20 @@ public class RdfExporterFacultyDataTest {
 				_count +=1;
 
 				try {
-					flushStatements();
+                    List<Resource> resourceList = con.getContextIDs().asList();
+                    Resource[] resources = resourceList.toArray(new Resource[resourceList.size()]);
+
+                    // Export statements
+                    RepositoryResult<Statement> stIter =
+                            con.getStatements(null, null, null, false, resources);
+
+                    try {
+                        while (stIter.hasNext()) {
+                            this.writer.handleStatement(stIter.next());
+                        }
+                    } finally {
+                        stIter.close();
+                    }
 				} catch (RepositoryException e) {
 					e.printStackTrace();
 					return true;
@@ -93,7 +114,7 @@ public class RdfExporterFacultyDataTest {
 			w.handleNamespace(v.getName(), v.getUri());
 		}
 		model = exporter.buildModel(project, engine, visitor);
-		
+
 		assertEquals(project.rows.size(),3);
 		assertEquals(project.columnModel.getColumnIndexByName("Advisor"),5);
 		
@@ -106,8 +127,8 @@ public class RdfExporterFacultyDataTest {
 	}
 	
 	@Test(groups={"rdf-schema-test"})
-	public void testModel()throws Exception{
-		assertTrue(RepositoryUtil.equals(expected, model));
+	public void testModel() throws Exception {
+        assertTrue(RepositoryUtil.equals(expected, model));
 	}
 	
 	Repository buildExpectedModel() throws Exception{
@@ -160,7 +181,7 @@ public class RdfExporterFacultyDataTest {
 		}
 	}
 
-	static void buildColumnModel(Project project)throws Exception{
+	static void buildColumnModel(Project project) throws Exception{
 		project.columnModel.addColumn(0, new Column(0,"Name"), true);
 		project.columnModel.addColumn(1, new Column(1,"Email"), true);
 		project.columnModel.addColumn(2, new Column(2,"Office"), true);
@@ -169,9 +190,10 @@ public class RdfExporterFacultyDataTest {
 		project.columnModel.addColumn(5, new Column(5,"Advisor"), true);
 	}
 	
-	static Project buildTheSampleProject(RdfSchema schema)throws Exception{
+	static Project buildTheSampleProject(RdfSchema schema) throws Exception{
 		Project project = new Project();
 		buildColumnModel(project);
+
 		Row row1= new Row(6);
 		row1.cells.add(new Cell("Tim Finin",null));
 		row1.cells.add(new Cell("finin@umbc.edu",null));
@@ -206,13 +228,13 @@ public class RdfExporterFacultyDataTest {
 		return project;
 	}
 	
-	RdfSchema getRdfSchema()throws Exception{
+	RdfSchema getRdfSchema() throws Exception{
 		String json = "{\"baseUri\":\"http://lab.linkeddata.deri.ie/test#\",\"rootNodes\":[{\"nodeType\":\"cell-as-resource\",\"isRowNumberCell\":false,\"expression\":\"value.urlify()\",\"columnName\":\"Name\",\"rdfTypes\":[{\"uri\":\"http://xmlns.com/foaf/0.1/Person\",\"curie\":\"foaf:Person\"}],\"links\":[{\"uri\":\"http://xmlns.com/foaf/0.1/name\",\"curie\":\"foaf:name\",\"target\":{\"nodeType\":\"cell-as-literal\",\"expression\":\"value\",\"isRowNumberCell\":false,\"columnName\":\"Name\"}},{\"uri\":\"http://xmlns.com/foaf/0.1/mbox\",\"curie\":\"foaf:mbox\",\"target\":{\"nodeType\":\"cell-as-resource\",\"isRowNumberCell\":false,\"expression\":\"'mailto:' + value\",\"rdfTypes\":[],\"columnName\":\"Email\",\"links\":[]}},{\"uri\":\"officeNumber\",\"curie\":\":officeNumber\",\"target\":{\"nodeType\":\"cell-as-literal\",\"expression\":\"value\",\"isRowNumberCell\":false,\"valueType\":\"http://www.w3.org/2001/XMLSchema#int\",\"columnName\":\"Office\"}},{\"uri\":\"http://xmlns.com/foaf/0.1/member\",\"curie\":\"foaf:member\",\"target\":{\"nodeType\":\"resource\",\"value\":\"http://example.org/UMBC\",\"rdfTypes\":[{\"uri\":\"http://xmlns.com/foaf/0.1/Organization\",\"curie\":\"foaf:Organization\"}],\"links\":[{\"uri\":\"http://www.w3.org/2000/01/rdf-schema#label\",\"curie\":\"rdfs:label\",\"target\":{\"nodeType\":\"literal\",\"value\":\"University of Maryland Baltimore County\",\"lang\":\"en\"}}]}},{\"uri\":\"advisor\",\"curie\":\":advisor\",\"target\":{\"nodeType\":\"cell-as-resource\",\"isRowNumberCell\":false,\"expression\":\"value.urlify()\",\"columnName\":\"Advisor\",\"rdfTypes\":[{\"uri\":\"Advisor\",\"curie\":\":Advisor\"}],\"links\":[{\"uri\":\"http://xmlns.com/foaf/0.1/name\",\"curie\":\"foaf:name\",\"target\":{\"nodeType\":\"cell-as-literal\",\"expression\":\"value\",\"isRowNumberCell\":false,\"columnName\":\"Advisor\"}}]}}]}]}";
 		JSONObject o = ParsingUtilities.evaluateJsonStringToObject(json);
 		return RdfSchema.reconstruct(o);
 	}
 	
-	private URI addFoafPerson(ValueFactory vf,RepositoryConnection con,String uri,String name,String email)throws Exception{
+	private URI addFoafPerson(ValueFactory vf,RepositoryConnection con,String uri,String name,String email) throws Exception{
 		URI person = vf.createURI(uri);
 		con.add(vf.createStatement(person, RDF.TYPE, vf.createURI("http://xmlns.com/foaf/0.1/Person")));
 		con.add(vf.createStatement(person,vf.createURI("http://xmlns.com/foaf/0.1/name"),vf.createLiteral(name)));
@@ -220,4 +242,5 @@ public class RdfExporterFacultyDataTest {
 		
 		return person;
 	}
+
 }

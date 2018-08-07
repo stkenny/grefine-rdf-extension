@@ -33,14 +33,16 @@ import org.apache.jena.rdf.model.ModelFactory;
  * {org.deri.refine.reconcile.rdf.factories.LarqSparqlQueryFactory LarqSparqlQueryFactory} 
  * and {org.deri.refine.reconcile.rdf.executors.DumpQueryExecutor DumpQueryExecutor} correctly. i.e. queries are correct, executed and result is wrapped correctly.
  */
-public class LarqSparqlEndpointTest {
+public class JenaTextSparqlEndpointTest {
+
+	private String classPrefix = "/org/deri/grefine/reconcile/resources/";
 
 	QueryExecutor executor;
 	JenaTextSparqlQueryFactory factory;
 	QueryEndpoint endpoint;
 	
 	//query
-	int limit =3;
+	int limit = 3;
 	String queryString = "godfather";
 	String exactMatchQueryString = "Godfather";
 	ImmutableList<String> searchPropertyUris = ImmutableList.of("http://www.w3.org/2000/01/rdf-schema#label",
@@ -49,9 +51,9 @@ public class LarqSparqlEndpointTest {
 	@BeforeClass
 	public void init(){
 		Model m = ModelFactory.createDefaultModel();
-		InputStream in = this.getClass().getResourceAsStream("../files/films.ttl");
-		m.read(in,null,"TTL");
-		
+		InputStream in = this.getClass().getResourceAsStream(classPrefix + "films.ttl");
+		m.read(in,null,"Turtle");
+
 		executor = new DumpQueryExecutor(m);
 		factory = new JenaTextSparqlQueryFactory();
 		endpoint = new QueryEndpointImpl(factory, executor);
@@ -151,7 +153,7 @@ public class LarqSparqlEndpointTest {
 	 * suggest type
 	 */
 	@Test
-	public void sugestTypeTest(){
+	public void suggestTypeTest(){
 		String prefix = "fil";
 		List<SearchResultItem> results = endpoint.suggestType(prefix, limit);
 		assertEquals(results.size(),2);

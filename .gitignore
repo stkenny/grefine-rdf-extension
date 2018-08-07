@@ -7,3 +7,5 @@ target
 .idea
 output
 tree
+tmp
+tmp_VocabularySearchRelatedCommandsTest

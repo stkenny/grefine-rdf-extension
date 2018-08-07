@@ -19,11 +19,12 @@ import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 
 public class PreviewResourceCannedQueryTest {
+	private String classPrefix = "/org/deri/grefine/reconcile/resources/";
 
 	@Test
 	public void testSparqlQuery()throws Exception{
 		String uri = "http://example.org/resource/1";
-		PreviewResourceCannedQuery cannedQuery = new PreviewResourceCannedQuery(this.getClass().getResourceAsStream("files/preview_properties.properties"));
+		PreviewResourceCannedQuery cannedQuery = new PreviewResourceCannedQuery(this.getClass().getResourceAsStream(classPrefix + "preview_properties.properties"));
 		String sparql = cannedQuery.getPreviewQueryForResource(uri);
 		
 		String expected = 
@@ -50,10 +51,10 @@ public class PreviewResourceCannedQueryTest {
 	@Test
 	public void testWrapping()throws Exception{
 		Model model = ModelFactory.createDefaultModel();
-		InputStream in = this.getClass().getResourceAsStream("files/sample.rdf");
+		InputStream in = this.getClass().getResourceAsStream(classPrefix + "sample.rdf");
 		model.read(in,null);
 		String uri = "http://www.deri.ie/about/team/member/renaud_delbru#me";
-		PreviewResourceCannedQuery cannedQuery = new PreviewResourceCannedQuery(this.getClass().getResourceAsStream("files/preview_properties.properties"));
+		PreviewResourceCannedQuery cannedQuery = new PreviewResourceCannedQuery(this.getClass().getResourceAsStream(classPrefix + "preview_properties.properties"));
 		String sparql = cannedQuery.getPreviewQueryForResource(uri);
 
 		Query query = QueryFactory.create(sparql, Syntax.syntaxSPARQL_11);

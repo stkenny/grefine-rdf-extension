@@ -32,7 +32,9 @@ import org.apache.jena.rdf.model.Resource;
  * this class mainly tests that queries produced by {@link org.deri.refine.reconcile.rdf.factories.JenaTextSparqlQueryFactory JenaTextSparqlQueryFactory}
  * are correct (executable)
  */
-public class LarqSparqlQueryExecutorTest {
+public class JenaTextSparqlQueryExecutorTest {
+
+	private String classPrefix = "/org/deri/grefine/reconcile/resources/";
 
 	QueryExecutor executor;
 	JenaTextSparqlQueryFactory factory;
@@ -46,7 +48,7 @@ public class LarqSparqlQueryExecutorTest {
 	@BeforeClass
 	public void init(){
 		Model m = ModelFactory.createDefaultModel();
-		InputStream in = this.getClass().getResourceAsStream("../files/films.ttl");
+		InputStream in = this.getClass().getResourceAsStream(classPrefix + "films.ttl");
 		m.read(in,null,"TTL");
 		
 		executor = new DumpQueryExecutor(m);

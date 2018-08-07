@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.core.SimpleAnalyzer;
+import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.apache.lucene.document.Document;
@@ -30,8 +30,12 @@ import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.search.WildcardQuery;
 import org.apache.lucene.store.Directory;
-import org.apache.lucene.store.SimpleFSDirectory;
-import org.apache.lucene.util.Version;
+import org.apache.lucene.store.FSDirectory;
+import org.apache.lucene.document.FieldType;
+import org.apache.lucene.document.StoredField;
+import org.apache.lucene.document.TextField;
+import org.apache.lucene.document.StringField;
+
 import org.deri.grefine.rdf.vocab.IVocabularySearcher;
 import org.deri.grefine.rdf.vocab.PrefixExistException;
 import org.deri.grefine.rdf.vocab.RDFNode;
@@ -63,15 +67,15 @@ public class VocabularySearcher implements IVocabularySearcher {
 	private Directory _directory;
 	
 	public VocabularySearcher(File dir) throws IOException {
-                _directory = new SimpleFSDirectory(new File(dir, "luceneIndex"));
-                Analyzer a = new SimpleAnalyzer(Version.LUCENE_43);
-                IndexWriterConfig conf = new IndexWriterConfig(Version.LUCENE_43,a);                
+		_directory = FSDirectory.open(new File(dir, "luceneIndex").toPath());
+        Analyzer a = new StandardAnalyzer();
+        IndexWriterConfig conf = new IndexWriterConfig(a);
 
-                writer = new IndexWriter(_directory,conf);
-                writer.commit();
-                r = DirectoryReader.open(_directory);
-                searcher = new IndexSearcher(r);
-        }
+        writer = new IndexWriter(_directory, conf);
+        writer.commit();
+        r = DirectoryReader.open(FSDirectory.open(new File(dir, "luceneIndex").toPath()));
+        searcher = new IndexSearcher(r);
+	}
 
 	@Override
 	public void importAndIndexVocabulary(String name, String uri, String fetchUrl,VocabularyImporter importer)throws VocabularyImportException, VocabularyIndexException,PrefixExistException, CorruptIndexException, IOException {
@@ -83,7 +87,7 @@ public class VocabularySearcher implements IVocabularySearcher {
 			CorruptIndexException, IOException {
 		List<RDFSClass> classes = new ArrayList<RDFSClass>();
 		List<RDFSProperty> properties = new ArrayList<RDFSProperty>();
-		importer.importVocabulary(name, uri, fetchUrl,classes, properties);
+		importer.importVocabulary(name, uri, fetchUrl, classes, properties);
 		indexTerms(name, uri, projectId, classes, properties);
 	}
 
@@ -101,7 +105,7 @@ public class VocabularySearcher implements IVocabularySearcher {
 	public List<SearchResultItem> searchClasses(String str, String projectId)
 			throws IOException {
 		Query query = prepareQuery(str, CLASS_TYPE, projectId);
-		TopDocs docs = searcher.search(query, getMaxDoc());		
+		TopDocs docs = searcher.search(query, getMaxDoc());
 		return prepareSearchResults(docs);
 	}
 
@@ -138,7 +142,7 @@ public class VocabularySearcher implements IVocabularySearcher {
 		// TODO this shouldn't be required but it is not working without it...
 		// check
 		r.close();
-		r = IndexReader.open(_directory);
+		r = DirectoryReader.open(_directory);
 		searcher = new IndexSearcher(r);
 	}
 	
@@ -169,23 +173,20 @@ public class VocabularySearcher implements IVocabularySearcher {
 		// "type":vocabulary AND "projectId":projectId AND "name":name
 		// ("type": (class OR property) ) AND "projectId":projectId AND
 		// "prefix":name
+		BooleanQuery typeQuery = new BooleanQuery.Builder().
+				add(new TermQuery(new Term("type", CLASS_TYPE)), Occur.SHOULD).
+				add(new TermQuery(new Term("type", PROPERTY_TYPE)),
+				Occur.SHOULD).build();
 
-		BooleanQuery termsQuery = new BooleanQuery();
-		BooleanQuery typeQuery = new BooleanQuery();
-		typeQuery
-				.add(new TermQuery(new Term("type", CLASS_TYPE)), Occur.SHOULD);
-		typeQuery.add(new TermQuery(new Term("type", PROPERTY_TYPE)),
-				Occur.SHOULD);
-
-		termsQuery.add(typeQuery, Occur.MUST);
-		termsQuery.add(new TermQuery(new Term("projectId", projectId)),
-				Occur.MUST);
-		termsQuery.add(new TermQuery(new Term("prefix", prefix)), Occur.MUST);
+		BooleanQuery termsQuery = new BooleanQuery.Builder().add(typeQuery, Occur.MUST)
+				.add(new TermQuery(new Term("projectId", projectId)),
+				Occur.MUST)
+				.add(new TermQuery(new Term("prefix", prefix)), Occur.MUST).build();
 
 		writer.deleteDocuments(termsQuery);
 	}
 
-	private void indexTerms(String name, String uri, String projectId,
+	private void indexTerms(String _name, String _uri, String projectId,
 			List<RDFSClass> classes, List<RDFSProperty> properties)
 			throws CorruptIndexException, IOException {
 		for (RDFSClass c : classes) {
@@ -201,48 +202,40 @@ public class VocabularySearcher implements IVocabularySearcher {
 	private void indexRdfNode(RDFNode node, String type, String projectId)
 			throws CorruptIndexException, IOException {
 		Document doc = new Document();
-		doc.add(new Field("type", type, Field.Store.YES,
-				Field.Index.NOT_ANALYZED));
-		doc.add(new Field("prefix", node.getVocabularyPrefix(),
-				Field.Store.YES, Field.Index.NOT_ANALYZED));
+		doc.add(new StringField("type", type, Field.Store.YES));
+		doc.add(new StringField("prefix", node.getVocabularyPrefix(), Field.Store.YES));
 		String l = node.getLabel() == null ? "" : node.getLabel();
-		doc.add(new Field("label", l, Field.Store.YES, Field.Index.ANALYZED));
+		doc.add(new TextField("label", l, Field.Store.YES));
 		String d = node.getDescription() == null ? "" : node.getDescription();
-		doc.add(new Field("description", d, Field.Store.YES,
-				Field.Index.ANALYZED));
-		doc.add(new Field("uri", node.getURI(), Field.Store.YES, Field.Index.NO));
-		doc.add(new Field("localPart", node.getLocalPart(), Field.Store.YES,
-				Field.Index.ANALYZED));
-		doc.add(new Field("namespace", node.getVocabularyUri(),
-				Field.Store.YES, Field.Index.NOT_ANALYZED));
-		doc.add(new Field("projectId", String.valueOf(projectId),
-				Field.Store.YES, Field.Index.NOT_ANALYZED));
+		doc.add(new TextField("description", d, Field.Store.YES));
+		doc.add(new StoredField("uri", node.getURI()));
+		doc.add(new TextField("localPart", node.getLocalPart(), Field.Store.YES));
+		doc.add(new StoredField("namespace", node.getVocabularyUri()));
+		doc.add(new StringField("projectId", String.valueOf(projectId), Field.Store.NO));
 
-		writer.addDocument(doc);
+        writer.addDocument(doc);
 	}
 
 	private Query prepareQuery(String s, String type, String projectId)
 			throws IOException {
-		BooleanQuery q1 = new BooleanQuery();
-		// q1.add(new TermQuery(new
+	    // q1.add(new TermQuery(new
 		// Term("projectId",GLOBAL_VOCABULARY_PLACE_HOLDER)), Occur.SHOULD);
-		q1.add(new TermQuery(new Term("projectId", projectId)), Occur.MUST);
+        BooleanQuery.Builder q1 = new BooleanQuery.Builder().add(new TermQuery(new Term("projectId", projectId)), Occur.MUST);
 
-		BooleanQuery q2 = new BooleanQuery();
-		q2.add(new TermQuery(new Term("type", type)), Occur.MUST);
+		BooleanQuery.Builder q2 = new BooleanQuery.Builder().add(new TermQuery(new Term("type", type)), Occur.MUST);
 
-		BooleanQuery q = new BooleanQuery();
-		q.add(q1, Occur.MUST);
-		q.add(q2, Occur.MUST);
+		BooleanQuery.Builder q = new BooleanQuery.Builder()
+                .add(q1.build(), Occur.MUST)
+                .add(q2.build(), Occur.MUST);
 
 		if (s != null && s.trim().length() > 0) {
-			SimpleAnalyzer analyzer = new SimpleAnalyzer(Version.LUCENE_36);
+			StandardAnalyzer analyzer = new StandardAnalyzer();
 			if (s.indexOf(":") == -1) {
 				// the query we need:
 				// "projectId":projectId AND "type":type AND ("prefix":s* OR
 				// "localPart":s* OR "label":s* OR "description":s*)
-				BooleanQuery q3 = new BooleanQuery();
-				q3.add(new WildcardQuery(new Term("prefix", s + "*")),
+				BooleanQuery.Builder q3 = new BooleanQuery.Builder()
+                        .add(new WildcardQuery(new Term("prefix", s + "*")),
 						Occur.SHOULD);
 
 				TokenStream stream = analyzer.tokenStream("localPart",
@@ -290,8 +283,8 @@ public class VocabularySearcher implements IVocabularySearcher {
 				stream.close();
 				stream.end();
 
-				q.add(q3, Occur.MUST);
-				return q;
+				q.add(q3.build(), Occur.MUST);
+				return q.build();
 			} else {
 				// the query we need:
 				// "projectId":projectId AND "type":type AND ("prefix":p1 AND
@@ -299,10 +292,10 @@ public class VocabularySearcher implements IVocabularySearcher {
 				String p1 = s.substring(0, s.indexOf(":"));
 				String p2 = s.substring(s.indexOf(":") + 1);
 
-				BooleanQuery q3 = new BooleanQuery();
+				BooleanQuery.Builder q3 = new BooleanQuery.Builder();
 				q3.add(new TermQuery(new Term("prefix", p1)), Occur.SHOULD);
 
-				BooleanQuery q4 = new BooleanQuery();
+				BooleanQuery.Builder q4 = new BooleanQuery.Builder();
 
 				TokenStream stream = analyzer.tokenStream("localPart",
 						new StringReader(p2));
@@ -320,14 +313,14 @@ public class VocabularySearcher implements IVocabularySearcher {
 				stream.close();
 				stream.end();
 
-				q.add(q3, Occur.MUST);
+				q.add(q3.build(), Occur.MUST);
 				if (!p2.isEmpty()) {
-					q.add(q4, Occur.MUST);
+					q.add(q4.build(), Occur.MUST);
 				}
-				return q;
+				return q.build();
 			}
 		} else {
-			return q;
+			return q.build();
 		}
 
 	}
@@ -362,7 +355,7 @@ public class VocabularySearcher implements IVocabularySearcher {
 				newdoc.add((IndexableField)fieldsIter.next());
 			}
 			newdoc.removeField("projectId");
-			newdoc.add(new Field("projectId",projectId,Field.Store.YES,Field.Index.NOT_ANALYZED));
+			newdoc.add(new StoredField("projectId",projectId));
 			writer.addDocument(newdoc);
 		}
 	}
@@ -391,21 +384,21 @@ public class VocabularySearcher implements IVocabularySearcher {
 			throw new RuntimeException("projectId is null");
 		}
 		// "type":vocabulary AND "projectId":projectId AND ("prefix":prefix OR ...)
-		BooleanQuery q = new BooleanQuery();
+		BooleanQuery.Builder q = new BooleanQuery.Builder();
 		Query query = new TermQuery(new Term("projectId",projectId));
 		//TODO backward compatibility is broken here!!!!!!
 //		Query typeQ = new TermQuery(new Term("type", "vocabulary"));
 		
-		BooleanQuery prefixQ = new BooleanQuery();
+		BooleanQuery.Builder prefixQ = new BooleanQuery.Builder();
 		for(String p:toDelete){
 			Query pQ = new TermQuery(new Term("prefix",p));
 			prefixQ.add(pQ,Occur.SHOULD);
 		}
 		q.add(query,Occur.MUST);
 //		q.add(typeQ,Occur.MUST);
-		q.add(prefixQ,Occur.MUST);
+		q.add(prefixQ.build(),Occur.MUST);
 		
-		writer.deleteDocuments(q);		
+		writer.deleteDocuments(q.build());
 	}
 	
 	private int getMaxDoc() throws IOException {

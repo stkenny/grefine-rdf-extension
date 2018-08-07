@@ -60,7 +60,8 @@ public class JenaTextSparqlQueryFactory extends AbstractSparqlQueryFactory{
 	@Override
 	public void write(JSONWriter writer) throws JSONException {
 		writer.object();
-		writer.key("type");	writer.value("larq");
+		writer.key("type");
+		writer.value("jena-text");
 		writer.endObject();
 	}
 	

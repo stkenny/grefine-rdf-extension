@@ -31,6 +31,8 @@ public class PlainSparqlEndpointTest {
 	QueryExecutor executor;
 	PlainSparqlQueryFactory factory;
 	PlainSparqlQueryEndpoint endpoint;
+
+	private String classPrefix = "/org/deri/grefine/reconcile/resources/";
 	
 	//query
 	int limit =8;
@@ -42,7 +44,7 @@ public class PlainSparqlEndpointTest {
 	@BeforeMethod
 	public void setUp(){
 		Model m = ModelFactory.createDefaultModel();
-		InputStream in = this.getClass().getResourceAsStream("../files/films.ttl");
+		InputStream in = this.getClass().getResourceAsStream(classPrefix + "films.ttl");
 		m.read(in,null,"TTL");
 		
 		executor = new DumpQueryExecutor(m);

@@ -3,14 +3,12 @@ package org.deri.grefine.rdf.exporters;
 
 import org.deri.grefine.rdf.Node;
 import org.deri.grefine.rdf.vocab.Vocabulary;
+import org.eclipse.rdf4j.model.*;
+import org.eclipse.rdf4j.repository.RepositoryResult;
 import org.eclipse.rdf4j.rio.RDFHandlerException;
 import org.eclipse.rdf4j.rio.RDFWriter;
 import org.eclipse.rdf4j.rio.Rio;
-import org.json.JSONObject;
-import org.eclipse.rdf4j.model.Resource;
-import org.eclipse.rdf4j.model.URI;
-import org.eclipse.rdf4j.model.Value;
-import org.eclipse.rdf4j.model.ValueFactory;
+
 import org.eclipse.rdf4j.model.vocabulary.RDF;
 import org.eclipse.rdf4j.model.vocabulary.RDFS;
 import org.eclipse.rdf4j.repository.Repository;
@@ -38,6 +36,9 @@ import org.deri.grefine.rdf.expr.functions.strings.Urlify;
 
 
 import java.io.StringWriter;
+import java.util.List;
+
+import org.json.JSONObject;
 
 import static org.testng.Assert.*;
 
@@ -81,7 +82,20 @@ public class RdfExporterTest {
 				_count +=1;
 
 				try {
-					flushStatements();
+					List<Resource> resourceList = con.getContextIDs().asList();
+					Resource[] resources = resourceList.toArray(new Resource[resourceList.size()]);
+
+					// Export statements
+					RepositoryResult<Statement> stIter =
+							con.getStatements(null, null, null, false, resources);
+
+					try {
+						while (stIter.hasNext()) {
+							this.writer.handleStatement(stIter.next());
+						}
+					} finally {
+						stIter.close();
+					}
 				} catch (RepositoryException e) {
 					e.printStackTrace();
 					return true;
