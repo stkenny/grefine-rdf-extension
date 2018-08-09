@@ -30,8 +30,9 @@ import org.apache.jena.rdf.model.ModelFactory;
 /**
  * @author fadmaa
  * this class mainly assures that {org.deri.refine.reconcile.rdf.endpoints.QueryEndpointImpl QueryEndpointImpl} uses 
- * {org.deri.refine.reconcile.rdf.factories.LarqSparqlQueryFactory LarqSparqlQueryFactory} 
- * and {org.deri.refine.reconcile.rdf.executors.DumpQueryExecutor DumpQueryExecutor} correctly. i.e. queries are correct, executed and result is wrapped correctly.
+ * {org.deri.refine.reconcile.rdf.factories.JenaTextSparqlQueryFactory JenaTextSparqlQueryFactory}
+ * and {org.deri.refine.reconcile.rdf.executors.DumpQueryExecutor DumpQueryExecutor} correctly.
+ * i.e. queries are correct, executed and result is wrapped correctly.
  */
 public class JenaTextSparqlEndpointTest {
 
@@ -67,7 +68,18 @@ public class JenaTextSparqlEndpointTest {
 		assertResultInOrder(null,candidates,"http://data.linkedmdb.org/resource/film/930","http://data.linkedmdb.org/resource/film/329",
 			"http://data.linkedmdb.org/resource/film_series/261");
 	}
-	
+
+    @Test
+    public void executeSingleReconciliationQuery(){
+        ImmutableList<String> searchPropertyUri = ImmutableList.of("http://www.w3.org/2000/01/rdf-schema#label");
+
+        ReconciliationRequest request = new ReconciliationRequest(queryString, 6);
+        List<ReconciliationCandidate> candidates = endpoint.reconcileEntities(request, searchPropertyUri, 0.8);
+        assertTrue(candidates.size()<=6);
+        assertResultInOrder(null,candidates,"http://data.linkedmdb.org/resource/film/930","http://data.linkedmdb.org/resource/film/329",
+                "http://data.linkedmdb.org/resource/film_series/261");
+    }
+
 	@Test
 	public void noMoreThanOneMatch(){
 		ReconciliationRequest request = new ReconciliationRequest("Anjali", limit);
@@ -202,7 +214,7 @@ public class JenaTextSparqlEndpointTest {
 	}
 	
 	/*
-	 * search entites
+	 * search entities
 	 */
 	@Test
 	public void searchEntitiesTest(){
