@@ -124,7 +124,7 @@ public class VirtuosoSparqlQueryFactoryTest {
 	 */
 
 	@Test
-	public void suggestPropertyWithSpecificSiubjectsTypeTest(){
+	public void suggestPropertyWithSpecificSubjectsTypeTest(){
 		String prefix = "labe";
 		String typeUri = "http://xmlns.com/foaf/0.1/Person";
 		String sparql = factory.getPropertySuggestSparqlQuery(prefix, typeUri, limit);

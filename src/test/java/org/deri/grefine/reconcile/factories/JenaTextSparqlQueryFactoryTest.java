@@ -40,16 +40,19 @@ public class JenaTextSparqlQueryFactoryTest {
         String sparql = factory.getReconciliationSparqlQuery(request, searchPropertyUris);
 
         String expected =
+                "PREFIX text:<http://jena.apache.org/text#> " +
                 "PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#> " +
-                        "PREFIX text:<http://jena.apache.org/text#> " +
-                        "PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#> "+
-                        "SELECT ?entity ?label " +
-                        "WHERE" +
-                        "{" +
-                        "?entity ?p (?label 'Fadi Maali' 20).?entity ?p ?label." +
-                        "FILTER (?p=<http://www.w3.org/2000/01/rdf-schema#label> || ?p=<http://www.w3.org/2004/02/skos/core#prefLabel>)" +
-                        " FILTER (isIRI(?entity))}GROUP BY ?entity ?label" +
-                        " LIMIT "  + String.valueOf(limit * searchPropertyUris.size());
+                "PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#> " +
+                "PREFIX skos:<http://www.w3.org/2004/02/skos/core#> " +
+                "SELECT ?entity ?label " +
+                "WHERE{" +
+                "{?entity text:query (<http://www.w3.org/2000/01/rdf-schema#label> '" + query + "*' 20) ." +
+                " ?entity <http://www.w3.org/2000/01/rdf-schema#label> ?label . } " +
+                "UNION " +
+                "{?entity text:query (<http://www.w3.org/2004/02/skos/core#prefLabel> '" + query + "*' 20) ." +
+                " ?entity <http://www.w3.org/2004/02/skos/core#prefLabel> ?label . } " +
+                "FILTER (isIRI(?entity))} GROUP BY ?entity ?label" +
+                " LIMIT " + String.valueOf(limit * searchPropertyUris.size());
 
         assertEquals(sparql, expected);
     }
@@ -62,21 +65,21 @@ public class JenaTextSparqlQueryFactoryTest {
         String sparql = factory.getReconciliationSparqlQuery(request, searchPropertyUris);
 
         String expected =
+                "PREFIX text:<http://jena.apache.org/text#> " +
                 "PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#> " +
-                        "PREFIX text:<http://jena.apache.org/text#> " +
-                        "PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#> "+
-                        "SELECT ?entity ?label " +
-                        "WHERE" +
-                        "{" +
-                        "?entity ?p (?label 'Fadi Maali' 20).?entity ?p ?label." +
-                        "FILTER (?p=<http://www.w3.org/2000/01/rdf-schema#label> || ?p=<http://www.w3.org/2004/02/skos/core#prefLabel>) " +
-                        "{" +
-                        "{?entity rdf:type <http://xmlns.com/foaf/0.1/Person>. } " +
-                        "UNION " +
-                        "{?entity rdf:type <http://example.org/ontology/Person>. }" +
-                        "} FILTER (isIRI(?entity))" +
-                        "}GROUP BY ?entity ?label " +
-                        "LIMIT "  + String.valueOf(limit * searchPropertyUris.size());
+                "PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#> " +
+                "PREFIX skos:<http://www.w3.org/2004/02/skos/core#> " +
+                "SELECT ?entity ?label " +
+                "WHERE{" +
+                "{?entity text:query (<http://www.w3.org/2000/01/rdf-schema#label> '" + query + "*' 20) ." +
+                " ?entity <http://www.w3.org/2000/01/rdf-schema#label> ?label . } " +
+                "UNION " +
+                "{?entity text:query (<http://www.w3.org/2004/02/skos/core#prefLabel> '" + query + "*' 20) ." +
+                " ?entity <http://www.w3.org/2004/02/skos/core#prefLabel> ?label . } ." +
+                " ?entity rdf:type ?type ." +
+                " VALUES ?type {<http://xmlns.com/foaf/0.1/Person> <http://example.org/ontology/Person>} ." +
+                " FILTER (isIRI(?entity))} GROUP BY ?entity ?label " +
+                "LIMIT "  + String.valueOf(limit * searchPropertyUris.size());
 
         assertEquals(sparql, expected);
     }
@@ -99,12 +102,18 @@ public class JenaTextSparqlQueryFactoryTest {
                 "PREFIX skos:<http://www.w3.org/2004/02/skos/core#> " +
                 "SELECT ?entity ?label " +
                 "WHERE{" +
-                "{?entity text:query (<http://www.w3.org/2000/01/rdf-schema#label> 'Fadi Maali*' 20) ." +
-                " ?entity <http://www.w3.org/2000/01/rdf-schema#label> ?label . } " +
-                "UNION " +
-                "{?entity text:query (<http://www.w3.org/2004/02/skos/core#prefLabel> 'Fadi Maali*' 20) ." +
-                " ?entity <http://www.w3.org/2004/02/skos/core#prefLabel> ?label . } " +
-                "FILTER (isIRI(?entity))} GROUP BY ?entity ?label LIMIT " + String.valueOf(limit * searchPropertyUris.size());
+                "{?entity text:query (<http://www.w3.org/2000/01/rdf-schema#label> '" + query + "*' 20) ." +
+                " ?entity <http://www.w3.org/2000/01/rdf-schema#label> ?label . }" +
+                " UNION " +
+                "{?entity text:query (<http://www.w3.org/2004/02/skos/core#prefLabel> '" + query + "*' 20) ." +
+                " ?entity <http://www.w3.org/2004/02/skos/core#prefLabel> ?label . } ." +
+                " ?entity rdf:type ?type . " +
+                "VALUES ?type " +
+                "{<http://xmlns.com/foaf/0.1/Person> <http://example.org/ontology/Person>} ." +
+                "?entity <http://example.org/ontology/worksFor> <http://example.org/resource/DERI>. " +
+                "?entity <http://xmlns.com/foaf/0.1/nick> 'fadmaa'.  " +
+                "FILTER (isIRI(?entity))} " +
+                "GROUP BY ?entity ?label LIMIT " + String.valueOf(limit * searchPropertyUris.size());
 
         assertEquals(sparql, expected);
     }
@@ -123,14 +132,13 @@ public class JenaTextSparqlQueryFactoryTest {
         String expected =
                 "PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#> " +
                         "PREFIX text:<http://jena.apache.org/text#> " +
-                        "PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#> "+
+                        "PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#> " +
                         "SELECT ?entity ?label " +
-                        "WHERE " +
-                        "{ " +
-                        "?entity text:query (<http://www.w3.org/2000/01/rdf-schema#label> 'Fadi Maali' 10) . " +
-                        "?entity <http://www.w3.org/2000/01/rdf-schema#label> ?label ." +
-                        "}GROUP BY ?entity ?label " +
-                        "ORDER BY DESC(?score1) LIMIT "  + String.valueOf(limit * searchPropertyUris.size());
+                        "WHERE { " +
+                        "(?entity ?score1) text:query (<http://www.w3.org/2000/01/rdf-schema#label> '" + query + "' 10) ." +
+                        " ?entity <http://www.w3.org/2000/01/rdf-schema#label> ?label}" +
+                        "GROUP BY ?entity ?label " +
+                        "ORDER BY DESC(?score1) LIMIT " + String.valueOf(limit * searchPropertyUris.size());
 
         assertEquals(sparql, expected);
     }
@@ -144,16 +152,17 @@ public class JenaTextSparqlQueryFactoryTest {
 
         String expected =
                 "PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#> " +
-                "PREFIX text:<http://jena.apache.org/text#> " +
-                "PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#> " +
-                "SELECT ?entity ?label " +
-                "WHERE {" +
-                " (?entity ?score1) text:query (<http://www.w3.org/2004/02/skos/core#prefLabel> '" + query + "' 10) ." +
-                " ?entity <http://www.w3.org/2004/02/skos/core#prefLabel> ?label ." +
-                " {{?entity rdf:type <http://xmlns.com/foaf/0.1/Person>. } " +
-                "UNION " +
-                "{?entity rdf:type <http://example.org/ontology/Person>. }}}" +
-                "GROUP BY ?entity ?label ORDER BY DESC(?score1) LIMIT " + String.valueOf(limit * searchPropertyUris.size());
+                        "PREFIX text:<http://jena.apache.org/text#> " +
+                        "PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#> " +
+                        "SELECT ?entity ?label " +
+                        "WHERE { " +
+                        "(?entity ?score1) text:query (<http://www.w3.org/2004/02/skos/core#prefLabel> '" + query + "' 10) ." +
+                        " ?entity <http://www.w3.org/2004/02/skos/core#prefLabel> ?label ." +
+                        " ?entity rdf:type ?type ." +
+                        " VALUES ?type {<http://xmlns.com/foaf/0.1/Person> <http://example.org/ontology/Person>} ." +
+                        "}" +
+                        "GROUP BY ?entity ?label " +
+                        "ORDER BY DESC(?score1) LIMIT " + String.valueOf(limit * searchPropertyUris.size());
 
         assertEquals(sparql, expected);
     }

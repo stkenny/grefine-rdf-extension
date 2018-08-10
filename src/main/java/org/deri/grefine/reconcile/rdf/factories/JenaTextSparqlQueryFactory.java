@@ -40,7 +40,7 @@ public class JenaTextSparqlQueryFactory extends AbstractSparqlQueryFactory {
         //prepare type filter
         String typesFilter = "";
         if (request.getTypes().length > 0) {
-            typesFilter = StringUtils.join(request.getTypes(), ">. } UNION ", "{?entity rdf:type <", " {", ">. }}");
+            typesFilter = StringUtils.join(request.getTypes(), "> ", "<", " . ?entity rdf:type ?type . VALUES ?type {", ">} .");
         }
         //prepare context filter
         StringBuilder contextFilter = new StringBuilder();
@@ -225,7 +225,6 @@ public class JenaTextSparqlQueryFactory extends AbstractSparqlQueryFactory {
                     "PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#> " +
                     "PREFIX skos:<http://www.w3.org/2004/02/skos/core#> " +
                     "SELECT DISTINCT ?p ?label1 ?score1 ?label2 ?score2 " +
-
                     "WHERE { " +
                     "[] ?p ?v. " +
                     "OPTIONAL {(?p ?score1) text:query (rdfs:label '[[QUERY]]*'  [[LIMIT]]) . " +
@@ -257,7 +256,7 @@ public class JenaTextSparqlQueryFactory extends AbstractSparqlQueryFactory {
                     "WHERE " +
                     "{ " +
                     "(?entity ?score1) text:query (<[[LABEL_PROPERTY_URI]]> '[[QUERY]]' [[LIMIT]]) . " +
-                    "?entity <[[LABEL_PROPERTY_URI]]> ?label ." +
+                    "?entity <[[LABEL_PROPERTY_URI]]> ?label" +
                     "[[TYPE_FILTER]]" +
                     "[[CONTEXT_FILTER]]" +
                     "}GROUP BY ?entity ?label " +
