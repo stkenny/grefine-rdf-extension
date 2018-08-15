@@ -1,23 +1,20 @@
 package org.deri.grefine.reconcile.commands;
 
+import com.google.common.collect.ImmutableList;
+import com.google.refine.commands.Command;
+import org.apache.commons.lang.StringUtils;
+import org.deri.grefine.reconcile.model.ReconciliationService;
+import org.json.JSONException;
+import org.json.JSONWriter;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.deri.grefine.reconcile.model.ReconciliationService;
-
-import org.apache.commons.lang.StringUtils;
-import org.json.JSONException;
-import org.json.JSONWriter;
-
-import com.google.common.collect.ImmutableList;
-import com.google.refine.commands.Command;
 
 public abstract class AbstractAddServiceCommand extends Command{
 
@@ -33,8 +30,11 @@ public abstract class AbstractAddServiceCommand extends Command{
 	        
 	        writer.object();
 	        writer.key("code"); writer.value("ok");
-	        writer.key("service");
-	        service.writeAsJson(writer);
+
+	        if(service != null) {
+                writer.key("service");
+                service.writeAsJson(writer);
+            }
 	        writer.endObject();
 	        w.flush();
 	        w.close();

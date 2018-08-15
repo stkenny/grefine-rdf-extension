@@ -42,7 +42,7 @@ public class RdfReconciliationService extends AbstractReconciliationService {
 
     /**
      * @param searchPropertyUris list of property URIs that will be used for full text search and for retrieving items name (i.e. displayed label)
-     * @param fr    eemarkerConfig
+     * @param freemarkerConfig
      */
     public RdfReconciliationService(String id, String name, ImmutableList<String> searchPropertyUris, QueryEndpoint queryEndpoint,
                                     double matchThreshold) {
@@ -179,6 +179,5 @@ public class RdfReconciliationService extends AbstractReconciliationService {
     private static final int LIMIT_FOR_SUGGESTION = 40;
 
     private static final String RDFS_LABEL = "http://www.w3.org/2000/01/rdf-schema#label";
-
 }
 

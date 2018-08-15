@@ -1,18 +1,11 @@
 package org.deri.grefine.reconcile.executors;
 
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.fail;
-
-import java.io.InputStream;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
-
 import com.google.common.collect.ImmutableList;
+import org.apache.jena.query.QuerySolution;
+import org.apache.jena.query.ResultSet;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.Resource;
 import org.deri.grefine.reconcile.model.ReconciliationRequest;
 import org.deri.grefine.reconcile.model.ReconciliationRequestContext;
 import org.deri.grefine.reconcile.model.ReconciliationRequestContext.IdentifiedValueContext;
@@ -21,11 +14,15 @@ import org.deri.grefine.reconcile.model.ReconciliationRequestContext.TextualValu
 import org.deri.grefine.reconcile.rdf.executors.DumpQueryExecutor;
 import org.deri.grefine.reconcile.rdf.executors.QueryExecutor;
 import org.deri.grefine.reconcile.rdf.factories.JenaTextSparqlQueryFactory;
-import org.apache.jena.query.QuerySolution;
-import org.apache.jena.query.ResultSet;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.ModelFactory;
-import org.apache.jena.rdf.model.Resource;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
+
+import java.io.FileInputStream;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
+import static org.testng.Assert.*;
 
 /**
  * @author fadmaa
@@ -49,10 +46,14 @@ public class JenaTextSparqlQueryExecutorTest {
 	@BeforeClass
 	public void init(){
 		Model m = ModelFactory.createDefaultModel();
-		InputStream in = this.getClass().getResourceAsStream(classPrefix + "films.ttl");
-		m.read(in,null,"TTL");
-		
-		executor = new DumpQueryExecutor(m);
+		try {
+            FileInputStream in = new FileInputStream("/Users/skenny/Development/openrefine/grefine-rdf-extension/src/test/resources/org/deri/grefine/reconcile/resources/films.ttl"); //(FileInputStream)this.getClass().getResourceAsStream(classPrefix + "films.ttl");
+            //m.read(in, null, "TTL");
+            executor = new DumpQueryExecutor();
+            executor.initialize(in);
+        } catch(Exception e){}
+
+
 		factory = new JenaTextSparqlQueryFactory();
 	}
 	

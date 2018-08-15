@@ -7,7 +7,6 @@
       <package name="com.google.refine.test.org.deri.reconcile.endpoints" />
       <package name="com.google.refine.test.org.deri.reconcile.executors" />
       <package name="com.google.refine.test.org.deri.reconcile.factories" />
-      <package name="com.google.refine.test.org.deri.reconcile.sindice" />
    </packages>
  </test>
 </suite>

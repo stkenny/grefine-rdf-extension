@@ -116,6 +116,7 @@ public class UploadFileAndAddServiceCommand extends AbstractAddServiceCommand{
 			ReconciliationService service = new RdfReconciliationService(
 					id, name, propUris, queryEndpoint, AddServiceCommand.DEFAULT_MATCH_THRESHOLD);
 			GRefineServiceManager.singleton.addAndSaveService(service);
+
 			return service;
 		}catch(FileUploadException fe){
 			throw new IOException(fe);

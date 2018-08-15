@@ -69,6 +69,10 @@ public class GRefineServiceManager {
         return service;
     }
 
+    public Set<ReconciliationService> getServices() {
+        return registry.getServices();
+    }
+
     public synchronized void addService(ReconciliationService service) throws JSONException, IOException {
         registry.addService(service);
         FileOutputStream servicesFile = new FileOutputStream(new File(workingDir, "services"));

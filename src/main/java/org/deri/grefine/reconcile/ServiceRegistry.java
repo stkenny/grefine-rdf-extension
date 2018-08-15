@@ -1,20 +1,7 @@
 package org.deri.grefine.reconcile;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.StringWriter;
-import java.io.Writer;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 import org.codehaus.jackson.JsonGenerationException;
@@ -32,23 +19,13 @@ import org.deri.grefine.reconcile.rdf.executors.DumpQueryExecutor;
 import org.deri.grefine.reconcile.rdf.executors.QueryExecutor;
 import org.deri.grefine.reconcile.rdf.executors.RemoteQueryExecutor;
 import org.deri.grefine.reconcile.rdf.executors.VirtuosoRemoteQueryExecutor;
-import org.deri.grefine.reconcile.rdf.factories.BigOwlImSparqlQueryFactory;
-import org.deri.grefine.reconcile.rdf.factories.JenaTextSparqlQueryFactory;
-import org.deri.grefine.reconcile.rdf.factories.PlainSparqlQueryFactory;
-import org.deri.grefine.reconcile.rdf.factories.SparqlQueryFactory;
-import org.deri.grefine.reconcile.rdf.factories.VirtuosoSparqlQueryFactory;
-import org.deri.grefine.reconcile.sindice.SindiceService;
+import org.deri.grefine.reconcile.rdf.factories.*;
 import org.deri.grefine.reconcile.util.GRefineJsonUtilities;
 import org.deri.grefine.reconcile.util.PrefixManager;
+import org.json.*;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.json.JSONTokener;
-import org.json.JSONWriter;
-
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
+import java.io.*;
+import java.util.*;
 
 public class ServiceRegistry {
 
@@ -73,6 +50,8 @@ public class ServiceRegistry {
     public Set<String> getServiceIds() {
         return new HashSet<String>(services.keySet());
     }
+
+    public Set<ReconciliationService> getServices() { return new HashSet<ReconciliationService>(services.values()); }
 
     public ReconciliationService getService(String id, FileInputStream in) {
         ReconciliationService service = services.get(id);
@@ -199,8 +178,6 @@ public class ServiceRegistry {
                 ReconciliationService service;
                 if (type.equals("rdf")) {
                     service = loadRdfServiceFromJSON(serviceObj);
-                } else if (type.equals("sindice")) {
-                    service = loadSindiceServiceFromJSON(serviceObj);
                 } else {
                     //unknown service ignore
                     continue;
@@ -211,17 +188,6 @@ public class ServiceRegistry {
             in.close();
         }
 
-    }
-
-    private ReconciliationService loadSindiceServiceFromJSON(JSONObject serviceObj)
-            throws JSONException {
-        String serviceId = serviceObj.getString("id");
-        String name = serviceObj.getString("name");
-        String domain = null;
-        if (serviceObj.has("domain")) {
-            domain = serviceObj.getString("domain");
-        }
-        return new SindiceService(serviceId, name, domain);
     }
 
     private RdfReconciliationService loadRdfServiceFromJSON(JSONObject serviceObj)
@@ -288,6 +254,5 @@ public class ServiceRegistry {
             return new PlainSparqlQueryFactory();
         }
     }
-
 
 }

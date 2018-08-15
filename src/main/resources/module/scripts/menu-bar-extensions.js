@@ -68,9 +68,6 @@ RdfReconciliationManager.newSparqlService = function(){
 RdfReconciliationManager.newRdfService = function(){
 	new ReconciliationRdfServiceDialog();
 };
-RdfReconciliationManager.newSindiceService = function(){
-	new ReconciliationSindiceServiceDialog();
-};
 RdfReconciliationManager.newStanbolService = function(){
 	new ReconciliationStanbolServiceDialog();
 };
@@ -173,55 +170,6 @@ ReconciliationStanbolServiceDialog.prototype.printAddedService = function(contai
 		sniper += '<dd>' + label + '</dd>';
 	}
 	container.append(sniper).fadeIn("slow");
-};
-
-function ReconciliationSindiceServiceDialog(){
-	var self = this;
-	var frame = DialogSystem.createDialog();
-    frame.width("400px");
-    
-    var header = $('<div></div>').addClass("dialog-header").text("Add reconciliation service").appendTo(frame);
-    var body = $('<div class="grid-layout layout-full"></div>').addClass("dialog-body").appendTo(frame);
-    var footer = $('<div></div>').addClass("dialog-footer").appendTo(frame);
-    
-    var html = $(
-    	  '<div class="rdf-reconcile-spaced">' + 
-    	    'Set up a new reconciliation service that uses <a target="_blank" href="http://www.sindice.com">Sindice.com</a> to search on a single site.' + 
-    	  '</div>' +
-    	  '<table>' +
-    	    '<tr>' +
-    	      '<th>' + 
-    	  	    '<label>Domain:</label>' +
-    	  	  '</th>' +
-    	  	  '<td class="rdf-reconcile-spaced">' +
-    	  	    '<input type="text" bind="domain" size="32" />' +
-    	  	    '<div class="rdf-reconcile-field-details">e.g. dbpedia.org</div>' +
-    	  	  '</td>' +
-    	  	'</tr>' +
-    	  '</table>'    		
-    ).appendTo(body);
-    
-    self._elmts = DOM.bind(html);
-    
-    self._level = DialogSystem.showDialog(frame);
-    self._footer(footer);
-}
-
-ReconciliationSindiceServiceDialog.prototype._footer= function(footer){
-	var self = this;
-	$('<button></button>').addClass('button').html("&nbsp;&nbsp;Ok&nbsp;&nbsp;").click(function() {
-        var domain = self._elmts.domain.val();
-        if(!domain){
-        	alert("Domain need to be provided!");
-        	return;
-        }
-        $.post("command/rdf-extension/addSindiceService",{"domain":domain},function(data){
-			RdfReconciliationManager.registerService(data,self._level);
-		},"json");
-    }).appendTo(footer);
-	$('<button></button>').addClass('button').text("Cancel").click(function() {
-        DialogSystem.dismissUntil(self._level - 1);
-    }).appendTo(footer);
 };
 
 function ReconciliationRdfServiceDialog(){
@@ -452,11 +400,6 @@ $(function(){
 			                    	 click: function() { RdfReconciliationManager.newRdfService(); }        	 
 			                     },
 			                     {
-			                    	 "id" : "rdf/reconcile/sindice",
-			                    	 label: "Based on a Sindice site search...",
-			                    	 click: function() { RdfReconciliationManager.newSindiceService(); }        	 
-			                     },
-			                     {
 			                    	 "id" : "rdf/reconcile/stanbol",
 			                    	 label: "Based on a Apache Stanbol EntityHub...",
 			                    	 click: function() { RdfReconciliationManager.newStanbolService(); }        	 
@@ -470,14 +413,6 @@ $(function(){
 	DataTableColumnHeaderUI.extendMenu(function(column, columnHeaderUI, menu) {
 		MenuSystem.appendTo(menu, [ "core/reconcile" ], [
 		                                             {},
-		                                             {
-		                                                 id: "core/sindice-find-dataset",
-		                                                 label: "Discover related RDF datasets..." ,
-		                                                 click: function() {
-		                                                     var dialog = new SindiceDialog();
-		                                                     dialog.show(column);
-		                                                 }
-		                                             },
 		                                         ]);
 	});
 	
