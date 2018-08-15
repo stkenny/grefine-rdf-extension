@@ -17,7 +17,7 @@ import org.deri.grefine.reconcile.rdf.factories.JenaTextSparqlQueryFactory;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -35,7 +35,7 @@ public class JenaTextSparqlQueryExecutorTest {
 	private String classPrefix = "/org/deri/grefine/reconcile/resources/";
 
 	QueryExecutor executor;
-	JenaTextSparqlQueryFactory factory;
+    JenaTextSparqlQueryFactory factory;
 	
 	//query
 	int limit =8;
@@ -46,16 +46,12 @@ public class JenaTextSparqlQueryExecutorTest {
 	@BeforeClass
 	public void init(){
 		Model m = ModelFactory.createDefaultModel();
-		try {
-            FileInputStream in = new FileInputStream("/Users/skenny/Development/openrefine/grefine-rdf-extension/src/test/resources/org/deri/grefine/reconcile/resources/films.ttl"); //(FileInputStream)this.getClass().getResourceAsStream(classPrefix + "films.ttl");
-            //m.read(in, null, "TTL");
-            executor = new DumpQueryExecutor();
-            executor.initialize(in);
-        } catch(Exception e){}
 
-
-		factory = new JenaTextSparqlQueryFactory();
-	}
+        InputStream in = this.getClass().getResourceAsStream(classPrefix + "films.ttl");
+        m.read(in, null, "TTL");
+        executor = new DumpQueryExecutor(m);
+        factory = new JenaTextSparqlQueryFactory();
+    }
 	
 	@Test
 	public void executeSimpleReconciliationQuery(){
