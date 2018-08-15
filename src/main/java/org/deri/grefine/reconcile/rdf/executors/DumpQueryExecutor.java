@@ -1,29 +1,21 @@
 package org.deri.grefine.reconcile.rdf.executors;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-
+import org.apache.jena.query.*;
 import org.apache.jena.query.text.EntityDefinition;
 import org.apache.jena.query.text.TextDatasetFactory;
+import org.apache.jena.query.text.TextIndexConfig;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.vocabulary.RDFS;
 import org.apache.jena.vocabulary.SKOS;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.RAMDirectory;
 import org.json.JSONException;
 import org.json.JSONWriter;
 
-import org.apache.jena.query.Dataset;
-import org.apache.jena.query.DatasetFactory;
-import org.apache.jena.query.Query;
-import org.apache.jena.query.QueryExecution;
-import org.apache.jena.query.QueryExecutionFactory;
-import org.apache.jena.query.QueryFactory;
-import org.apache.jena.query.text.TextIndexConfig;
-import org.apache.jena.query.ResultSet;
-import org.apache.jena.query.Syntax;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.ModelFactory;
-import org.apache.jena.vocabulary.RDFS;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 /**
  * @author fadmaa
@@ -59,15 +51,14 @@ public class DumpQueryExecutor implements QueryExecutor {
         loaded = true;
         this.propertyUri = propertyUri;
 
-        Dataset ds1 = DatasetFactory.create();
+        Dataset dataset = DatasetFactory.create();
         EntityDefinition entDef = createEntityDefinition(m);
         // Lucene, in memory.
         Directory dir = new RAMDirectory();
 
         // Join together into a dataset
-        this.index = TextDatasetFactory.createLucene(ds1, dir, new TextIndexConfig(entDef));
+        this.index = TextDatasetFactory.createLucene(dataset, dir, new TextIndexConfig(entDef));
         this.index.getDefaultModel().add(m);
-        //this.index.commit();
     }
 
     @Override
@@ -75,10 +66,14 @@ public class DumpQueryExecutor implements QueryExecutor {
         if (!loaded) {
             throw new RuntimeException("Model is not loaded");
         }
-        //this.index.begin(ReadWrite.READ) ;
+        this.index.begin(ReadWrite.READ);
+
         Query query = QueryFactory.create(sparql, Syntax.syntaxSPARQL_11);
         QueryExecution qExec = QueryExecutionFactory.create(query, this.index);
         ResultSet result = qExec.execSelect();
+
+        this.index.end();
+
         return result;
     }
 
@@ -101,31 +96,37 @@ public class DumpQueryExecutor implements QueryExecutor {
     }
 
     public synchronized void initialize(FileInputStream in) {
-        if (loaded) {
+        if (this.loaded) {
             return;
         }
-        loaded = true;
+        this.loaded = true;
         // -- Read and index all literal strings.
         Model model = ModelFactory.createDefaultModel();
         model.read(in, null, "TTL");
 
-        Dataset ds1 = DatasetFactory.create();
+        Dataset dataset = DatasetFactory.create();
         EntityDefinition entDef = createEntityDefinition(model);
 
         // Lucene, in memory.
         Directory dir = new RAMDirectory();
 
         // Join together into a dataset
-        this.index = TextDatasetFactory.createLucene(ds1, dir, new TextIndexConfig(entDef));
-        this.index.getDefaultModel().add(model);
-        this.index.commit();
+        Dataset luceneDataset = TextDatasetFactory.createLucene(dataset, dir, new TextIndexConfig(entDef));
+        luceneDataset.begin(ReadWrite.WRITE);
+        try {
+            luceneDataset.getDefaultModel().add(model);
+            luceneDataset.commit();
+        } finally {
+            luceneDataset.end();
+        }
+        this.index = luceneDataset;
     }
 
     private EntityDefinition createEntityDefinition(Model model){
         EntityDefinition entDef = new EntityDefinition(
                 "uri",
                 "text",
-                model.getResource(propertyUri));
+                 model.getResource(propertyUri));
         entDef.set("label", RDFS.label.asNode());
         entDef.set("prefLabel", SKOS.prefLabel.asNode());
 

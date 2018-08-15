@@ -29,7 +29,8 @@ import org.apache.jena.rdf.model.Resource;
 
 /**
  * @author fadmaa
- * this class mainly tests that queries produced by {@link org.deri.refine.reconcile.rdf.factories.JenaTextSparqlQueryFactory JenaTextSparqlQueryFactory}
+ * this class mainly tests that queries produced by
+ * {@link org.deri.grefine.reconcile.rdf.factories.JenaTextSparqlQueryFactory JenaTextSparqlQueryFactory}
  * are correct (executable)
  */
 public class JenaTextSparqlQueryExecutorTest {
@@ -107,11 +108,13 @@ public class JenaTextSparqlQueryExecutorTest {
 	 * Suggest type 
 	 */
 	@Test
-	public void sugestTypeTest(){
+	public void suggestTypeTest(){
 		String prefix = "fil";
 		String sparql = factory.getTypeSuggestSparqlQuery(prefix, limit);
 		ResultSet resultset = executor.sparql(sparql);
-		assertInResultset("type",resultset,"http://data.linkedmdb.org/resource/movie/film","http://data.linkedmdb.org/resource/movie/film_series");
+		assertInResultset("type"
+                ,resultset
+                ,"http://data.linkedmdb.org/resource/movie/film","http://data.linkedmdb.org/resource/movie/film_series");
 	}
 	
 	private void assertInResultset(String propertyName, ResultSet resultset, String... containedUris){
@@ -130,7 +133,7 @@ public class JenaTextSparqlQueryExecutorTest {
 	 * Suggest property 
 	 */
 	@Test
-	public void sugestPropertyTest(){
+	public void suggestPropertyTest(){
 		String prefix = "init";
 		String sparql = factory.getPropertySuggestSparqlQuery(prefix, "http://data.linkedmdb.org/resource/movie/film", limit);
 		ResultSet resultset = executor.sparql(sparql);
@@ -142,7 +145,10 @@ public class JenaTextSparqlQueryExecutorTest {
 	 */
 	@Test
 	public void sampleInstancesTest(){
-		String sparql = factory.getSampleInstancesSparqlQuery("http://data.linkedmdb.org/resource/movie/film", ImmutableList.of("http://www.w3.org/2000/01/rdf-schema#label"), limit);
+		String sparql = factory.getSampleInstancesSparqlQuery(
+		        "http://data.linkedmdb.org/resource/movie/film",
+                ImmutableList.of("http://www.w3.org/2000/01/rdf-schema#label"),
+                limit);
 		ResultSet resultset = executor.sparql(sparql);
 		assertTrue(resultset.hasNext());
 		QuerySolution sol = resultset.nextSolution();
