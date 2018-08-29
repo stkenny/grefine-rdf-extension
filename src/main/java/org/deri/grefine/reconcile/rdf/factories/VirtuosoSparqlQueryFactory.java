@@ -121,6 +121,7 @@ public class VirtuosoSparqlQueryFactory extends AbstractSparqlQueryFactory{
 	private static final int AVERAGE_NUM_OF_LABELS =2;
 	
 	private static final String RECONCILE_QUERY_TEMPLATE =
+            "PREFIX bif: <http://www.openlinksw.com/schemas/bif#> " +
 		"SELECT DISTINCT ?entity ?label ?score1 " +
 		"WHERE" +
 		"{" +
@@ -134,7 +135,8 @@ public class VirtuosoSparqlQueryFactory extends AbstractSparqlQueryFactory{
 		"?entity a ?type. " +
 		"FILTER (?type IN ([[TYPE_URIS_LIST]])). ";
 	
-	private static final String SUGGEST_TYPE_QUERY_TEMPLATE = 
+	private static final String SUGGEST_TYPE_QUERY_TEMPLATE =
+            "PREFIX bif: <http://www.openlinksw.com/schemas/bif#> " +
 		"SELECT DISTINCT ?type ?label ?score1 " +
 		"WHERE " +
 		"{" +
@@ -144,7 +146,8 @@ public class VirtuosoSparqlQueryFactory extends AbstractSparqlQueryFactory{
 		"?label <bif:contains> \"'[[QUERY]]'\" OPTION(score ?score1). " +
 		"} ORDER BY desc(?score1) LIMIT [[LIMIT]]";
 	
-	private static final String SUGGEST_PROPERTY_QUERY_TEMPLATE = 
+	private static final String SUGGEST_PROPERTY_QUERY_TEMPLATE =
+            "PREFIX bif: <http://www.openlinksw.com/schemas/bif#> " +
 		"SELECT DISTINCT ?p ?label ?score1 " +
 		"WHERE " +
 		"{" +
@@ -155,6 +158,7 @@ public class VirtuosoSparqlQueryFactory extends AbstractSparqlQueryFactory{
 		"} ORDER BY desc(?score1) LIMIT [[LIMIT]]";
 	
 	private static final String SUGGEST_PROPERTY_WITH_SPECIFIC_SUBJECT_TYPE_QUERY_TEMPLATE =
+            "PREFIX bif: <http://www.openlinksw.com/schemas/bif#> " +
 		"SELECT DISTINCT ?p ?label ?score1 " +
 		"WHERE " +
 		"{" +
@@ -166,6 +170,7 @@ public class VirtuosoSparqlQueryFactory extends AbstractSparqlQueryFactory{
 		"} ORDER BY desc(?score1) LIMIT [[LIMIT]]";
 	
 	private static final String SEARCH_ENTITY_QUERY_TEMPLATE =
+            "PREFIX bif: <http://www.openlinksw.com/schemas/bif#> " +
 		"SELECT DISTINCT ?entity ?label " +
 		"WHERE" +
 		"{" +

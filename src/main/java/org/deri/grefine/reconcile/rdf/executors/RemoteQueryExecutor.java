@@ -15,46 +15,49 @@ import org.apache.jena.query.ResultSet;
  * @author fadmaa
  * query a remote SPARQL endpoint
  */
-public class RemoteQueryExecutor implements QueryExecutor{
-	protected String sparqlEndpointUrl;
-	protected String defaultGraphUri;
-	
-	public RemoteQueryExecutor(String sparqlEndpointUrl,String defaultGraphUri) {
-		this.sparqlEndpointUrl = sparqlEndpointUrl;
-		this.defaultGraphUri = defaultGraphUri;
-	}
+public class RemoteQueryExecutor implements QueryExecutor {
+    protected String sparqlEndpointUrl;
+    protected String defaultGraphUri;
 
-	@Override
-	public ResultSet sparql(String sparql) {
-		QueryExecution qExec;
-		if(defaultGraphUri==null){
-			qExec = QueryExecutionFactory.sparqlService(sparqlEndpointUrl, sparql);
-		}else{
-			qExec = QueryExecutionFactory.sparqlService(sparqlEndpointUrl, sparql,defaultGraphUri);
-		}
-		ResultSet res = qExec.execSelect();
-		return res;
-	}
+    public RemoteQueryExecutor(String sparqlEndpointUrl, String defaultGraphUri) {
+        this.sparqlEndpointUrl = sparqlEndpointUrl;
+        this.defaultGraphUri = defaultGraphUri;
+    }
 
-	@Override
-	public void save(String serviceId, FileOutputStream baseDir) throws IOException{
-		//nothing to save... all data is external
-	}
-	
-	@Override
-	public void write(JSONWriter writer) throws JSONException {
-		writer.object();
-		writer.key("type"); writer.value("remote");
-		writer.key("sparql-url"); writer.value(sparqlEndpointUrl);
-		if(defaultGraphUri!=null){
-			writer.key("default-graph-uri"); writer.value(defaultGraphUri);
-		}
-		writer.endObject();
-	}
+    @Override
+    public ResultSet sparql(String sparql) {
+        QueryExecution qExec;
+        if (defaultGraphUri == null) {
+            qExec = QueryExecutionFactory.sparqlService(sparqlEndpointUrl, sparql);
+        } else {
+            qExec = QueryExecutionFactory.sparqlService(sparqlEndpointUrl, sparql, defaultGraphUri);
+        }
+        ResultSet res = qExec.execSelect();
+        return res;
+    }
 
-	@Override
-	public void initialize(FileInputStream in) {
-		//nothing to initialize
-		
-	}
+    @Override
+    public void save(String serviceId, FileOutputStream baseDir) throws IOException {
+        //nothing to save... all data is external
+    }
+
+    @Override
+    public void write(JSONWriter writer) throws JSONException {
+        writer.object();
+        writer.key("type");
+        writer.value("remote");
+        writer.key("sparql-url");
+        writer.value(sparqlEndpointUrl);
+        if (defaultGraphUri != null) {
+            writer.key("default-graph-uri");
+            writer.value(defaultGraphUri);
+        }
+        writer.endObject();
+    }
+
+    @Override
+    public void initialize(FileInputStream in) {
+        //nothing to initialize
+
+    }
 }

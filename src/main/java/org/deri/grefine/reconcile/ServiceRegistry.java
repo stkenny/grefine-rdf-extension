@@ -34,7 +34,7 @@ public class ServiceRegistry {
     private PrefixManager prefixManager;
 
     public ServiceRegistry(GRefineJsonUtilities jsonUtilities, PrefixManager prefixer) {
-        services = new HashMap<String, ReconciliationService>();
+        services = new HashMap<>();
         this.grefineJsonUtilities = jsonUtilities;
         this.prefixManager = prefixer;
     }
@@ -51,7 +51,7 @@ public class ServiceRegistry {
         return new HashSet<String>(services.keySet());
     }
 
-    public Set<ReconciliationService> getServices() { return new HashSet<ReconciliationService>(services.values()); }
+    public Set<ReconciliationService> getServices() { return new HashSet<>(services.values()); }
 
     public ReconciliationService getService(String id, FileInputStream in) {
         ReconciliationService service = services.get(id);

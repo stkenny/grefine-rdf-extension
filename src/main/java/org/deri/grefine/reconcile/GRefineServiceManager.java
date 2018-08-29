@@ -1,28 +1,20 @@
 package org.deri.grefine.reconcile;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import org.codehaus.jackson.JsonGenerationException;
+import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.map.JsonMappingException;
+import org.deri.grefine.reconcile.model.ReconciliationService;
+import org.deri.grefine.reconcile.util.GRefineJsonUtilitiesImpl;
+import org.deri.grefine.reconcile.util.PrefixManager;
+import org.json.JSONException;
+
+import javax.servlet.http.HttpServletRequest;
+import java.io.*;
 import java.net.URLEncoder;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import javax.servlet.http.HttpServletRequest;
-
-import org.codehaus.jackson.JsonGenerationException;
-import org.codehaus.jackson.JsonParseException;
-import org.codehaus.jackson.map.JsonMappingException;
-import org.deri.grefine.reconcile.ServiceRegistry;
-import org.deri.grefine.reconcile.model.ReconciliationService;
-import org.deri.grefine.reconcile.util.GRefineJsonUtilitiesImpl;
-import org.deri.grefine.reconcile.util.PrefixManager;
-
-import org.json.JSONException;
 
 public class GRefineServiceManager {
 
@@ -41,7 +33,14 @@ public class GRefineServiceManager {
         if (singleton == null) {
             InputStream prefixesIn = GRefineServiceManager.class.getResourceAsStream("/files/prefixes");
             PrefixManager prefixManager = new PrefixManager(prefixesIn);
-            singleton = new GRefineServiceManager(new ServiceRegistry(new GRefineJsonUtilitiesImpl(), prefixManager), workingDir);
+
+            singleton = new GRefineServiceManager(
+                    new ServiceRegistry(
+                            new GRefineJsonUtilitiesImpl(),
+                            prefixManager),
+                    workingDir
+            );
+
             File servicesFile = new File(workingDir, "services");
             if (servicesFile.exists()) {
                 FileInputStream in = new FileInputStream(servicesFile);
@@ -156,7 +155,7 @@ public class GRefineServiceManager {
     /**
      * retain only these ids
      *
-     * @param ids
+     * @param urls
      * @throws IOException
      * @throws JSONException
      */

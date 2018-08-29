@@ -1,13 +1,16 @@
 package org.deri.grefine.reconcile.rdf.executors;
 
-import java.util.Collections;
-
+import org.apache.jena.query.ResultSet;
 import org.apache.jena.query.ResultSetFactory;
+import org.apache.jena.sparql.engine.http.QueryEngineHTTP;
+import org.deri.grefine.reconcile.util.ParentLastClassLoader;
 import org.json.JSONException;
 import org.json.JSONWriter;
 
-import org.apache.jena.query.ResultSet;
-import org.apache.jena.sparql.engine.http.QueryEngineHTTP;
+import java.net.URL;
+import java.security.CodeSource;
+import java.security.ProtectionDomain;
+import java.util.Collections;
 
 public class VirtuosoRemoteQueryExecutor extends RemoteQueryExecutor {
 
