@@ -15,7 +15,7 @@
         <slf4j.version>1.7.5</slf4j.version>
         <any23.version>2.0</any23.version>
         <guava.version>22.0</guava.version>
-        <jena.version>3.6.0</jena.version>
+        <jena.version>3.8.0</jena.version>
         <rdf4j.version>2.2.2</rdf4j.version>
         <simmetrics.version>1.6.2</simmetrics.version>
         <xerces.version>2.11.0</xerces.version>
@@ -77,17 +77,13 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>org.apache.jena</groupId>
-            <artifactId>jena-arq</artifactId>
+            <groupId>org.shaded.apache.jena</groupId>
+            <artifactId>jena-shaded-arq</artifactId>
             <version>${jena.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.slf4j</groupId>
                     <artifactId>slf4j-log4j12</artifactId>
-                </exclusion>
-                <exclusion>
-                  <groupId>xerces</groupId>
-                  <artifactId>xercesImpl</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
@@ -97,12 +93,12 @@
             <version>${jena.version}</version>
             <exclusions>
                 <exclusion>
-                    <groupId>xerces</groupId>
-                    <artifactId>xercesImpl</artifactId>
-                </exclusion>
-                <exclusion>
                     <groupId>org.slf4j</groupId>
                     <artifactId>slf4j-log4j12</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.jena</groupId>
+                    <artifactId>jena-arq</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
