@@ -110,9 +110,7 @@ public class VirtuosoSparqlQueryFactoryTest {
 			"WHERE " +
 			"{" +
 			"[] a ?type. " +
-			"?type ?label_prop ?label. " +
-			"FILTER (?label_prop=<http://www.w3.org/2000/01/rdf-schema#label> " +
-                    "|| ?label_prop=<http://www.w3.org/2004/02/skos/core#prefLabel>). " +
+            "{ ?type <http://www.w3.org/2000/01/rdf-schema#label> ?label } UNION { ?type <http://www.w3.org/2004/02/skos/core#prefLabel> ?label } . " +
 			"?label <bif:contains> \"'+" + prefix + "*'\" OPTION(score ?score1). " +
 			"} ORDER BY desc(?score1) LIMIT " + limit;
 		
@@ -135,10 +133,8 @@ public class VirtuosoSparqlQueryFactoryTest {
 			"{" +
 			"[] a <http://xmlns.com/foaf/0.1/Person>; " +
 			"?p ?v. " +
-			"?p ?label_prop ?label. " +
-			"FILTER (?label_prop=<http://www.w3.org/2000/01/rdf-schema#label> " +
-                    "|| ?label_prop=<http://www.w3.org/2004/02/skos/core#prefLabel>). " +
-			"?label <bif:contains> \"'+" +prefix + "*'\" OPTION(score ?score1). " +
+            "{ ?p <http://www.w3.org/2000/01/rdf-schema#label> ?label } UNION { ?p <http://www.w3.org/2004/02/skos/core#prefLabel> ?label } . " +
+            "?label <bif:contains> \"'+" +prefix + "*'\" OPTION(score ?score1). " +
 			"} ORDER BY desc(?score1) LIMIT " + limit;
 		
 		assertEquals(sparql, expected);
@@ -154,9 +150,7 @@ public class VirtuosoSparqlQueryFactoryTest {
 			"WHERE " +
 			"{" +
 			"[] ?p ?v. " +
-			"?p ?label_prop ?label. " +
-			"FILTER (?label_prop=<http://www.w3.org/2000/01/rdf-schema#label> " +
-                    "|| ?label_prop=<http://www.w3.org/2004/02/skos/core#prefLabel>). " +
+			"{ ?p <http://www.w3.org/2000/01/rdf-schema#label> ?label } UNION { ?p <http://www.w3.org/2004/02/skos/core#prefLabel> ?label } . " +
 			"?label <bif:contains> \"'+" +prefix + "*'\" OPTION(score ?score1). " +
 			"} ORDER BY desc(?score1) LIMIT " + limit;
 		

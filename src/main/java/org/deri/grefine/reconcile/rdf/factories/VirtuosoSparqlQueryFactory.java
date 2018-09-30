@@ -118,7 +118,7 @@ public class VirtuosoSparqlQueryFactory extends AbstractSparqlQueryFactory{
 	}
 	
 	//TODO accept as a parameter
-	private static final int AVERAGE_NUM_OF_LABELS =2;
+	private static final int AVERAGE_NUM_OF_LABELS = 2;
 	
 	private static final String RECONCILE_QUERY_TEMPLATE =
 		"SELECT DISTINCT ?entity ?label ?score1 " +
@@ -139,9 +139,9 @@ public class VirtuosoSparqlQueryFactory extends AbstractSparqlQueryFactory{
 		"WHERE " +
 		"{" +
 		"[] a ?type. " +
-		"?type ?label_prop ?label. " +
-		"FILTER (?label_prop=<http://www.w3.org/2000/01/rdf-schema#label> || ?label_prop=<http://www.w3.org/2004/02/skos/core#prefLabel>). " +
-		"?label <bif:contains> \"'[[QUERY]]'\" OPTION(score ?score1). " +
+        "{ ?type <http://www.w3.org/2000/01/rdf-schema#label> ?label } UNION " +
+        "{ ?type <http://www.w3.org/2004/02/skos/core#prefLabel> ?label } . " +
+        "?label <bif:contains> \"'[[QUERY]]'\" OPTION(score ?score1). " +
 		"} ORDER BY desc(?score1) LIMIT [[LIMIT]]";
 	
 	private static final String SUGGEST_PROPERTY_QUERY_TEMPLATE = 
@@ -149,9 +149,9 @@ public class VirtuosoSparqlQueryFactory extends AbstractSparqlQueryFactory{
 		"WHERE " +
 		"{" +
 		"[] ?p ?v. " +
-		"?p ?label_prop ?label. " +
-		"FILTER (?label_prop=<http://www.w3.org/2000/01/rdf-schema#label> || ?label_prop=<http://www.w3.org/2004/02/skos/core#prefLabel>). " +
-		"?label <bif:contains> \"'[[QUERY]]'\" OPTION(score ?score1). " +
+        "{ ?p <http://www.w3.org/2000/01/rdf-schema#label> ?label } UNION " +
+        "{ ?p <http://www.w3.org/2004/02/skos/core#prefLabel> ?label } . " +
+        "?label <bif:contains> \"'[[QUERY]]'\" OPTION(score ?score1). " +
 		"} ORDER BY desc(?score1) LIMIT [[LIMIT]]";
 	
 	private static final String SUGGEST_PROPERTY_WITH_SPECIFIC_SUBJECT_TYPE_QUERY_TEMPLATE =
@@ -160,9 +160,9 @@ public class VirtuosoSparqlQueryFactory extends AbstractSparqlQueryFactory{
 		"{" +
 		"[] a <[[TYPE_URI]]>; " +
 		"?p ?v. " +
-		"?p ?label_prop ?label. " +
-		"FILTER (?label_prop=<http://www.w3.org/2000/01/rdf-schema#label> || ?label_prop=<http://www.w3.org/2004/02/skos/core#prefLabel>). " +
-		"?label <bif:contains> \"'[[QUERY]]'\" OPTION(score ?score1). " +
+        "{ ?p <http://www.w3.org/2000/01/rdf-schema#label> ?label } UNION " +
+        "{ ?p <http://www.w3.org/2004/02/skos/core#prefLabel> ?label } . " +
+        "?label <bif:contains> \"'[[QUERY]]'\" OPTION(score ?score1). " +
 		"} ORDER BY desc(?score1) LIMIT [[LIMIT]]";
 	
 	private static final String SEARCH_ENTITY_QUERY_TEMPLATE =
