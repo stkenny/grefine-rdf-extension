@@ -13,3 +13,6 @@ This project adds a graphical user interface(GUI) for exporting data of OpenRefi
 - Unpack the zip file created in the `target` directory to a sub-directory of the extensions folder of OpenRefine e.g., `extensions/rdf-extension`
   
 If you have previously installed the extension you will need to replace it in the OpenRefine extensions directory with the newly built version.
+
+## Documentation
+* [Documentation Wiki](https://github.com/stkenny/grefine-rdf-extension/wiki)
