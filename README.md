@@ -2,7 +2,7 @@
 
 This project adds a graphical user interface(GUI) for exporting data of OpenRefine projects in RDF format. The export is based on mapping the data to a template graph using the GUI. It also provides a service for reconciling data against SPARQL endpoints (e.g., DBpedia).
 
-** Requires OpenRefine 3.0-rc1 **
+** Requires OpenRefine 3.0 **
 
 ## INSTALL
 
