@@ -133,7 +133,7 @@ a#add_prefix_link, a#add_prefix_link:HOVER, a#add_prefix_link:VISITED {
 }
 div.rdf-scheme-dialog-subheader{
 	background: none repeat scroll 0 0 #E0EDFE;
-	padding:0.1em;
+	padding:0.4em;
 	
 }
 p.base-uri-space{

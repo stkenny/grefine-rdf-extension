@@ -1,0 +1,39 @@
+<div class="dialog-frame" style="width: 800px;">
+  <div class="dialog-header" bind="dialogHeader"></div>
+  <div class="dialog-body" bind="dialogBody">
+    <div class="grid-layout layout-normal layout-full" style="height: 450px; overflow: auto">
+  <p bind="rdfext_align_desc"></p>
+  <p class="base-uri-space"><span class="emphasized" bind="rdfext_align_baseUri"></span> 
+  	<span bind="baseUriSpan" ></span> <a href="#" bind="editBaseUriLink"></a>
+  </p>
+  <div id="rdf-schema-alignment-tabs" class="refine-tabs">
+            <ul> 
+                <li><a href="#rdf-schema-alignment-tabs-schema" bind="rdfext_align_skeleton"></a></li>
+                <li><a href="#rdf-schema-alignment-tabs-preview" bind="rdfext_align_preview"></a></li>
+            </ul>
+            <div id="rdf-schema-alignment-tabs-schema"> 
+            	<div class="rdf-scheme-dialog-subheader">
+            	<table>
+            	<tr>
+            		<td><span style="display:block;width:150px;" bind="rdfext_align_prefixes"></span></td>
+            		<td><div class="rdf-schema-prefixes" bind="rdf_schema_prefixes"></div></td>
+            	</tr></table></div>  
+                <div class="schema-alignment-dialog-canvas rdf-schema-alignment-dialog-canvas">
+                </div>
+                <div class="rdf-schema-alignment-body-footer">
+                <a bind="add_another_root_node" href="#"></a>
+                <a bind="_save_skeleton" href="#" style="float:right"></a>
+                </div>
+            </div>
+            <div id="rdf-schema-alignment-tabs-preview">
+                <div class="rdf-scheme-dialog-subheader" bind="rdfext_align_sampleTurtle"></div> 
+                <div class="schema-alignment-dialog-preview" id="rdf-schema-alignment-dialog-preview">
+                </div>
+            </div><!--./rdf-schema-alignment-tabs-preview-->
+        </div><!-- ./rdf-schema-alignment-tabs -->
+  </div> <!-- ./grid -->
+  </div><!-- ./dialog-body -->
+  <div class="dialog-footer" bind="dialogFooter">
+    <button class="btn btn-success" bind="okButton"></button>
+    <button class="btn" bind="cancelButton"></button>
+  </div>
