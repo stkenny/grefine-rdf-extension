@@ -8,7 +8,7 @@ function RdfSchemaAlignmentDialog(schema){
 	this._replaceBaseUri(RdfSchemaAlignment._defaultNamespace || URL.getHostname()+'/',true);
 
 	//activate first tab, otherwise somehow 2nd gets activated, reason yet unknown
-	$("#rdf-schema-alignment-tabs").tabs('select',0);
+	//$("#rdf-schema-alignment-tabs").tabs('select',0);
 
 };
 
