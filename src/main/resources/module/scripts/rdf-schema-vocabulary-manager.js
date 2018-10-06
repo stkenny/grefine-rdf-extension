@@ -1,4 +1,4 @@
-function RdfPrefixesManager (dialog,prefixes){
+function RdfPrefixesManager (dialog, prefixes){
 	this._dialog = dialog;
 	//prefixes have not been initialized
 	var self = this;
@@ -18,20 +18,32 @@ function RdfPrefixesManager (dialog,prefixes){
 
 RdfPrefixesManager.prototype._getDefaultPrefixes = function(onDone){
 	var self =this;
-	$.get("command/rdf-extension/get-default-prefixes",{project:theProject.id},function(data){
-		if(onDone){
-			onDone(data);
-		}
-	},"json");
+	$.post(
+			"command/rdf-extension/get-default-prefixes",
+			{project:theProject.id},
+			function(data){
+				if(onDone){
+					onDone(data);
+				}
+			},
+			"json"
+		);
 };
 
 RdfPrefixesManager.prototype._savePrefixes = function(onDone){
 	var self =this;
-	$.post("command/rdf-extension/save-prefixes",{project:theProject.id,prefixes:JSON.stringify(self._prefixes)},function(data){
-		if(onDone){
-			onDone(data);
-		}
-	},"json");
+	$.post("command/rdf-extension/save-prefixes",
+			{
+				project:theProject.id,
+				prefixes:JSON.stringify(self._prefixes)
+			},
+			function(data){
+				if(onDone){
+					onDone(data);
+				}
+			},
+			"json"
+		);
 };
 RdfPrefixesManager.prototype._showManagePrefixesWidget = function(){
 	var self = this;
@@ -41,22 +53,23 @@ RdfPrefixesManager.prototype._showManagePrefixesWidget = function(){
 
 RdfPrefixesManager.prototype._showPrefixes = function(){
 	var self = this;
-	this._dialog._rdf_schema_prefixes.empty();
+	self._dialog._rdf_schema_prefixes.empty();
 	for(var i=0;i<self._prefixes.length;i++){
 		self._renderPrefix(self._prefixes[i].name,self._prefixes[i].uri);
 	}
 	//add button
-	$('<a href="#" class="add-prefix-box">add prefix</a>').bind('click',function(e){
+	$('<a href="#" class="add-prefix-box">'+$.i18n._('rdf-ext-prefix')["add"]+'</a>').bind('click',function(e){
 		e.preventDefault();
 		self._addPrefix();
 	}).appendTo(self._dialog._rdf_schema_prefixes);
 	
 	//configure button
-	$('<a href="#" class="manage-vocabularies-box">manage prefixes</a>').bind('click',function(e){
+	$('<a href="#" class="manage-vocabularies-box">'+$.i18n._('rdf-ext-prefix')["manage"]+'</a>').bind('click',function(e){
 		e.preventDefault();
 		self._showManagePrefixesWidget();
 	}).appendTo(self._dialog._rdf_schema_prefixes);
 	
+	//todo: add refresh all button
 };
 
 RdfPrefixesManager.prototype._renderPrefix = function(prefix,uri){

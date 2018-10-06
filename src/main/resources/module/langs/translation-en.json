@@ -175,6 +175,7 @@
 	"rdf-ext-prefix": {
 		"header": "Add new prefix",
 		"pre": "Prefix",
+                "provided": "is provided",
 		"uri": "URI",
 		"force": "Force import",
 		"voc": "Vocabulary Terms",
