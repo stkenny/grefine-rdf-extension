@@ -1,49 +1,47 @@
 <div>
-  <div class="rdf-reconcile-spaced">
-  This will set up a new reconciliation service based on an RDF file that provides entity URIs and entity labels.
-  </div>
+  <div class="rdf-reconcile-spaced" bind="rdfext_rdf_desc"></div>
   <table>
     <tr>
       <th>
-  	    <label for="service-name">Name:</label>
+  	    <label for="service-name" bind="rdfext_rdf_name"></label>
   	  </th>
   	  <td class="rdf-reconcile-spaced">
   	    <input type="text" bind="service_name" id="service-name"/>
-  	    <div class="rdf-reconcile-field-details">A human readable name</div>
+  	    <div class="rdf-reconcile-field-details" bind="rdfext_rdf_detail"></div>
   	  </td>
   	</tr>
   </table>
   <fieldset class="rdf-reconcile-fieldset">
-    <legend>File details</legend>
-    <form id="file-upload-form" bind="file_upload_form" method="POST" action="command/rdf-extension/uploadFileAndAddService" enctype="multipart/form-data">
+    <legend><span bind="rdfext_rdf_fileDet"></span></legend>
+    <form id="file-upload-form" bind="file_upload_form" action="command/rdf-extension/uploadFileAndAddService" enctype="multipart/form-data">
       <input type="hidden" name="service_name" bind="hidden_service_name" />
       <input type="hidden" name="properties" bind="hidden_properties" />
       <table>
         <tr>
           <td>
             <input type="radio" value="file" name="file_source" checked="checked" bind="file_source_url"/>
-            <label for="endpoint-url">Load file from URL:</label>
+            <label for="endpoint-url" bind="rdfext_rdf_load"></label>
           </td>
           <td><input type="text" size="32" bind="file_url_input"/></td>
         </tr>
         <tr>
           <td>
             <input type="radio" value="url" name="file_source" bind="file_source_upload" />
-            <label>Upload file:</label>
+            <label bind="rdfext_rdf_upload"></label>
           </td>
           <td>
             <input type="file" name="file_upload" bind="file_upload_input" disabled="disabled"/>
           </td>
         <tr>
           <td>
-            <label>File format:</label>
+            <label bind="rdfext_rdf_format"></label>
           </td>
           <td>
             <select name="file_format"  bind="file_format_input">
-              <option value="autodetect">Auto-detect</option>
-              <option value="TTL">Turtle</option>
-              <option value="RDF/XML">RDF/XML</option>
-              <option value="N-TRIPLE">N-Triple</option>
+              <option value="autodetect" bind="rdfext_rdf_autoDetect"></option>
+              <option value="TTL" bind="rdfext_rdf_turtle"></option>
+              <option value="RDF/XML" bind="rdfext_rdf_rdfxml"></option>
+              <option value="N-TRIPLE" bind="rdfext_rdf_ntriple"></option>
             </select>
           </td>
         </tr>
@@ -52,22 +50,22 @@
   </fieldset>
   
   <fieldset class="rdf-reconcile-fieldset">
-    <legend>Label properties</legend>
+    <legend><span bind="rdfext_rdf_labprop"></span></legend>
     <div class="rdf-reconcile-content">
-      <span>Select properties that are used to label resources in the RDF data. These properties will be used to match resources:</span>
-      <div style="clear:both;height:10px;"></div>
+      <span class="label label-important" bind="rdfext_rdf_important"></span> <span bind="rdfext_rdf_impDesc"></span>
+      <div style="clear:both;height:5px;"></div>
       <div bind="label_prop_container">
         <div class="rdf-reconcile-label-option" title="http://www.w3.org/2000/01/rdf-schema#label"><input name="label_prop" type="checkbox" value="http://www.w3.org/2000/01/rdf-schema#label" checked="checked"/>rdfs:label</div>
         <div class="rdf-reconcile-label-option" title="http://www.w3.org/2004/02/skos/core#prefLabel"><input name="label_prop" type="checkbox" value="http://www.w3.org/2004/02/skos/core#prefLabel" />skos:prefLabel</div>
         <div class="rdf-reconcile-label-option" title="http://purl.org/dc/terms/title" ><input name="label_prop" type="checkbox" value="http://purl.org/dc/terms/title" />dcterms:title</div>
         <div class="rdf-reconcile-label-option" title="http://purl.org/dc/elements/1.1/title"><input name="label_prop" type="checkbox" value="http://purl.org/dc/elements/1.1/title" />dc:title</div>
         <div class="rdf-reconcile-label-option" title="http://xmlns.com/foaf/0.1/name"><input name="label_prop" type="checkbox" value="http://xmlns.com/foaf/0.1/name" />foaf:name</div>
-        <div class="rdf-reconcile-label-option rdf-reconcile-label-last-option"><input type="checkbox" bind="other_label_chk" />Other...</div>
+        <div class="rdf-reconcile-label-option rdf-reconcile-label-last-option"><input type="checkbox" bind="other_label_chk" /><span bind="rdfext_rdf_other"></span></div>
         <div style="clear:both;"></div>
       </div>
       <div bind="other_properties">
         <textarea rows="3" cols="42" bind="other_properties_textarea"></textarea>
-        <div class="rdf-reconcile-field-details">Full URIs; separate multiple URIs with whitespace</div>
+        <div class="rdf-reconcile-field-details" bind="rdfext_rdf_fullUri"></div>
       </div>
       
     </div>    

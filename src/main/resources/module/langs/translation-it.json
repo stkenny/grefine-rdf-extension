@@ -105,7 +105,7 @@
 		"type": "Tipo",
 		"generic-sparql": "SPARQL generico (performance bassa)",
 		"virtuoso": "Virtuoso",
-		"larq": "LARQ (Lucene+ARQ)",
+		"jena-text": "Jena Text (Lucene+ARQ)",
 		"bigowlim": "BigOWLIM",
 		"det-syntax": "Questo determinerà la sintassi usata per la ricerca",
 		"label-prop": "Proprietà label",

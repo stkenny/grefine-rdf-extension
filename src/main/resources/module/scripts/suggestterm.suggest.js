@@ -125,12 +125,12 @@
         			 service_url: "",
         			 service_path: "command/rdf-extension/suggest-term",
         			 flyout_service_path: "command/rdf-extension/suggest-term",
-        			 type_strict:"classes",
-        			 suggest_new:"Add it",
+        			 type_strict: "classes",
+        			 suggest_new: $.i18n._('rdf-ext-schema')["add-it"],
         			 cache:false,
         			 //             soft:true,
         			 nomatch:  {
-        				 title: 'No suggested matches. (Shift + Enter) to add it',
+        				 title: $.i18n._('rdf-ext-schema')["no-matches"],
         				 heading: null,
         				 tips: null
         				 }
