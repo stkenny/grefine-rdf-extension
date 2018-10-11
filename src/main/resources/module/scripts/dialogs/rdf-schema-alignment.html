@@ -13,16 +13,20 @@
             </ul>
             <div id="rdf-schema-alignment-tabs-schema"> 
             	<div class="rdf-scheme-dialog-subheader">
-            	<table>
-            	<tr>
-            		<td><span style="display:block;width:150px;" bind="rdfext_align_prefixes"></span></td>
-            		<td><div class="rdf-schema-prefixes" bind="rdf_schema_prefixes"></div></td>
-            	</tr></table></div>  
+            	    <table>
+            	        <tr>
+            		        <td><span style="display:block;width:150px;" bind="rdfext_align_prefixes"></span></td>
+            		        <td><div class="rdf-schema-prefixes" bind="rdf_schema_prefixes"></div></td>
+            	        </tr>
+                    </table>
+                </div>
+
                 <div class="schema-alignment-dialog-canvas rdf-schema-alignment-dialog-canvas">
                 </div>
+
                 <div class="rdf-schema-alignment-body-footer">
-                <a bind="add_another_root_node" href="#"></a>
-                <a bind="_save_skeleton" href="#" style="float:right"></a>
+                    <a bind="add_another_root_node" href="#"></a>
+                    <a bind="_save_skeleton" href="#" style="float:right"></a>
                 </div>
             </div>
             <div id="rdf-schema-alignment-tabs-preview">
@@ -34,6 +38,6 @@
   </div> <!-- ./grid -->
   </div><!-- ./dialog-body -->
   <div class="dialog-footer" bind="dialogFooter">
-    <button class="btn btn-success" bind="okButton"></button>
-    <button class="btn" bind="cancelButton"></button>
+    <button class="Button" bind="okButton"></button>
+    <button class="Button" bind="cancelButton"></button>
   </div>

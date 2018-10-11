@@ -174,7 +174,7 @@ RdfSchemaAlignment.createNewRootNode = function(withDefaultChildren) {
 		};        
 		links.push({
 			uri: null,
-			curie:null,
+			curie: null,
 			target: target
 		});
 	}
@@ -247,7 +247,7 @@ RdfSchemaAlignmentDialog.prototype.getJSON = function() {
 
 	var prefixes = [];
 	for(var i=0; i<this._prefixesManager._prefixes.length; i++) {
-		prefixes.push({"name":this._prefixesManager._prefixes[i].name,"uri":this._prefixesManager._prefixes[i].uri});
+		prefixes.push({"name": this._prefixesManager._prefixes[i].name,"uri": this._prefixesManager._prefixes[i].uri});
 	}
 	return {
 		prefixes:prefixes,
