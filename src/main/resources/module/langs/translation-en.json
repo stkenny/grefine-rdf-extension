@@ -132,8 +132,8 @@
 		"search-for": "Search for",
 		"unknown-pref": "Unknown prefix",
 		"loading": "Loading",
-		"confirm-one": "Confirm one",
-		"confirm-two": "Confirm two",
+		"confirm-one": "The base uri should end with a - / or #.",
+		"confirm-two": "Do you want to keep this URI anyway?",
 		"no-matches": "No matches found",
 		"add-it": "Add it"
 	},
@@ -170,7 +170,9 @@
 		"deleting-pref": "Deleting prefix",
 		"error-deleting": "Error deleting",
 		"refresh-pref": "Refresh prefixes",
-		"alert-wrong": "Alert wrong"
+		"alert-wrong": "Alert wrong",
+		"desc-one": "This will re-fetch the vocabulary from",
+		"desc-two": "If you added it by uploading a file you need to delete it and add it again to refresh the index. Continue?"
 	},
 	"rdf-ext-prefix": {
 		"header": "Add new prefix",
