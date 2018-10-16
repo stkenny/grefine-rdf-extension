@@ -47,7 +47,7 @@ public class SaveRdfSchemaOperation extends AbstractOperation {
 
     @Override
     protected String getBriefDescription(Project project) {
-        return "Save RDF schema skelton";
+        return "Save RDF schema skeleton";
     }
 
     @Override

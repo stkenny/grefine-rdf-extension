@@ -336,7 +336,7 @@ function ReconciliationSparqlServiceDialog(){
         this._elmts.rdfext_sparql_type.text($.i18n._('rdf-ext-sparql')["type"]+":");
         this._elmts.rdfext_sparql_genericSparql.text($.i18n._('rdf-ext-sparql')["generic-sparql"]);
         this._elmts.rdfext_sparql_virtuoso.text($.i18n._('rdf-ext-sparql')["virtuoso"]);
-        this._elmts.rdfext_sparql_larq.text($.i18n._('rdf-ext-sparql')["larq"]);
+        this._elmts.rdfext_sparql_jenaText.text($.i18n._('rdf-ext-sparql')["jena-text"]);
         this._elmts.rdfext_sparql_bigowlim.text($.i18n._('rdf-ext-sparql')["bigowlim"]);
         this._elmts.rdfext_sparql_detSyntax.text($.i18n._('rdf-ext-sparql')["det-syntax"]);
         this._elmts.rdfext_sparql_labelProp.text($.i18n._('rdf-ext-sparql')["label-prop"]);
