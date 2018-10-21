@@ -107,8 +107,17 @@ public class RdfReconciliationService extends AbstractReconciliationService {
     }
 
     @Override
+    public String getPreviewHtmlForEntity(String entityUri) throws Exception {
+        Multimap<String, String> propertiesMap = this.queryEndpoint.getResourcePropertiesMap(previewResourceCannedQuery, entityUri);
+        VelocityContext context = new VelocityContext();
+        context.put("resourceUri", entityUri);
+        context.put("propertiesMap", propertiesMap);
+
+        return getHtmlFromTemplate("templates/entity_preview.vt", context);
+    }
+
+    @Override
     public String getPreviewHtmlForResource(String resourceUri) throws Exception {
-        //Multimap<String, String> propertiesMap 	= this.queryEndpoint.getResourcePropertiesMap(resourceUri,LIMIT_FOR_RESOURCE_PREVIEW);
         Multimap<String, String> propertiesMap = this.queryEndpoint.getResourcePropertiesMap(previewResourceCannedQuery, resourceUri);
         VelocityContext context = new VelocityContext();
         context.put("resourceUri", resourceUri);

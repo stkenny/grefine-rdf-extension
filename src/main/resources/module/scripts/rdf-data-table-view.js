@@ -1,13 +1,13 @@
 var RdfDataTableView = {};
 
 RdfDataTableView.previewExprsOnVisibleRows = function(column, title, expression, isRowNumberCell, onDone){
-	return RdfDataTableView.previewOnVisibleRows(true,column,title, expression,isRowNumberCell,'',onDone);
+	return RdfDataTableView.previewOnVisibleRows(true, column,title, expression, isRowNumberCell, '', onDone);
 };
 RdfDataTableView.previewUrisOnVisibleRows = function(column, title, expression, isRowNumberCell, baseUri, onDone) {
-	return RdfDataTableView.previewOnVisibleRows(false,column,title, expression, isRowNumberCell, baseUri, onDone);
+	return RdfDataTableView.previewOnVisibleRows(false, column, title, expression, isRowNumberCell, baseUri, onDone);
 };
 
-RdfDataTableView.previewOnVisibleRows = function(isLiteral,column, title, expression, isRowNumberCell, baseUri, onDone) {
+RdfDataTableView.previewOnVisibleRows = function(isLiteral, column, title, expression, isRowNumberCell, baseUri, onDone) {
 	var o = DataTableView.sampleVisibleRows(column);
     
     
@@ -26,7 +26,7 @@ RdfDataTableView.previewOnVisibleRows = function(isLiteral,column, title, expres
 	    return html.replace("$LANGUAGE_OPTIONS$", languageOptions.join(""));
 	};
 	
-   	f.prototype.create= function(isLiteral,title, columnName, rowIndices, values, expression, baseUri,isRowNumberCell, onDone){
+   	f.prototype.create= function(isLiteral, title, columnName, rowIndices, values, expression, baseUri, isRowNumberCell, onDone){
    		var uriPreviewWidget = RdfDataTableView.getUriPreviewWidget(isLiteral,isRowNumberCell,baseUri);
     	f._onDone = onDone;
         var self = this;

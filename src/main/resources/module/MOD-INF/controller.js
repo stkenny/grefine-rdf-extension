@@ -208,7 +208,7 @@ function process(path, request, response) {
     		}else if (command==='suggest-entity'){
     			jsonResponse = GRefineServiceManager.singleton.suggestEntity(serviceName,request);
     		}else if (command==='flyout-entity'){
-    			jsonResponse = GRefineServiceManager.singleton.previewEntity(serviceName,request);
+    		    jsonResponse = GRefineServiceManager.singleton.previewEntity(serviceName,request);
     		}else if (command==='preview-resource-template'){
     			var htmlResponse = GRefineServiceManager.singleton.getHtmlOfResourcePreviewTemplate(serviceName,request);
     			if(htmlResponse){
@@ -222,8 +222,7 @@ function process(path, request, response) {
     			butterfly.redirect(request,response,id);
     			return;
     		}else if (command ==='preview-resource'){
-    			logger.info("id is " + request.getParameter("id"));
-    			var htmlResponse = GRefineServiceManager.singleton.previewResource(serviceName,request);
+    			var htmlResponse = GRefineServiceManager.singleton.previewResource(serviceName, request);
     			if(htmlResponse){
     				butterfly.sendString(request, response, htmlResponse ,"UTF-8", "text/html");
     			}else{

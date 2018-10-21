@@ -119,7 +119,7 @@ public class ServiceRegistry {
 
     public String previewEntity(ReconciliationService service, String entityId, String callback)
             throws Exception {
-        String html = previewResource(service, entityId);
+        String html = service.getPreviewHtmlForEntity(entityId);
         if (html == null) {
             return null;
         }

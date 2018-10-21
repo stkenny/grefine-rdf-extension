@@ -423,7 +423,7 @@ RdfReconciliationManager.synchronizeServices = function(onDone){
 			ids.push(services[i].url);
 		}
 	}
-	$.post("command/rdf-extension/initializeServices",{"services":JSON.stringify(ids)},function(data){
+	$.post("command/rdf-extension/initializeServices", {"services":JSON.stringify(ids)},function(data){
 		RdfReconciliationManager.registerService(data);
 		if(onDone){
 			onDone();

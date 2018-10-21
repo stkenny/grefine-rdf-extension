@@ -50,14 +50,14 @@ public class AddServiceCommand extends AbstractAddServiceCommand{
 		String datasource = request.getParameter("datasource");
 		ReconciliationService service;
 		if(datasource.equals("sparql")){
-			service = getSparqlService(name,id,url,propUris,request);
+			service = getSparqlService(name, id, url, propUris, request);
 			GRefineServiceManager.singleton.addService(service);
 		}else{
 			String format = request.getParameter("file_format");
 			if(format.equals("autodetect")){
 				format = null;
 			}
-			service = getRdfService(name,id,url,format,propUris,request);
+			service = getRdfService(name, id, url, format, propUris, request);
 			GRefineServiceManager.singleton.addAndSaveService(service);
 		}
 		

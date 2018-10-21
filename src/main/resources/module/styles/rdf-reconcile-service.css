@@ -54,6 +54,7 @@ div.rdf-flyout-content{
 	color:#000;
 	}
 div.rdf-flyout-content div.rdf-header{
+	overflow-wrap: break-word;
 	font-weight:bold;
 	margin:4px;
 	}	

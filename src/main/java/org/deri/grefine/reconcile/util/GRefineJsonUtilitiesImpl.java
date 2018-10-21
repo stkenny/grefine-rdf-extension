@@ -82,7 +82,7 @@ public class GRefineJsonUtilitiesImpl implements GRefineJsonUtilities{
 		entitySearchObj.put("service_url", baseServiceUrl);
 		entitySearchObj.put("service_path", "/suggest/entity");
 		entitySearchObj.put("flyout_service_url", baseServiceUrl);
-		entitySearchObj.put("flyout_service_path" , "/suggest/entity/preview");
+		entitySearchObj.put("flyout_service_path" , "/suggest/entity/preview?id=${id}");
 			
 		suggestObj.put("entity", entitySearchObj);
 		

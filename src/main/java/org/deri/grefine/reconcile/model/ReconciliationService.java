@@ -54,7 +54,7 @@ public interface ReconciliationService{
 	
 	/**
 	 * used for autocomplete
-	 * subjectTypeUri restricts properties to only those satisfying (s,p,o) exists ans s is of type subjectTypeId
+	 * subjectTypeUri restricts properties to only those satisfying (s,p,o) exists and s is of type subjectTypeId
 	 * @param prefix the query string 
 	 * @param subjectTypeId the ID of the 
 	 * @return ranked list of properties matching the prefix and have a subject of type subjectTypeId
@@ -75,7 +75,14 @@ public interface ReconciliationService{
 	 * should give a good brief overview of the property identified by propertyId to help the user identify it
 	 */
 	public String getPreviewHtmlForProperty(String propertyId) throws Exception;
-	
+
+	/**
+	 * @param entityId
+	 * @return HTML for entity preview. this should be an HTML portion and not a full document(i.e. DIV (without HEAD, BODY...) )
+	 * should give a good brief overview of the property identified by propertyId to help the user identify it
+	 */
+	public String getPreviewHtmlForEntity(String entityId) throws Exception;
+
 	/**
 	 * @param resourceId
 	 * @return HTML for resource preview. this should be an HTML portion and not a full document(i.e. DIV (without HEAD, BODY...) )

@@ -51,7 +51,7 @@ public class PreviewResourceCannedQuery {
 			whereClause.append("OPTIONAL { <[[RESOURCE_URI]]> <").append(uri).append("> ?img").append(i).append("} ");
 		}
 		
-		query = "SELECT" + selectClause + " WHERE{ " + whereClause + "}LIMIT 1" ;
+		query = "SELECT" + selectClause + " WHERE{ " + whereClause + "} LIMIT 1" ;
 	}
 	
 	public String getPreviewQueryForResource(String resourceId){
