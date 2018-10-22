@@ -43,7 +43,7 @@ public class PreviewResourceCannedQueryTest {
 			"OPTIONAL { <http://example.org/resource/1> <http://purl.org/dc/terms/description> ?en_desc2 FILTER langMatches(lang(?en_desc2),'en') } " +
 			"OPTIONAL { <http://example.org/resource/1> <http://purl.org/dc/terms/description> ?desc2 FILTER langMatches(lang(?desc2),'') } " +
 			"OPTIONAL { <http://example.org/resource/1> <http://xmlns.com/foaf/0.1/img> ?img0} " +
-			"}LIMIT 1"
+			"} LIMIT 1"
 			;
 		assertEquals(sparql, expected);
 	}
