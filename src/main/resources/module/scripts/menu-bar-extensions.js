@@ -96,15 +96,17 @@ RdfReconciliationManager.registerService = function(data,level){
 	if (data.code === "error"){
 		alert($.i18n._('rdf-ext-menu')["error"]+': ' + data.message);
 	} else {
-		var url = location.href;  // entire url including querystring - also: window.location.href;
-		var baseURL = url.substring(0,url.lastIndexOf('/'));
-		var service_url = baseURL + '/extension/rdf-extension/services/' + data.service.id;
+	    if (typeof data.service != "undefined") {
+		    var url = location.href;  // entire url including querystring - also: window.location.href;
+		    var baseURL = url.substring(0,url.lastIndexOf('/'));
+		    var service_url = baseURL + '/extension/rdf-extension/services/' + data.service.id;
 		
-		//ReconciliationManager does not call this method upon unregister.. this is why I am calling it myself
-		ReconciliationManager._rebuildMap();
+		    //ReconciliationManager does not call this method upon unregister.. this is why I am calling it myself
+		    ReconciliationManager._rebuildMap();
 		
-		if(!ReconciliationManager.getServiceFromUrl(service_url)){
-			ReconciliationManager.registerStandardService(service_url);
+		    if(!ReconciliationManager.getServiceFromUrl(service_url)){
+			    ReconciliationManager.registerStandardService(service_url);
+		    }
 		}
 		if(level){
 			DialogSystem.dismissUntil(level - 1);
@@ -273,7 +275,7 @@ ReconciliationRdfServiceDialog.prototype._footer = function(footer){
 	    for(var i=0;i<props.length;i++){
 	    	prop_uris += " " + $(props[i]).val();
 	    }
-	    if(self._elmts.other_label_chk.attr("checked")){
+	    if(self._elmts.other_label_chk.prop("checked")){
 	    	prop_uris += " " + self._elmts.other_properties_textarea.val();
 	    }
 	    if(prop_uris===""){
@@ -389,7 +391,7 @@ ReconciliationSparqlServiceDialog.prototype._footer = function(footer){
                 for(var i=0;i<props.length;i++){
                         prop_uris += " " + $(props[i]).val();
                 }
-                if(self._elmts.other_label_chk.attr("checked")){
+                if(self._elmts.other_label_chk.prop("checked")){
                         prop_uris += " " + self._elmts.other_properties_textarea.val();
                 }
                 if(prop_uris===""){

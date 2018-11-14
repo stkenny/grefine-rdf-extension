@@ -136,12 +136,12 @@ function init() {
     RefineServlet.registerCommand(module, "get-prefix-cc-uri", new SuggestPrefixUriCommand(ctxt));
     RefineServlet.registerCommand(module, "upload-file-add-prefix", new AddPrefixFromFileCommand(ctxt));
     //Reconcile commands
-	RefineServlet.registerCommand(module, "addService", new AddServiceCommand());
-	RefineServlet.registerCommand(module, "uploadFileAndAddService", new UploadFileAndAddServiceCommand());
-	RefineServlet.registerCommand(module, "addStanbolService", new AddStanbolServiceCommand());
-	RefineServlet.registerCommand(module, "initializeServices", new InitializeServicesCommand());
-	//this is just to initialize ServiceRegistry
-	RefineServlet.registerCommand(module, "reconcile-initialize", new InitializationCommand());
+    RefineServlet.registerCommand(module, "addService", new AddServiceCommand());
+    RefineServlet.registerCommand(module, "uploadFileAndAddService", new UploadFileAndAddServiceCommand());
+    RefineServlet.registerCommand(module, "addStanbolService", new AddStanbolServiceCommand());
+    RefineServlet.registerCommand(module, "initializeServices", new InitializeServicesCommand());
+    //this is just to initialize ServiceRegistry
+    RefineServlet.registerCommand(module, "reconcile-initialize", new InitializationCommand());
        
     /*
      *  Client-side Resources
@@ -173,7 +173,7 @@ function init() {
         module,
         [
             "styles/rdf-schema-alignment-dialog.css",
-			"styles/rdf-reconcile-service.css",
+	    "styles/rdf-reconcile-service.css",
         ]
     );
     
@@ -181,8 +181,8 @@ function init() {
 
 function process(path, request, response) {
     // Analyze path and handle this request yourself.
-	var loggerFactory = Packages.org.slf4j.LoggerFactory;
-	var logger = loggerFactory.getLogger("rdf_extension");
+    var loggerFactory = Packages.org.slf4j.LoggerFactory;
+    var logger = loggerFactory.getLogger("rdf_extension");
     var method = request.getMethod();
     
     logger.info('receiving request for ' + path);
