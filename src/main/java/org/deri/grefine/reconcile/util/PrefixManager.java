@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.StringTokenizer;
 
 public class PrefixManager {
-	private Map<String, String> prefixMap = new HashMap<String, String>();
+	private Map<String, String> prefixMap = new HashMap<>();
 
 	public PrefixManager(InputStream in) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(in));
@@ -21,7 +21,7 @@ public class PrefixManager {
 			String prefix = tokenizer.nextToken();
 			String uri = tokenizer.nextToken();
 			if(!prefixMap.containsKey(uri)){
-				prefixMap.put(uri,prefix);
+				prefixMap.put(uri, prefix);
 			}
 		}
 	}

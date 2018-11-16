@@ -13,7 +13,7 @@ import org.deri.grefine.rdf.vocab.VocabularyIndexException;
 import com.google.refine.model.Project;
 import com.google.refine.commands.Command;
 
-public abstract class RdfCommand extends Command{
+public abstract class RdfCommand extends Command {
 
 	private ApplicationContext rdfContext;
 	
@@ -21,9 +21,11 @@ public abstract class RdfCommand extends Command{
 		super();
 		this.rdfContext = ctxt;
 	}
+
 	public ApplicationContext getRdfContext() {
 		return rdfContext;
 	}
+
 	public RdfSchema getRdfSchema(HttpServletRequest request) throws ServletException{
        try {
             Project project = getProject(request);

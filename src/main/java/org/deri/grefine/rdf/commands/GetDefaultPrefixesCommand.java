@@ -7,7 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.deri.grefine.rdf.app.ApplicationContext;
-import org.deri.grefine.rdf.vocab.Vocabulary;
+import org.deri.grefine.rdf.vocab.*;
 import org.json.JSONWriter;
 
 
@@ -41,11 +41,18 @@ public class GetDefaultPrefixesCommand extends RdfCommand{
 
 	private void getDefaultPrefixes(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		String projectId = request.getParameter("project");
+
 		JSONWriter writer = new JSONWriter(response.getWriter());
 		writer.object();
 		writer.key("prefixes");
 		writer.array();
 		for (Vocabulary v : getRdfSchema(request).getPrefixesMap().values()) {
+			try {
+				getRdfContext().getVocabularySearcher().importAndIndexVocabulary(v.getName(), v.getUri(), v.getUri(), projectId, new VocabularyImporter());
+			} catch (VocabularyImportException | VocabularyIndexException | PrefixExistException e) {
+				logger.error("Error adding default prefix to project: " + e);
+			}
 			writer.object();
 			writer.key("name");
 			writer.value(v.getName());

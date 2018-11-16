@@ -1,15 +1,15 @@
 function RdfPrefixesManager (dialog, prefixes){
-	this._dialog = dialog;
-	//prefixes have not been initialized
-	var self = this;
-	dialog._rdf_schema_prefixes.empty().html('<img src="images/small-spinner.gif" />');
-	if(!prefixes){
-		this._getDefaultPrefixes(function(data){
-			self._prefixes = data.prefixes;
+    this._dialog = dialog;
+    //prefixes have not been initialized
+    var self = this;
+    dialog._rdf_schema_prefixes.empty().html('<img src="images/small-spinner.gif" />');
+    if(!prefixes){
+	   this._getDefaultPrefixes(function(data){
+	        self._prefixes = data.prefixes;
 			self._showPrefixes(self._prefixes);
 		});
-	}else{
-		self._prefixes = prefixes;
+	} else {
+	    self._prefixes = prefixes;
 		this._savePrefixes();
 		this._showPrefixes();
 	}
@@ -17,13 +17,13 @@ function RdfPrefixesManager (dialog, prefixes){
 };
 
 RdfPrefixesManager.prototype._getDefaultPrefixes = function(onDone){
-	var self =this;
+	var self = this;
 	$.post(
 			"command/rdf-extension/get-default-prefixes",
 			{project:theProject.id},
 			function(data){
 				if(onDone){
-					onDone(data);
+				    onDone(data);
 				}
 			},
 			"json"

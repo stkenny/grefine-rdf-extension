@@ -31,7 +31,8 @@ public class RefreshPrefixCommand extends RdfCommand{
 		
 		getRdfContext().getVocabularySearcher().deleteTermsOfVocab(name, projectId);
 		try{
-			getRdfContext().getVocabularySearcher().importAndIndexVocabulary(name, uri, uri, projectId,new VocabularyImporter());
+			getRdfContext().getVocabularySearcher().
+					importAndIndexVocabulary(name, uri, uri, projectId, new VocabularyImporter());
         } catch (PrefixExistException e) {
             respondException(response, e);
             return;
@@ -42,7 +43,7 @@ public class RefreshPrefixCommand extends RdfCommand{
         	return;
         }
 			
-		try{
+		try {
 			respondJSON(response, new Jsonizable() {
             
 				@Override
