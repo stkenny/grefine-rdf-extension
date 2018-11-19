@@ -2,7 +2,7 @@
 
 This project adds a graphical user interface(GUI) for exporting data of OpenRefine projects in RDF format. The export is based on mapping the data to a template graph using the GUI. It also provides a service for reconciling data against SPARQL endpoints (e.g., DBpedia).
 
-** Requires OpenRefine 3.0 **
+**Requires OpenRefine 3.0**
 
 ## INSTALL
 
@@ -24,7 +24,9 @@ BufferedChecksumIndexInput(MMapIndexInput(path="C:\PATH\OpenRefine\cache\rdfExte
 This version of Lucene only supports indexes created with 
 release 5.0 and later. 
 ```
-This is due to an upgrade in the version of Lucene used. You will need to remove the old Lucene index and restart OpenRefine in order to solve this, i.e., for the example above delete ```C:\PATH\OpenRefine\cache\rdfExtension\export\luceneIndex```.
+This is due to an upgrade in the version of Lucene used. 
+To solve this you will need to remove the old Lucene index and restart OpenRefine, i.e., for the example above delete 
+```C:\PATH\OpenRefine\cache\rdfExtension\export\luceneIndex```.
 For Linux this will be under ```~/.local/share/openrefine/cache/rdfExtension/export/luceneIndex```
 
 ## Documentation
