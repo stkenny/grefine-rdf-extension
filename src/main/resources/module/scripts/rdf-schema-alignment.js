@@ -29,18 +29,18 @@ RdfSchemaAlignmentDialog.prototype._buildBody = function() {
     var dialog = $(DOM.loadHTML("rdf-extension", "scripts/dialogs/rdf-schema-alignment.html"));
     self._elmts = DOM.bind(dialog);
 
-    self._elmts.dialogHeader.text($.i18n._('rdf-ext-align')["header"]);
-    self._elmts.rdfext_align_desc.text($.i18n._('rdf-ext-align')["desc"]);
-    self._elmts.rdfext_align_baseUri.text($.i18n._('rdf-ext-align')["base-uri"]+":");
-    self._elmts.editBaseUriLink.text($.i18n._('rdf-ext-align')["edit"]);
-    self._elmts.rdfext_align_skeleton.text($.i18n._('rdf-ext-align')["skeleton"]);
-    self._elmts.rdfext_align_preview.text($.i18n._('rdf-ext-align')["preview"]);
-    self._elmts.rdfext_align_prefixes.text($.i18n._('rdf-ext-align')["available-prefix"]+":");
-    self._elmts.add_another_root_node.text($.i18n._('rdf-ext-align')["add-root"]);
-    self._elmts._save_skeleton.text($.i18n._('rdf-ext-align')["save"]);
-    self._elmts.rdfext_align_sampleTurtle.html($.i18n._('rdf-ext-align')["sample-turtle"]);
-    self._elmts.okButton.html($.i18n._('rdf-ext-buttons')["ok"]);
-    self._elmts.cancelButton.text($.i18n._('rdf-ext-buttons')["cancel"]);
+    self._elmts.dialogHeader.text($.i18n('rdf-ext-align/header'));
+    self._elmts.rdfext_align_desc.text($.i18n('rdf-ext-align/desc'));
+    self._elmts.rdfext_align_baseUri.text($.i18n('rdf-ext-align/base-uri')+":");
+    self._elmts.editBaseUriLink.text($.i18n('rdf-ext-align/edit'));
+    self._elmts.rdfext_align_skeleton.text($.i18n('rdf-ext-align/skeleton'));
+    self._elmts.rdfext_align_preview.text($.i18n('rdf-ext-align/preview'));
+    self._elmts.rdfext_align_prefixes.text($.i18n('rdf-ext-align/available-prefix')+":");
+    self._elmts.add_another_root_node.text($.i18n('rdf-ext-align/add-root'));
+    self._elmts._save_skeleton.text($.i18n('rdf-ext-align/save'));
+    self._elmts.rdfext_align_sampleTurtle.html($.i18n('rdf-ext-align/sample-turtle'));
+    self._elmts.okButton.html($.i18n('rdf-ext-buttons/ok'));
+    self._elmts.cancelButton.text($.i18n('rdf-ext-buttons/cancel'));
 
     self._elmts.cancelButton.click(function() { DialogSystem.dismissUntil(self._level - 1);});
 
@@ -113,7 +113,7 @@ RdfSchemaAlignmentDialog.prototype._constructBody = function(body) {
 RdfSchemaAlignmentDialog.prototype._previewRdf = function(){
     var self = this;
     var schema = self.getJSON();
-    self._previewPane.empty().html('<img src="images/large-spinner.gif" title='+$.i18n._('rdf-ext-schema')["loading"]+'"..."/>');
+    self._previewPane.empty().html('<img src="images/large-spinner.gif" title='+$.i18n('rdf-ext-schema/loading')+'"..."/>');
     $.post(
             "command/rdf-extension/preview-rdf?" + $.param({ project: theProject.id }),
             { schema: JSON.stringify(schema), engine: JSON.stringify(ui.browsingEngine.getJSON()) },
@@ -187,8 +187,8 @@ RdfSchemaAlignmentDialog.prototype._editBaseUri = function(src){
     var self = this;
     var menu = MenuSystem.createMenu().width('400px');
     menu.html('<div class="schema-alignment-link-menu-type-search"><input type="text" bind="newBaseUri" size="50"><br/>'+
-            '<button class="button" bind="applyButton">'+$.i18n._('rdf-ext-buttons')["apply"]+'</button>' +
-            '<button class="button" bind="cancelButton">'+$.i18n._('rdf-ext-buttons')["cancel"]+'</button></div>'
+            '<button class="button" bind="applyButton">'+$.i18n('rdf-ext-buttons/apply')+'</button>' +
+            '<button class="button" bind="cancelButton">'+$.i18n('rdf-ext-buttons/cancel')+'</button></div>'
     );
     MenuSystem.showMenu(menu,function(){});
     MenuSystem.positionMenuLeftRight(menu, src);
@@ -203,8 +203,8 @@ RdfSchemaAlignmentDialog.prototype._editBaseUri = function(src){
         var newBaseUri = elmts.newBaseUri.val();
 
         if(!endsWith(newBaseUri,"/") && !endsWith(newBaseUri,"#")) {
-            var ans = confirm($.i18n._('rdf-ext-schema')["confirm-one"]+"\n" +
-                    $.i18n._('rdf-ext-schema')["confirm-two"]);
+            var ans = confirm($.i18n('rdf-ext-schema/confirm-one')+"\n" +
+                    $.i18n('rdf-ext-schema/confirm-two'));
             if(ans == false) return;
         }
 
@@ -222,7 +222,7 @@ RdfSchemaAlignmentDialog.prototype._replaceBaseUri = function(newBaseUri,doNotSa
     if(!doNotSave){
         $.post("command/rdf-extension/save-baseURI?" + $.param({project: theProject.id }),{baseURI:newBaseUri},function(data){
             if (data.code === "error"){
-                alert($.i18n._('rdf-ext-schema')["error"]+':' + data.message);
+                alert($.i18n('rdf-ext-schema/error')+':' + data.message);
                 return;
             }else{
                 self._baseUriSpan.empty().text(newBaseUri);

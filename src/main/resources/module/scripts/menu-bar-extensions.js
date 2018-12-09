@@ -13,23 +13,24 @@ $.ajax({
 //              lang : lang
         },
         success : function(data) {
-                dictionary = data;
+                dictionary = data['dictionary'];
+                lang = data['lang'];
         }
 });
-$.i18n.setDictionary(dictionary);
+$.i18n().load(dictionary, lang);
 // End internationalization
 
 ExporterManager.MenuItems.push(
 		{
 			"id" : "exportRdfXml",
-          	"label": $.i18n._('rdf-ext-menu')["rdf-xml"],
+          	"label": $.i18n("rdf-ext-menu/rdf-xml"),
           	"click": function() { RdfExporterMenuBar.exportRDF("rdf", "rdf");}
 		}
 );
 ExporterManager.MenuItems.push(
 		{
 			"id" : "exportRdfTurtle",
-        	"label": $.i18n._('rdf-ext-menu')["rdf-xml"],
+        	"label": $.i18n("rdf-ext-menu/rdf-xml"),
         	"click": function() { RdfExporterMenuBar.exportRDF("Turtle", "ttl"); }
 		}
 );
@@ -39,7 +40,7 @@ RdfExporterMenuBar = {};
 RdfExporterMenuBar.exportRDF = function(format, ext) {
     if (!theProject.overlayModels.rdfSchema) {
         alert(
-            $.i18n._('rdf-ext-menu')["alert-no-align"]
+            $.i18n("rdf-ext-menu/alert-no-align")
         );
     } else {
         RdfExporterMenuBar.rdfExportRows(format, ext);
@@ -94,7 +95,7 @@ RdfReconciliationManager.newStanbolService = function(){
 
 RdfReconciliationManager.registerService = function(data,level){
 	if (data.code === "error"){
-		alert($.i18n._('rdf-ext-menu')["error"]+': ' + data.message);
+		alert($.i18n('rdf-ext-menu/error')+': ' + data.message);
 	} else {
 	    if (typeof data.service != "undefined") {
 		    var url = location.href;  // entire url including querystring - also: window.location.href;
@@ -121,16 +122,16 @@ function ReconciliationStanbolServiceDialog() {
     var dialog = $(DOM.loadHTML("rdf-extension", "scripts/stanbol-service.html"));
     this._elmts = DOM.bind(dialog);
 
-    this._elmts.rdfext_stanbol_header.text($.i18n._('rdf-ext-stanbol')["header"]);
-    this._elmts.rdfext_stanbol_subheader.text($.i18n._('rdf-ext-stanbol')["subheader"]);
-    this._elmts.rdfext_stanbol_uriLabel.text($.i18n._('rdf-ext-stanbol')["uri-label"]);
-    this._elmts.rdfext_stanbol_help.text($.i18n._('rdf-ext-stanbol')["help"]);
-    this._elmts.rdfext_stanbol_readMore.text($.i18n._('rdf-ext-stanbol')["read-more"]);
-    this._elmts.rdfext_stanbol_readMoreconnect.text($.i18n._('rdf-ext-stanbol')["read-more-connect"]);
-    this._elmts.rdfext_stanbol_readMore.text($.i18n._('rdf-ext-stanbol')["read-more"]);
-    this._elmts.rdfext_stanbol_readMoreconnect.text($.i18n._('rdf-ext-stanbol')["read-more-connect"]);
-    this._elmts.cancelBtn.text($.i18n._('rdf-ext-buttons')["cancel"]);
-    this._elmts.registerBtn.text($.i18n._('rdf-ext-buttons')["register"]);
+    this._elmts.rdfext_stanbol_header.text($.i18n('rdf-ext-stanbol/header'));
+    this._elmts.rdfext_stanbol_subheader.text($.i18n('rdf-ext-stanbol/subheader'));
+    this._elmts.rdfext_stanbol_uriLabel.text($.i18n('rdf-ext-stanbol/uri-label'));
+    this._elmts.rdfext_stanbol_help.text($.i18n('rdf-ext-stanbol/help'));
+    this._elmts.rdfext_stanbol_readMore.text($.i18n('rdf-ext-stanbol/read-more'));
+    this._elmts.rdfext_stanbol_readMoreconnect.text($.i18n('rdf-ext-stanbol/read-more-connect'));
+    this._elmts.rdfext_stanbol_readMore.text($.i18n('rdf-ext-stanbol/read-more'));
+    this._elmts.rdfext_stanbol_readMoreconnect.text($.i18n('rdf-ext-stanbol/read-more-connect'));
+    this._elmts.cancelBtn.text($.i18n('rdf-ext-buttons/cancel'));
+    this._elmts.registerBtn.text($.i18n('rdf-ext-buttons/register'));
 
     var inputUri = dialog.find("input#stanbol-uri");
 
@@ -151,7 +152,7 @@ function ReconciliationStanbolServiceDialog() {
 
             if (validateURI(uri)) {
                 inputUri.attr("disabled", "disabled");
-                inputUri.after($('<img src="extension/rdf-extension/images/spinner.gif" width="14" height="14" alt="'+$.i18n._('rdf-ext-menu')["fetching"]+'..." class="validation" id="validation-img" />'));
+                inputUri.after($('<img src="extension/rdf-extension/images/spinner.gif" width="14" height="14" alt="'+$.i18n('rdf-ext-menu/fetching')+'..." class="validation" id="validation-img" />'));
                 $.post("command/rdf-extension/addStanbolService",
                         {
                             "uri": uri,
@@ -177,13 +178,13 @@ function ReconciliationStanbolServiceDialog() {
                             $("img#validation-img").remove();
                             //DialogSystem.dismissUntil(self._level - 1);
                             dialog.find("button#register").hide();
-                            dialog.find("button#cancel").text($.i18n._('rdf-ext-buttons')["close"]);
+                            dialog.find("button#cancel").text($.i18n('rdf-ext-buttons/close'));
                         },
                         "json");
                 } else {
                     inputUri.addClass("error");
                     inputUri.after($('<img src="extension/rdf-extension/images/no.png" width="16" height="16" alt="invalid" class="validation" id="validation-img" />'));
-                    alert($.i18n._('rdf-ext-menu')["not-valid-uri"]);
+                    alert($.i18n('rdf-ext-menu/not-valid-uri'));
                 }
     });
 	
@@ -196,9 +197,9 @@ function ReconciliationStanbolServiceDialog() {
 };
 
 ReconciliationStanbolServiceDialog.prototype.printAddedService = function(container, obj, registered) {
-	var cached = (obj.local ? $.i18n._('rdf-ext-menu')["cached"] : $.i18n._('rdf-ext-menu')["not-cached"]);
+	var cached = (obj.local ? $.i18n('rdf-ext-menu/cached') : $.i18n('rdf-ext-menu/not-cached'));
     var image = (registered ? "yes" : "no");
-    var label = (registered ? $.i18n._('rdf-ext-menu')["registered"] : $.i18n._('rdf-ext-menu')["not-added"]);
+    var label = (registered ? $.i18n('rdf-ext-menu/registered') : $.i18n('rdf-ext-menu/not-added'));
     var sniper = '<dt><a href="' + obj.uri + '">' + obj.uri + '</a> <img src="extension/rdf-extension/images/' + image + '.png" width="16" height="16" alt="' + label + '" title="' + label + '" /></dt><dd><strong>' + obj.name + '</strong>, ' + cached + '</dd>';
     if (!registered) {
         sniper += '<dd>' + label + '</dd>';
@@ -211,22 +212,22 @@ function ReconciliationRdfServiceDialog(){
     var dialog = $(DOM.loadHTML("rdf-extension","scripts/rdf-service-dialog.html"));
     this._elmts = DOM.bind(dialog);
 
-    this._elmts.rdfext_rdf_desc.text($.i18n._('rdf-ext-rdf')["desc"]);
-    this._elmts.rdfext_rdf_name.text($.i18n._('rdf-ext-rdf')["name"]+":");
-    this._elmts.rdfext_rdf_detail.text($.i18n._('rdf-ext-rdf')["detail"]);
-    this._elmts.rdfext_rdf_fileDet.text($.i18n._('rdf-ext-rdf')["file-details"]);
-    this._elmts.rdfext_rdf_load.text($.i18n._('rdf-ext-rdf')["load-url"]+":");
-    this._elmts.rdfext_rdf_upload.text($.i18n._('rdf-ext-rdf')["file-upload"]+":");
-    this._elmts.rdfext_rdf_format.text($.i18n._('rdf-ext-rdf')["format"]+":");
-    this._elmts.rdfext_rdf_autoDetect.text($.i18n._('rdf-ext-rdf')["autodetect"]);
-    this._elmts.rdfext_rdf_turtle.text($.i18n._('rdf-ext-rdf')["turtle"]);
-    this._elmts.rdfext_rdf_rdfxml.text($.i18n._('rdf-ext-rdf')["rdfxml"]);
-    this._elmts.rdfext_rdf_ntriple.text($.i18n._('rdf-ext-rdf')["ntriple"]);
-    this._elmts.rdfext_rdf_labprop.text($.i18n._('rdf-ext-rdf')["label-prop"]);
-    this._elmts.rdfext_rdf_important.text($.i18n._('rdf-ext-rdf')["important"]);
-    this._elmts.rdfext_rdf_impDesc.html($.i18n._('rdf-ext-rdf')["imp-desc"]);
-    this._elmts.rdfext_rdf_other.text($.i18n._('rdf-ext-rdf')["other"]+"...");
-    this._elmts.rdfext_rdf_fullUri.text($.i18n._('rdf-ext-rdf')["full-uri"]);
+    this._elmts.rdfext_rdf_desc.text($.i18n('rdf-ext-rdf/desc'));
+    this._elmts.rdfext_rdf_name.text($.i18n('rdf-ext-rdf/name')+":");
+    this._elmts.rdfext_rdf_detail.text($.i18n('rdf-ext-rdf/detail'));
+    this._elmts.rdfext_rdf_fileDet.text($.i18n('rdf-ext-rdf/file-details'));
+    this._elmts.rdfext_rdf_load.text($.i18n('rdf-ext-rdf/load-url') +":");
+    this._elmts.rdfext_rdf_upload.text($.i18n('rdf-ext-rdf/file-upload')+":");
+    this._elmts.rdfext_rdf_format.text($.i18n('rdf-ext-rdf/format')+":");
+    this._elmts.rdfext_rdf_autoDetect.text($.i18n('rdf-ext-rdf/autodetect'));
+    this._elmts.rdfext_rdf_turtle.text($.i18n('rdf-ext-rdf/turtle'));
+    this._elmts.rdfext_rdf_rdfxml.text($.i18n('rdf-ext-rdf/rdfxml'));
+    this._elmts.rdfext_rdf_ntriple.text($.i18n('rdf-ext-rdf/ntriple'));
+    this._elmts.rdfext_rdf_labprop.text($.i18n('rdf-ext-rdf/label-prop'));
+    this._elmts.rdfext_rdf_important.text($.i18n('rdf-ext-rdf/important'));
+    this._elmts.rdfext_rdf_impDesc.html($.i18n('rdf-ext-rdfimp-desc'));
+    this._elmts.rdfext_rdf_other.text($.i18n('rdf-ext-rdf/other')+"...");
+    this._elmts.rdfext_rdf_fullUri.text($.i18n('rdf-ext-rdf/full-uri'));
 
     this._elmts.other_label_chk.click(function(){
         if($(this).attr("checked")){
@@ -251,7 +252,7 @@ function ReconciliationRdfServiceDialog(){
 
     frame.width("600px");
 
-    $('<div></div>').addClass("dialog-header").text($.i18n._('rdf-ext-menu')["add-file-recon"]).appendTo(frame);
+    $('<div></div>').addClass("dialog-header").text($.i18n('rdf-ext-menu/add-file-recon')).appendTo(frame);
     $('<div></div>').addClass("dialog-body").append(dialog).appendTo(frame);
     var footer = $('<div></div>').addClass("dialog-footer").appendTo(frame);
 
@@ -262,11 +263,11 @@ function ReconciliationRdfServiceDialog(){
 
 ReconciliationRdfServiceDialog.prototype._footer = function(footer){
 	var self = this;
-	$('<button></button>').addClass('button').html($.i18n._('rdf-ext-buttons')["ok"]).click(function() {
-		self._dismissBusy = DialogSystem.showBusy($.i18n._('rdf-ext-menu')["add-new-recon"]);
+	$('<button></button>').addClass('button').html($.i18n('rdf-ext-buttons/ok')).click(function() {
+		self._dismissBusy = DialogSystem.showBusy($.i18n('rdf-ext-menu/add-new-recon'));
 	    var name = self._elmts.service_name.val();
 	    if(name.trim()===""){
-	    	alert($.i18n._('rdf-ext-menu')["alert-name-required"]);
+	    	alert($.i18n('rdf-ext-menu/alert-name-required'));
 	    	self._dismissBusy();
 	    	return;
 	    }
@@ -279,7 +280,7 @@ ReconciliationRdfServiceDialog.prototype._footer = function(footer){
 	    	prop_uris += " " + self._elmts.other_properties_textarea.val();
 	    }
 	    if(prop_uris===""){
-	    	alert($.i18n._('rdf-ext-menu')["alert-label-provided"]);
+	    	alert($.i18n('rdf-ext-menu/alert-label-provided'));
 	    	self._dismissBusy();
 	    	return;
 	    }
@@ -288,7 +289,7 @@ ReconciliationRdfServiceDialog.prototype._footer = function(footer){
 	    	var file_url = self._elmts.file_url_input.val();
 	    	var file_format = self._elmts.file_format_input.val();
 	    	if(file_url.trim()===""){
-		    	alert($.i18n._('rdf-ext-menu')["alert-url-required"]);
+		    	alert($.i18n('rdf-ext-menu/alert-url-required'));
 		    	self._dismissBusy();
 		    	return;
 		    }
@@ -318,7 +319,7 @@ ReconciliationRdfServiceDialog.prototype._footer = function(footer){
 	    
 	}).appendTo(footer);
 	
-	$('<button></button>').addClass('button').text($.i18n._('rdf-ext-buttons')["cancel"]).click(function() {
+	$('<button></button>').addClass('button').text($.i18n('rdf-ext-buttons/cancel')).click(function() {
 	    DialogSystem.dismissUntil(self._level - 1);
 	}).appendTo(footer);
 };
@@ -329,22 +330,22 @@ function ReconciliationSparqlServiceDialog(){
         var dialog = $(DOM.loadHTML("rdf-extension","scripts/sparql-service-dialog.html"));
         this._elmts = DOM.bind(dialog);
 
-        this._elmts.rdfext_sparql_name.text($.i18n._('rdf-ext-sparql')["name"]+":");
-        this._elmts.rdfext_sparql_nameDesc.text($.i18n._('rdf-ext-sparql')["name-desc"]);
-        this._elmts.rdfext_sparql_endDet.text($.i18n._('rdf-ext-sparql')["endpoint"]);
-        this._elmts.rdfext_sparql_endUrl.text($.i18n._('rdf-ext-sparql')["endpoint-url"]+":");
-        this._elmts.rdfext_sparql_graphUri.text($.i18n._('rdf-ext-sparql')["graph-uri"]+":");
-        this._elmts.rdfext_sparql_graphDesc.text($.i18n._('rdf-ext-sparql')["graph-desc"]);
-        this._elmts.rdfext_sparql_type.text($.i18n._('rdf-ext-sparql')["type"]+":");
-        this._elmts.rdfext_sparql_genericSparql.text($.i18n._('rdf-ext-sparql')["generic-sparql"]);
-        this._elmts.rdfext_sparql_virtuoso.text($.i18n._('rdf-ext-sparql')["virtuoso"]);
-        this._elmts.rdfext_sparql_jenaText.text($.i18n._('rdf-ext-sparql')["jena-text"]);
-        this._elmts.rdfext_sparql_bigowlim.text($.i18n._('rdf-ext-sparql')["bigowlim"]);
-        this._elmts.rdfext_sparql_detSyntax.text($.i18n._('rdf-ext-sparql')["det-syntax"]);
-        this._elmts.rdfext_sparql_labelProp.text($.i18n._('rdf-ext-sparql')["label-prop"]);
-        this._elmts.rdfext_sparql_propDesc.text($.i18n._('rdf-ext-sparql')["prop-desc"]+":");
-        this._elmts.rdfext_sparql_other.text($.i18n._('rdf-ext-sparql')["other"]+"...");
-        this._elmts.rdfext_sparql_fullUri.text($.i18n._('rdf-ext-sparql')["full-uri"]);
+        this._elmts.rdfext_sparql_name.text($.i18n('rdf-ext-sparql/name')+":");
+        this._elmts.rdfext_sparql_nameDesc.text($.i18n('rdf-ext-sparql/name-desc'));
+        this._elmts.rdfext_sparql_endDet.text($.i18n('rdf-ext-sparql/endpoint'));
+        this._elmts.rdfext_sparql_endUrl.text($.i18n('rdf-ext-sparql/endpoint-url')+":");
+        this._elmts.rdfext_sparql_graphUri.text($.i18n('rdf-ext-sparql/graph-uri')+":");
+        this._elmts.rdfext_sparql_graphDesc.text($.i18n('rdf-ext-sparql/graph-desc'));
+        this._elmts.rdfext_sparql_type.text($.i18n('rdf-ext-sparql/type')+":");
+        this._elmts.rdfext_sparql_genericSparql.text($.i18n('rdf-ext-sparql/generic-sparql'));
+        this._elmts.rdfext_sparql_virtuoso.text($.i18n('rdf-ext-sparql/virtuoso'));
+        this._elmts.rdfext_sparql_jenaText.text($.i18n('rdf-ext-sparql/jena-text'));
+        this._elmts.rdfext_sparql_bigowlim.text($.i18n('rdf-ext-sparql/bigowlim'));
+        this._elmts.rdfext_sparql_detSyntax.text($.i18n('rdf-ext-sparql/det-syntax'));
+        this._elmts.rdfext_sparql_labelProp.text($.i18n('rdf-ext-sparql/label-prop'));
+        this._elmts.rdfext_sparql_propDesc.text($.i18n('rdf-ext-sparql/prop-desc')+":");
+        this._elmts.rdfext_sparql_other.text($.i18n('rdf-ext-sparql/other')+"...");
+        this._elmts.rdfext_sparql_fullUri.text($.i18n('rdf-ext-sparql/full-uri'));
 
         this._elmts.other_label_chk.click(function(){
                 if($(this).attr("checked")){
@@ -358,7 +359,7 @@ function ReconciliationSparqlServiceDialog(){
 
         frame.width("600px");
 
-        $('<div></div>').addClass("dialog-header").text($.i18n._('rdf-ext-menu')["add-sparql-recon"]).appendTo(frame);
+        $('<div></div>').addClass("dialog-header").text($.i18n('rdf-ext-menu/add-sparql-recon')).appendTo(frame);
         $('<div></div>').addClass("dialog-body").append(dialog).appendTo(frame);
         var footer = $('<div></div>').addClass("dialog-footer").appendTo(frame);
 
@@ -369,18 +370,18 @@ function ReconciliationSparqlServiceDialog(){
 
 ReconciliationSparqlServiceDialog.prototype._footer = function(footer){
         var self = this;
-        $('<button></button>').addClass('button').html($.i18n._('rdf-ext-buttons')["ok"]).click(function() {
-                self._dismissBusy = DialogSystem.showBusy($.i18n._('rdf-ext-menu')["add-new-recon"]);
+        $('<button></button>').addClass('button').html($.i18n('rdf-ext-buttons/ok')).click(function() {
+                self._dismissBusy = DialogSystem.showBusy($.i18n('rdf-ext-menu/add-new-recon'));
                 var name = self._elmts.service_name.val();
                 var endpoint = self._elmts.endpoint_url.val();
                 var graph_uri = self._elmts.graph_uri.val();
                 if(name.trim()===""){
-                        alert($.i18n._('rdf-ext-menu')["alert-name-required"]);
+                        alert($.i18n('rdf-ext-menu/alert-name-required'));
                         self._dismissBusy();
                         return;
                 }
                 if(endpoint.trim()===""){
-                        alert($.i18n._('rdf-ext-menu')["alert-endpoint-required"]);
+                        alert($.i18n('rdf-ext-menu/alert-endpoint-required'));
                         self._dismissBusy();
                         return;
                 }
@@ -395,7 +396,7 @@ ReconciliationSparqlServiceDialog.prototype._footer = function(footer){
                         prop_uris += " " + self._elmts.other_properties_textarea.val();
                 }
                 if(prop_uris===""){
-                        alert($.i18n._('rdf-ext-menu')["alert-label-provided"]);
+                        alert($.i18n('rdf-ext-menu/alert-label-provided'));
                         self._dismissBusy();
                         return;
                 }
@@ -412,7 +413,7 @@ ReconciliationSparqlServiceDialog.prototype._footer = function(footer){
                 );
         }).appendTo(footer);
 
-        $('<button></button>').addClass('button').text($.i18n._('rdf-ext-buttons')["cancel"]).click(function() {
+        $('<button></button>').addClass('button').text($.i18n('rdf-ext-buttons/cancel')).click(function() {
                 DialogSystem.dismissUntil(self._level - 1);
         }).appendTo(footer);
 };
@@ -444,32 +445,32 @@ $(function(){
 				"submenu" : [
 					{
 						"id": "rdf/edit-rdf-schema",
-						label: $.i18n._('rdf-ext-menu')["edit-skeleton"]+"...",
+						label: $.i18n('rdf-ext-menu/edit-skeleton')+"...",
 						click: function() { RdfExporterMenuBar.editRdfSchema(false); }
 					},
 					{
 						"id": "rdf/reset-rdf-schema",
-						label: $.i18n._('rdf-ext-menu')["reset-skeleton"]+"...",
+						label: $.i18n('rdf-ext-menu/reset-skeleton')+"...",
 						click: function() { RdfExporterMenuBar.editRdfSchema(true); }
 					},
 					{},
 			        {
 			        	"id": "rdf/reconcile",
-			            label: $.i18n._('rdf-ext-menu')["add-recon-service"],
+			            label: $.i18n('rdf-ext-menu/add-recon-service'),
 			            submenu:[
 			                     {
 			                    	 "id" :"rdf/reconcile/sparql",
-			                    	 label: $.i18n._('rdf-ext-menu')["based-sparql"]+"...",
+			                    	 label: $.i18n('rdf-ext-menu/based-sparql')+"...",
 			                    	 click: function() { RdfReconciliationManager.newSparqlService(); }
 			                     },
 			                     {
 			                    	 "id":"rdf/reconcile/dump",
-			                    	 label: $.i18n._('rdf-ext-menu')["based-rdf"]+"...",
+			                    	 label: $.i18n('rdf-ext-menu/based-rdf')+"...",
 			                    	 click: function() { RdfReconciliationManager.newRdfService(); }        	 
 			                     },
 			                     {
 			                    	 "id" : "rdf/reconcile/stanbol",
-			                    	 label: $.i18n._('rdf-ext-menu')["based-entityhub"]+"...",
+			                    	 label: $.i18n('rdf-ext-menu/based-entityhub')+"...",
 			                    	 click: function() { RdfReconciliationManager.newStanbolService(); }        	 
 			                     }
 						]

@@ -9,23 +9,23 @@ NewPrefixWidget.prototype.show = function(msg,def_prefix, onDone){
     self._elmts = DOM.bind(dialog);
     self._level = DialogSystem.showDialog(dialog);
     
-    self._elmts.dialogHeader.html($.i18n._('rdf-ext-prefix')["header"]);
-    self._elmts.rdfext_prefix_pre.html($.i18n._('rdf-ext-prefix')["pre"]+":");
-    self._elmts.rdfext_prefix_uri.html($.i18n._('rdf-ext-prefix')["uri"]+":");
-    self._elmts.rdfext_prefix_force.html($.i18n._('rdf-ext-prefix')["force"]+":");
-    self._elmts.rdfext_prefix_voc.html($.i18n._('rdf-ext-prefix')["voc"]);
-    self._elmts.rdfext_prefix_fetch.html($.i18n._('rdf-ext-prefix')["fetch"]);
-    self._elmts.rdfext_prefix_imp.html($.i18n._('rdf-ext-prefix')["imp"]);
-    self._elmts.rdfext_prefix_file.html($.i18n._('rdf-ext-prefix')["file"]+":");
-    self._elmts.rdfext_prefix_format.html($.i18n._('rdf-ext-prefix')["format"]+":");
-    self._elmts.rdfext_prefix_auto.html($.i18n._('rdf-ext-prefix')["auto"]);
-    self._elmts.rdfext_prefix_turtle.html($.i18n._('rdf-ext-prefix')["turtle"]);
-    self._elmts.rdfext_prefix_rdfxml.html($.i18n._('rdf-ext-prefix')["rdfxml"]);
-    self._elmts.rdfext_prefix_n3.html($.i18n._('rdf-ext-prefix')["n3"]);
-    self._elmts.rdfext_prefix_ntriple.html($.i18n._('rdf-ext-prefix')["ntriple"]);
-    self._elmts.okButton.html($.i18n._('rdf-ext-buttons')["ok"]);
-    self._elmts.cancelButton.html($.i18n._('rdf-ext-buttons')["cancel"]);
-    self._elmts.advancedButton.html($.i18n._('rdf-ext-buttons')["advanced"]+"...");
+    self._elmts.dialogHeader.html($.i18n('rdf-ext-prefix/header'));
+    self._elmts.rdfext_prefix_pre.html($.i18n('rdf-ext-prefix/pre')+":");
+    self._elmts.rdfext_prefix_uri.html($.i18n('rdf-ext-prefix/uri')+":");
+    self._elmts.rdfext_prefix_force.html($.i18n('rdf-ext-prefix/force')+":");
+    self._elmts.rdfext_prefix_voc.html($.i18n('rdf-ext-prefix/voc'));
+    self._elmts.rdfext_prefix_fetch.html($.i18n('rdf-ext-prefix/fetch'));
+    self._elmts.rdfext_prefix_imp.html($.i18n('rdf-ext-prefix/imp'));
+    self._elmts.rdfext_prefix_file.html($.i18n('rdf-ext-prefix/file')+":");
+    self._elmts.rdfext_prefix_format.html($.i18n('rdf-ext-prefix/format')+":");
+    self._elmts.rdfext_prefix_auto.html($.i18n('rdf-ext-prefix/auto'));
+    self._elmts.rdfext_prefix_turtle.html($.i18n('rdf-ext-prefix/turtle'));
+    self._elmts.rdfext_prefix_rdfxml.html($.i18n('rdf-ext-prefix/rdfxml'));
+    self._elmts.rdfext_prefix_n3.html($.i18n('rdf-ext-prefix/n3'));
+    self._elmts.rdfext_prefix_ntriple.html($.i18n('rdf-ext-prefix/ntriple'));
+    self._elmts.okButton.html($.i18n('rdf-ext-buttons/ok'));
+    self._elmts.cancelButton.html($.i18n('rdf-ext-buttons/cancel'));
+    self._elmts.advancedButton.html($.i18n('rdf-ext-buttons/advanced')+"...");
     
     if(msg){
     	self._elmts.message.addClass('message').html(msg);
@@ -44,7 +44,7 @@ NewPrefixWidget.prototype.show = function(msg,def_prefix, onDone){
     	var name = self._elmts.prefix.val();
     	var uri = self._elmts.uri.val();
     	if(self._prefixesManager._hasPrefix(name)){
-    		alert($.i18n._('rdf-ext-prefix')["pref"]+' "' + name + '" '+$.i18n._('rdf-ext-prefix')["defined"]);
+    		alert($.i18n('rdf-ext-prefix/pref')+' "' + name + '" '+$.i18n('rdf-ext-prefix/defined'));
     		return;
     	}
 
@@ -58,7 +58,7 @@ NewPrefixWidget.prototype.show = function(msg,def_prefix, onDone){
     		$('#vocab-hidden-uri').val(uri);
     		$('#vocab-hidden-project').val(theProject.id);
     			
-    		dismissBusy = DialogSystem.showBusy($.i18n._('rdf-ext-prefix')["voc-upload"]+' ');
+    		dismissBusy = DialogSystem.showBusy($.i18n('rdf-ext-prefix/voc-upload')+' ');
 
     		$(this).ajaxSubmit({
     				
@@ -83,7 +83,7 @@ NewPrefixWidget.prototype.show = function(msg,def_prefix, onDone){
     		return false;
     	} 
     	
-		dismissBusy = DialogSystem.showBusy($.i18n._('rdf-ext-prefix')["try-upload"]+' ' + uri);
+		dismissBusy = DialogSystem.showBusy($.i18n('rdf-ext-prefix/try-upload')+' ' + uri);
     	
 		$.post("command/rdf-extension/add-prefix",
     			{
@@ -155,9 +155,9 @@ NewPrefixWidget.prototype.suggestUri = function(prefix){
 				if(!self._elmts.uri.val() && data.uri){
 					self._elmts.uri.val(data.uri);
 					if(self._elmts.message.text()){
-						self._elmts.uri_note.html('('+$.i18n._('rdf-ext-prefix')["sugg"]+' <em><a target="_blank" href="http://prefix.cc">prefix.cc</a></em> '+$.i18n._('rdf-ext-prefix')["provided"]+')');
+						self._elmts.uri_note.html('('+$.i18n('rdf-ext-prefix/sugg')+' <em><a target="_blank" href="http://prefix.cc">prefix.cc</a></em> '+$.i18n('rdf-ext-prefix/provided')+')');
 					}else{
-						self._elmts.uri_note.html('('+$.i18n._('rdf-ext-prefix')["suggested"]+' <a target="_blank" href="http://prefix.cc">prefix.cc</a>)');
+						self._elmts.uri_note.html('('+$.i18n('rdf-ext-prefix/suggested')+' <a target="_blank" href="http://prefix.cc">prefix.cc</a>)');
 					}
 				}
 			},

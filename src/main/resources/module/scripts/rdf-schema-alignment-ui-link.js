@@ -55,7 +55,7 @@ RdfSchemaAlignmentDialog.UILink.prototype._renderMain = function() {
     var self = this;
     
     $('<img />')
-        .attr("title", $.i18n._('rdf-ext-schema')["remove-property"])
+        .attr("title", $.i18n('rdf-ext-schema/remove-property'))
         .attr("src", "images/close.png")
         .css("cursor", "pointer")
         .prependTo(this._tdMain)

@@ -58,13 +58,13 @@ RdfPrefixesManager.prototype._showPrefixes = function(){
 		self._renderPrefix(self._prefixes[i].name,self._prefixes[i].uri);
 	}
 	//add button
-	$('<a href="#" class="add-prefix-box">'+$.i18n._('rdf-ext-prefix')["add"]+'</a>').bind('click',function(e){
+	$('<a href="#" class="add-prefix-box">'+$.i18n('rdf-ext-prefix/add')+'</a>').bind('click',function(e){
 		e.preventDefault();
 		self._addPrefix();
 	}).appendTo(self._dialog._rdf_schema_prefixes);
 	
 	//configure button
-	$('<a href="#" class="manage-vocabularies-box">'+$.i18n._('rdf-ext-prefix')["manage"]+'</a>').bind('click',function(e){
+	$('<a href="#" class="manage-vocabularies-box">'+$.i18n('rdf-ext-prefix/manage')+'</a>').bind('click',function(e){
 		e.preventDefault();
 		self._showManagePrefixesWidget();
 	}).appendTo(self._dialog._rdf_schema_prefixes);
