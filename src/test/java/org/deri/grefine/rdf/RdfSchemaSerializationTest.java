@@ -3,17 +3,16 @@ package org.deri.grefine.rdf;
 import java.io.StringWriter;
 import java.util.Properties;
 
-import org.codehaus.jackson.JsonFactory;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.JsonParser;
-import org.codehaus.jackson.map.ObjectMapper;
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.JSONObject;
 import org.json.JSONWriter;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import com.google.refine.util.ParsingUtilities;
-import org.deri.grefine.rdf.RdfSchema;
 
 import static org.testng.Assert.*;
 
