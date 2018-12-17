@@ -129,6 +129,12 @@ RdfSchemaAlignmentDialog.prototype._renderBody = function(body) {
     var self = this;
 
     $("#rdf-schema-alignment-tabs").tabs({
+        activate:function(evt, tabs){
+            if(tabs.newTab.index()==1){
+                $("#rdf-schema-alignment-tabs-preview").css("display", "");
+            	self._previewRdf();
+            }
+        },
         select:function(evt,tabs){
             if(tabs.index == 1){
                 self._previewRdf();
