@@ -30,7 +30,7 @@ ExporterManager.MenuItems.push(
 ExporterManager.MenuItems.push(
 		{
 			"id" : "exportRdfTurtle",
-        	"label": $.i18n("rdf-ext-menu/rdf-xml"),
+        	"label": $.i18n("rdf-ext-menu/rdf-turtle"),
         	"click": function() { RdfExporterMenuBar.exportRDF("Turtle", "ttl"); }
 		}
 );
