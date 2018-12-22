@@ -1,20 +1,11 @@
 package org.deri.grefine.rdf;
 
-import java.io.StringWriter;
-import java.util.Properties;
-
-import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import org.deri.grefine.util.TestUtils;
 import org.json.JSONObject;
-import org.json.JSONWriter;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import com.google.refine.util.ParsingUtilities;
-
-import static org.testng.Assert.*;
 
 public class RdfSchemaSerializationTest {
 
@@ -29,23 +20,7 @@ public class RdfSchemaSerializationTest {
 	}
 	
 	@Test(groups={"rdf-schema-test"})
-	public void testSerialization() throws Exception{
-		StringWriter sw = new StringWriter();
-		JSONWriter writer = new JSONWriter(sw);
-		schema.write(writer, new Properties());
-		
-		sw.flush();
-		testJsonEquivalence(sw.toString(), json);
-	}
-	
-	void testJsonEquivalence(String actual, String expected)throws Exception{
-		ObjectMapper mapper = new ObjectMapper();
-		JsonFactory factory = mapper.getJsonFactory();
-		JsonParser jp = factory.createJsonParser(actual);
-		JsonNode actualObj = mapper.readTree(jp);
-		
-		jp = factory.createJsonParser(expected);
-		JsonNode  expectedObj = mapper.readTree(jp);
-		assertEquals(actualObj, expectedObj);
+	public void testSerialization() {
+		TestUtils.isSerializedTo(schema, json);
 	}
 }
