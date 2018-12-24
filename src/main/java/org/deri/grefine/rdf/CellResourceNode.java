@@ -9,6 +9,8 @@ import org.eclipse.rdf4j.model.BNode;
 import org.eclipse.rdf4j.model.Resource;
 import org.eclipse.rdf4j.model.ValueFactory;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.refine.expr.EvalError;
 import com.google.refine.model.Project;
 import com.google.refine.model.Row;
@@ -19,13 +21,19 @@ public class CellResourceNode extends ResourceNode implements CellNode{
     final private String columnName;
     final private boolean isRowNumberCell; 
     
+    @JsonProperty("expression")
     public String getUriExpression() {
         return uriExpression;
     }
 
-    
-    
-    public CellResourceNode(String columnName,String exp,boolean isRowNumberCell) {
+    @JsonCreator
+    public CellResourceNode(
+    		@JsonProperty("columnName")
+    		String columnName,
+    		@JsonProperty("expression")
+    		String exp,
+    		@JsonProperty("isRowNumberCell")
+    		boolean isRowNumberCell) {
     	this.columnName = columnName;
         this.uriExpression = exp;
         this.isRowNumberCell = isRowNumberCell;
@@ -62,20 +70,15 @@ public class CellResourceNode extends ResourceNode implements CellNode{
         
     }
 
-
 	@Override
 	public boolean isRowNumberCellNode() {
 		return isRowNumberCell;
 	}
 
-
-
 	@Override
 	public String getColumnName() {
 		return columnName;
 	}
-
-
 
 	@Override
 	protected void writeNode(JSONWriter writer) throws JSONException {
@@ -86,5 +89,10 @@ public class CellResourceNode extends ResourceNode implements CellNode{
         	writer.key("columnName"); writer.value(columnName);
         }
 		
+	}
+
+	@Override
+	public String getNodeType() {
+		return "cell-as-resource";
 	}
 }

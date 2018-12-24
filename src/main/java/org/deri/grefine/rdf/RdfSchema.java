@@ -3,6 +3,7 @@ package org.deri.grefine.rdf;
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +22,8 @@ import org.json.JSONWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.refine.model.OverlayModel;
 import com.google.refine.model.Project;
 
@@ -37,6 +40,7 @@ public class RdfSchema implements OverlayModel {
      */
     protected Map<String,Vocabulary> prefixesMap;
 
+    @JsonIgnore
     public List<ConstantBlankNode> get_blanks() {
         return _blanks;
     }
@@ -96,18 +100,26 @@ public class RdfSchema implements OverlayModel {
     	this.prefixesMap.remove(name);
     }
     
+    @JsonProperty("baseUri")
     public URI getBaseUri() {
         return baseUri;
     }
 
+    @JsonIgnore
     public Map<String, Vocabulary> getPrefixesMap() {
 		return prefixesMap;
 	}
+    
+    @JsonProperty("prefixes")
+    public Collection<Vocabulary> getPrefixesList() {
+    	return prefixesMap.values();
+    }
     
     public void setPrefixesMap(Map<String, Vocabulary> map) {
 		this.prefixesMap = map;
 	}
 
+    @JsonProperty("rootNodes")
 	public List<Node> getRoots() {
         return _rootNodes;
     }

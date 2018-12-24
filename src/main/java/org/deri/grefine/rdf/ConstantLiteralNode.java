@@ -11,6 +11,9 @@ import org.eclipse.rdf4j.model.Value;
 import org.eclipse.rdf4j.model.ValueFactory;
 import org.eclipse.rdf4j.repository.RepositoryConnection;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.refine.model.Project;
 import com.google.refine.model.Row;
 
@@ -20,12 +23,21 @@ public class ConstantLiteralNode implements Node{
     private String lang;
     private String value;
     
-    
-    public ConstantLiteralNode(String val,String type,String l){
+    @JsonCreator
+    public ConstantLiteralNode(
+    		@JsonProperty("value")
+    		String val,
+    		@JsonProperty("valueType")
+    		String type,
+    		@JsonProperty("lang")
+    		String l){
         this.value = val;
         this.valueType = type;
         this.lang = l;
     }
+    
+    @JsonProperty("valueType")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public String getValueType() {
         return valueType;
     }
@@ -36,6 +48,8 @@ public class ConstantLiteralNode implements Node{
     }
 
 
+    @JsonProperty("lang")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public String getLang() {
         return lang;
     }
@@ -46,6 +60,7 @@ public class ConstantLiteralNode implements Node{
     }
 
 
+    @JsonProperty("value")
     public String getValue() {
         return value;
     }
@@ -90,5 +105,9 @@ public class ConstantLiteralNode implements Node{
             return null;
         }
     }
+	@Override
+	public String getNodeType() {
+		return "literal";
+	}
 
 }

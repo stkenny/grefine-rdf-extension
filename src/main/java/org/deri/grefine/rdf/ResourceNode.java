@@ -16,6 +16,9 @@ import org.eclipse.rdf4j.model.vocabulary.RDF;
 import org.eclipse.rdf4j.repository.RepositoryConnection;
 import org.eclipse.rdf4j.repository.RepositoryException;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.refine.model.Project;
 import com.google.refine.model.Row;
 
@@ -24,6 +27,7 @@ abstract public class ResourceNode implements Node {
 
     private List<Link> links = new ArrayList<Link>();
     
+    @JsonProperty("links")
     public List<Link> getLinks() {
 		return links;
 	}
@@ -42,10 +46,12 @@ abstract public class ResourceNode implements Node {
         return this.links.get(index);
     }
 
+    @JsonIgnore
     public int getLinkCount() {
         return this.links.size();
     }
 
+    @JsonProperty("rdfTypes")
     public List<RdfType> getTypes() {
         return this.rdfTypes;
     }
@@ -126,11 +132,24 @@ abstract public class ResourceNode implements Node {
     
     public static class RdfType{
         String uri;
+		String curie;
+        
+        @JsonProperty("uri")
         public String getUri() {
 			return uri;
 		}
-		String curie;
-        public RdfType(String uri,String curie){
+        
+        @JsonProperty("curie")
+        public String getCurie() {
+        	return curie;
+        }
+        
+        @JsonCreator
+        public RdfType(
+        		@JsonProperty("uri")
+        		String uri,
+        		@JsonProperty("curie")
+        		String curie){
             this.uri = uri;
             this.curie = curie;
             

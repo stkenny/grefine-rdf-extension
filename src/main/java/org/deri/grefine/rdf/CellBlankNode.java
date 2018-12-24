@@ -65,4 +65,9 @@ public class CellBlankNode extends ResourceNode implements CellNode{
 	public String getColumnName() {
 		return columnName;
 	}
+
+	@Override
+	public String getNodeType() {
+		return "cell-as-blank";
+	}
 }

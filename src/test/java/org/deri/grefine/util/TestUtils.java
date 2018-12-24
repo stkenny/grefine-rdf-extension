@@ -12,10 +12,12 @@ import org.json.JSONWriter;
 import org.testng.Assert;
 
 import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.google.refine.Jsonizable;
 
@@ -27,6 +29,16 @@ public class TestUtils {
 		
 		sw.flush();
 		testJsonEquivalence(sw.toString(), json);
+		
+        // also check Jackson serialization
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            String jacksonJson = mapper.writeValueAsString(obj);
+            testJsonEquivalence(jacksonJson, json);
+    	} catch (JsonProcessingException e) {
+    	    e.printStackTrace();
+    	    Assert.fail("jackson serialization failed");
+    	}
 	}
 	
 	public static void testJsonEquivalence(String actual, String expected) {

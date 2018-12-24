@@ -29,6 +29,11 @@ public class ConstantBlankNode extends ResourceNode{
 		writer.key("nodeType"); writer.value("blank");
 	}
 
+	@Override
+	public String getNodeType() {
+		return "blank";
+	}
+
     
 
 }
