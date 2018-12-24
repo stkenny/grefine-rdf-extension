@@ -32,18 +32,12 @@ public class RdfSchema implements OverlayModel {
 	final static Logger logger = LoggerFactory.getLogger("RdfSchema");
 	
     final protected List<Node> _rootNodes = new ArrayList<Node>();
-    final protected List<ConstantBlankNode> _blanks = new ArrayList<ConstantBlankNode>();
     
     protected URI baseUri;
     /**
      * keys are the short name, values are the full URIs e.g. foaf --> http://xmlns.com/foaf/0.1/
      */
     protected Map<String,Vocabulary> prefixesMap;
-
-    @JsonIgnore
-    public List<ConstantBlankNode> get_blanks() {
-        return _blanks;
-    }
     
     @Override
     public void onBeforeSave(Project project) {
@@ -205,8 +199,7 @@ public class RdfSchema implements OverlayModel {
             lang = stripAtt(lang);
             node = new ConstantLiteralNode(o.getString("value"), valueType,lang);
         } else if ("blank".equals(nodeType)) {
-            node = new ConstantBlankNode(s._blanks.size());
-            s._blanks.add((ConstantBlankNode) node);
+            node = new ConstantBlankNode();
             reconstructTypes((ConstantBlankNode)node,o);
         }
 
