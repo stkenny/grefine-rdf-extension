@@ -10,6 +10,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONWriter;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.refine.history.Change;
 import com.google.refine.history.HistoryEntry;
 import com.google.refine.model.AbstractOperation;
@@ -30,6 +31,16 @@ public class SaveRdfSchemaOperation extends AbstractOperation {
             throws Exception {
         return new SaveRdfSchemaOperation(RdfSchema.reconstruct(obj
                 .getJSONObject("schema")));
+    }
+    
+    @JsonProperty("description")
+    public String getDescription() {
+    	return "Save RDF schema skeleton";
+    }
+    
+    @JsonProperty("schema")
+    public RdfSchema getSchema() {
+    	return _schema;
     }
 
     public void write(JSONWriter writer, Properties options)
