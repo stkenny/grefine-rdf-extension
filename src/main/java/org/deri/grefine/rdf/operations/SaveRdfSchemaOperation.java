@@ -42,6 +42,12 @@ public class SaveRdfSchemaOperation extends AbstractOperation {
     public RdfSchema getSchema() {
     	return _schema;
     }
+    
+    // This should be deleted once we update OpenRefine to 3.1
+    @JsonProperty("op")
+    public String getOperationIdentifier() {
+    	return OperationRegistry.s_opClassToName.get(this.getClass());
+    }
 
     public void write(JSONWriter writer, Properties options)
             throws JSONException {
