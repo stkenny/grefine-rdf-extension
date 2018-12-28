@@ -1,7 +1,6 @@
 package org.deri.grefine.rdf.commands;
 
 import java.io.IOException;
-import java.util.Properties;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -11,9 +10,6 @@ import org.deri.grefine.rdf.app.ApplicationContext;
 import org.deri.grefine.rdf.vocab.PrefixExistException;
 import org.deri.grefine.rdf.vocab.VocabularyImporter;
 import org.json.JSONException;
-import org.json.JSONWriter;
-
-import com.google.refine.Jsonizable;
 
 public class RefreshPrefixCommand extends RdfCommand{
 
@@ -44,16 +40,7 @@ public class RefreshPrefixCommand extends RdfCommand{
         }
 			
 		try {
-			respondJSON(response, new Jsonizable() {
-            
-				@Override
-				public void write(JSONWriter writer, Properties options)
-                    	throws JSONException {
-					writer.object();
-					writer.key("code"); writer.value("ok");
-					writer.endObject();
-				}
-			});
+			respondJSON(response, CodeResponse.ok);
 		} catch (JSONException e) {
 			respondException(response, e);
 		} 
