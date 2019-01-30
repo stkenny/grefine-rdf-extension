@@ -1,15 +1,5 @@
 package org.deri.grefine.rdf.vocab;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import org.apache.any23.Any23;
-import org.apache.any23.http.HTTPClient;
-import org.apache.any23.source.HTTPDocumentSource;
-import org.apache.any23.writer.ReportingTripleHandler;
-import org.apache.any23.writer.RepositoryWriter;
-
 import org.eclipse.rdf4j.model.Value;
 import org.eclipse.rdf4j.query.BindingSet;
 import org.eclipse.rdf4j.query.QueryLanguage;
@@ -19,9 +9,15 @@ import org.eclipse.rdf4j.repository.Repository;
 import org.eclipse.rdf4j.repository.RepositoryConnection;
 import org.eclipse.rdf4j.repository.RepositoryException;
 import org.eclipse.rdf4j.repository.sail.SailRepository;
+import org.eclipse.rdf4j.rio.RDFFormat;
+import org.eclipse.rdf4j.rio.Rio;
 import org.eclipse.rdf4j.sail.inferencer.fc.ForwardChainingRDFSInferencer;
 import org.eclipse.rdf4j.sail.memory.MemoryStore;
 
+import java.net.URL;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class VocabularyImporter {
 	
@@ -68,22 +64,16 @@ public class VocabularyImporter {
 
 	private Repository getModel(String url,boolean strictlyRdf) throws VocabularyImportException {
 		try {
-			Any23 runner;
-			if(strictlyRdf){
-				runner = new Any23("rdf-xml");
-			}else{
-				runner = new Any23();
-			}
-			runner.setHTTPUserAgent("google-refine-rdf-extension");
-			HTTPClient client = runner.getHTTPClient();
-			HTTPDocumentSource source = new HTTPDocumentSource(client, url);
 			Repository repository = new SailRepository(
 					new ForwardChainingRDFSInferencer(new MemoryStore()));
 			repository.initialize();
+
+			java.net.URL documentUrl = new URL(url);
+			RDFFormat format = Rio.getParserFormatForFileName(url).orElse(RDFFormat.RDFXML);
+
 			RepositoryConnection con = repository.getConnection();
-			RepositoryWriter w = new RepositoryWriter(con);
-			ReportingTripleHandler reporter = new ReportingTripleHandler(w);
-			runner.extract(source, reporter);
+			con.add(documentUrl, url, format);
+
 			return repository;
 		} catch (Exception e) {
 			throw new VocabularyImportException(

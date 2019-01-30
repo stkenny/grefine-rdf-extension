@@ -1,18 +1,15 @@
 package org.deri.grefine.rdf.exporters;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
-
-import org.deri.grefine.rdf.Node;
-import org.deri.grefine.rdf.vocab.Vocabulary;
-import org.eclipse.rdf4j.model.Resource;
-import org.eclipse.rdf4j.model.Statement;
-import org.eclipse.rdf4j.repository.RepositoryException;
-import org.eclipse.rdf4j.repository.RepositoryResult;
-import org.eclipse.rdf4j.rio.RDFHandlerException;
-import org.eclipse.rdf4j.rio.RDFWriter;
-import org.eclipse.rdf4j.rio.Rio;
-import org.json.JSONObject;
+import com.google.refine.browsing.Engine;
+import com.google.refine.expr.ExpressionUtils;
+import com.google.refine.grel.ControlFunctionRegistry;
+import com.google.refine.model.Project;
+import com.google.refine.model.Row;
+import com.google.refine.util.ParsingUtilities;
+import org.deri.grefine.rdf.RdfSchema;
+import org.deri.grefine.rdf.app.ApplicationContext;
+import org.deri.grefine.rdf.expr.RdfBinder;
+import org.deri.grefine.rdf.expr.functions.strings.Urlify;
 import org.eclipse.rdf4j.model.URI;
 import org.eclipse.rdf4j.model.ValueFactory;
 import org.eclipse.rdf4j.model.vocabulary.RDF;
@@ -23,22 +20,16 @@ import org.eclipse.rdf4j.repository.sail.SailRepository;
 import org.eclipse.rdf4j.repository.util.RepositoryUtil;
 import org.eclipse.rdf4j.rio.RDFFormat;
 import org.eclipse.rdf4j.sail.memory.MemoryStore;
+import org.json.JSONObject;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import com.google.refine.browsing.Engine;
-import com.google.refine.expr.ExpressionUtils;
-import com.google.refine.grel.ControlFunctionRegistry;
-import com.google.refine.model.Project;
-import com.google.refine.model.Row;
-import org.deri.grefine.rdf.RdfSchema;
-import org.deri.grefine.rdf.app.ApplicationContext;
-import org.deri.grefine.rdf.expr.RdfBinder;
-import org.deri.grefine.rdf.expr.functions.strings.Urlify;
-import com.google.refine.util.ParsingUtilities;
-
+import java.io.ByteArrayInputStream;
 import java.io.StringWriter;
-import java.util.List;
+import java.nio.charset.StandardCharsets;
+
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
 
 public class RdfExporterMultiRootNodesTest {
 	
@@ -62,53 +53,17 @@ public class RdfExporterMultiRootNodesTest {
 		ExpressionUtils.registerBinder(new RdfBinder(ctxt));
 
 		StringWriter sw = new StringWriter();
-		RDFWriter w = Rio.createWriter(RDFFormat.TURTLE, sw);
+		exporter.export(project, new java.util.Properties(), engine, sw);
 
-		RdfExporter.RdfRowVisitor visitor = new RdfExporter.RdfRowVisitor(schema, w) {
-			final int limit = 10;
-			int _count;
-			@Override
-			public boolean visit(Project project, int rowIndex , Row row) {
-				if(_count >= limit){
-					return true;
-				}
-				for(Node root:roots){
-					root.createNode(baseUri, factory, con, project, row, rowIndex, blanks);
-				}
-				_count +=1;
-
-				try {
-					List<Resource> resourceList = con.getContextIDs().asList();
-					Resource[] resources = resourceList.toArray(new Resource[resourceList.size()]);
-
-					// Export statements
-					RepositoryResult<Statement> stIter =
-							con.getStatements(null, null, null, false, resources);
-
-					try {
-						while (stIter.hasNext()) {
-							this.writer.handleStatement(stIter.next());
-						}
-					} finally {
-						stIter.close();
-					}
-				} catch (RepositoryException e) {
-					e.printStackTrace();
-					return true;
-				} catch (RDFHandlerException e) {
-					e.printStackTrace();
-					return true;
-				}
-
-				return false;
-			}
-		};
-
-		for(Vocabulary v:schema.getPrefixesMap().values()){
-			w.handleNamespace(v.getName(), v.getUri());
+		model = new SailRepository(new MemoryStore());
+		model.initialize();
+		RepositoryConnection con = model.getConnection();
+		try {
+			con.add(new ByteArrayInputStream(sw.toString().getBytes(StandardCharsets.UTF_8)), "", RDFFormat.RDFXML);
 		}
-
-		model = exporter.buildModel(project, engine, visitor);
+		finally {
+			con.close();
+		}
 		
 		assertEquals(project.rows.size(),3);
 		assertEquals(project.columnModel.getColumnIndexByName("Advisor"),5);

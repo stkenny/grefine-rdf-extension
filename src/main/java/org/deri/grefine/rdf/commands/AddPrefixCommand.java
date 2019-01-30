@@ -34,7 +34,7 @@ public class AddPrefixCommand extends RdfCommand{
         		if(fetchUrl==null || fetchOption.trim().isEmpty()){
         			fetchUrl = uri;
         		}
-        		getRdfContext().getVocabularySearcher().importAndIndexVocabulary(name, uri, fetchUrl, projectId,new VocabularyImporter());
+        		getRdfContext().getVocabularySearcher().importAndIndexVocabulary(name, uri, fetchUrl, projectId, new VocabularyImporter());
         	}
             respondJSON(response, new Jsonizable() {
                 
@@ -51,9 +51,7 @@ public class AddPrefixCommand extends RdfCommand{
         } catch (PrefixExistException e) {
             respondException(response, e);
         } catch (Exception e){
-        	response.setCharacterEncoding("UTF-8");
-            response.setHeader("Content-Type", "application/json");
-        	respond(response,"{\"code\":\"ok\"}");
+            respondException(response, e);
         }
     }
 }
