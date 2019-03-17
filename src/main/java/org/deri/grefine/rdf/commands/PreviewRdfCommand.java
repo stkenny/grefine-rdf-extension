@@ -1,28 +1,35 @@
 package org.deri.grefine.rdf.commands;
 
-import com.google.refine.browsing.Engine;
-import com.google.refine.commands.Command;
-import com.google.refine.model.Project;
-import com.google.refine.model.Row;
-import com.google.refine.util.ParsingUtilities;
+import java.io.IOException;
+import java.io.StringWriter;
+import java.util.Properties;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.deri.grefine.rdf.Node;
 import org.deri.grefine.rdf.RdfSchema;
 import org.deri.grefine.rdf.exporters.RdfExporter;
 import org.deri.grefine.rdf.exporters.RdfExporter.RdfRowVisitor;
 import org.deri.grefine.rdf.vocab.Vocabulary;
-import org.json.JSONObject;
-import org.json.JSONWriter;
 import org.eclipse.rdf4j.repository.RepositoryException;
 import org.eclipse.rdf4j.rio.RDFFormat;
 import org.eclipse.rdf4j.rio.RDFHandlerException;
 import org.eclipse.rdf4j.rio.RDFWriter;
 import org.eclipse.rdf4j.rio.Rio;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.JSONWriter;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.StringWriter;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.refine.Jsonizable;
+import com.google.refine.browsing.Engine;
+import com.google.refine.commands.Command;
+import com.google.refine.model.Project;
+import com.google.refine.model.Row;
+import com.google.refine.util.ParsingUtilities;
 
 public class PreviewRdfCommand extends Command {
 
@@ -37,8 +44,8 @@ public class PreviewRdfCommand extends Command {
             response.setHeader("Content-Type", "application/json");
 
             String jsonString = request.getParameter("schema");
-            JSONObject json = ParsingUtilities.evaluateJsonStringToObject(jsonString);
-            final RdfSchema schema = RdfSchema.reconstruct(json);
+            ObjectMapper mapper = new ObjectMapper();
+            final RdfSchema schema = mapper.readValue(jsonString, RdfSchema.class);
 
 	        StringWriter sw = new StringWriter();
 	        RDFWriter w = Rio.createWriter(RDFFormat.TURTLE, sw);
@@ -74,14 +81,26 @@ public class PreviewRdfCommand extends Command {
 	        }
 	        RdfExporter.buildModel(project, engine, visitor);
 
-            JSONWriter writer = new JSONWriter(response.getWriter());
-            writer.object();
-            writer.key("v");
-            writer.value(sw.getBuffer().toString());
-            writer.endObject();
-            //respond(response, "{v:" + sw.getBuffer().toString() + "}");
+            respondJSON(response, new PreviewResponse(sw.getBuffer().toString()));
         }catch (Exception e) {
             respondException(response, e);
         }
+    }
+    
+    private class PreviewResponse implements Jsonizable {
+    	@JsonProperty("v")
+    	String value;
+    	
+    	protected PreviewResponse(String v) {
+    		value = v;
+    	}
+
+		@Override
+		public void write(JSONWriter writer, Properties options) throws JSONException {
+			writer.object();
+            writer.key("v");
+            writer.value(value);
+            writer.endObject();
+		}
     }
 }

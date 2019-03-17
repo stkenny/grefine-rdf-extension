@@ -12,6 +12,9 @@ import org.eclipse.rdf4j.model.Value;
 import org.eclipse.rdf4j.model.ValueFactory;
 import org.eclipse.rdf4j.repository.RepositoryConnection;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.refine.expr.EvalError;
 import com.google.refine.model.Project;
 import com.google.refine.model.Row;
@@ -24,15 +27,35 @@ public class CellLiteralNode implements CellNode{
     final boolean isRowNumberCell;
     final private String expression;
     
+    @JsonProperty("valueType")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public String getValueType() {
         return valueType;
     }
     
+    @JsonProperty("lang")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public String getLang() {
         return lang;
     }
     
-    public CellLiteralNode(String columnName, String exp, String valueType,String lang,boolean isRowNumberCell){
+    @JsonProperty("expression")
+    public String getExpression() {
+    	return expression;
+    }
+    
+    @JsonCreator
+    public CellLiteralNode(
+    		@JsonProperty("columnName")
+    		String columnName,
+    		@JsonProperty("expression")
+    		String exp,
+    		@JsonProperty("valueType")
+    		String valueType,
+    		@JsonProperty("lang")
+    		String lang,
+    		@JsonProperty("isRowNumberCell")
+    		boolean isRowNumberCell){
     	this.columnName = columnName;
         this.lang = lang;
         this.valueType = valueType;
@@ -114,6 +137,11 @@ public class CellLiteralNode implements CellNode{
         	writer.key("columnName"); writer.value(columnName);
         }
         writer.endObject();		
+	}
+
+	@Override
+	public String getNodeType() {
+		return "cell-as-literal";
 	}
 
 }

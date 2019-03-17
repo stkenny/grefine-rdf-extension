@@ -3,13 +3,11 @@ package org.deri.grefine.rdf.commands;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
-import java.util.Properties;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.google.refine.Jsonizable;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
@@ -18,17 +16,16 @@ import org.deri.grefine.rdf.RdfSchema;
 import org.deri.grefine.rdf.Util;
 import org.deri.grefine.rdf.app.ApplicationContext;
 import org.deri.grefine.rdf.vocab.VocabularyImporter;
-import org.json.JSONException;
 import org.eclipse.rdf4j.repository.Repository;
 import org.eclipse.rdf4j.repository.RepositoryConnection;
 import org.eclipse.rdf4j.repository.sail.SailRepository;
 import org.eclipse.rdf4j.rio.RDFFormat;
 import org.eclipse.rdf4j.sail.inferencer.fc.ForwardChainingRDFSInferencer;
 import org.eclipse.rdf4j.sail.memory.MemoryStore;
-import org.json.JSONWriter;
+import org.json.JSONException;
 
-import com.google.refine.model.Project;
 import com.google.refine.ProjectManager;
+import com.google.refine.model.Project;
 
 public class AddPrefixFromFileCommand extends RdfCommand {
 
@@ -89,16 +86,7 @@ public class AddPrefixFromFileCommand extends RdfCommand {
             getRdfContext().getVocabularySearcher().importAndIndexVocabulary(
                     prefix, uri, repository, projectId, new VocabularyImporter());
 
-            respondJSON(response, new Jsonizable() {
-
-                @Override
-                public void write(JSONWriter writer, Properties options)
-                        throws JSONException {
-                    writer.object();
-                    writer.key("code"); writer.value("ok");
-                    writer.endObject();
-                }
-            });
+            respondJSON(response, CodeResponse.ok);
         } catch (JSONException e){
             respondException(response, e);
         } catch (org.eclipse.rdf4j.RDF4JException e){

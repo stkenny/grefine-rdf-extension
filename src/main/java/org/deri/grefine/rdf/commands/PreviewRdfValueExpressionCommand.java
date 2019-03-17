@@ -11,9 +11,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.deri.grefine.rdf.Util;
 import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONWriter;
 
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.refine.commands.expr.PreviewExpressionCommand;
 import com.google.refine.expr.EvalError;
 import com.google.refine.expr.ExpressionUtils;
@@ -54,7 +54,8 @@ public class PreviewRdfValueExpressionCommand extends PreviewExpressionCommand{
             
             JSONArray rowIndices = ParsingUtilities.evaluateJsonStringToArray(rowIndicesString);
             
-            JSONWriter writer = new JSONWriter(response.getWriter());
+            ObjectMapper mapper = new ObjectMapper();
+            JsonGenerator writer = mapper.getFactory().createGenerator(response.getWriter());
             if(isUri){
             	respondUriPreview(project, writer, rowIndices, expression, columnName, base);
             }else{
@@ -65,13 +66,13 @@ public class PreviewRdfValueExpressionCommand extends PreviewExpressionCommand{
         }
 	}
 	
-	private void respondUriPreview(Project project, JSONWriter writer, JSONArray rowIndices, String expression, String columnName, URI base) throws JSONException{
+	private void respondUriPreview(Project project, JsonGenerator writer, JSONArray rowIndices, String expression, String columnName, URI base) throws IOException{
 		int length = rowIndices.length();
         
-        writer.object();
+        writer.writeStartObject();
         
         try {
-            writer.key("results"); writer.array();
+            writer.writeArrayFieldStart("results");
             String[] absolutes = new String[length];
             for (int i = 0; i < length; i++) {
                 Object result = null;
@@ -83,15 +84,15 @@ public class PreviewRdfValueExpressionCommand extends PreviewExpressionCommand{
                 }
                 
                 if (result == null) {
-                    writer.value(null);
+                    writer.writeNull();
                 } else if (ExpressionUtils.isError(result)) {
-                    writer.object();
-                    writer.key("message"); writer.value(((EvalError) result).message);
-                    writer.endObject();
+                    writer.writeStartObject();
+                    writer.writeStringField("message", ((EvalError) result).message);
+                    writer.writeEndObject();
                 } else {
                 	StringBuffer sb = new StringBuffer();
                     writeValue(sb, result, false);
-                    writer.value(sb.toString());
+                    writer.writeString(sb.toString());
                     //prepare absolute value                    
                 	if (result.getClass().isArray()) {
                 		int lngth = Array.getLength(result);
@@ -109,39 +110,39 @@ public class PreviewRdfValueExpressionCommand extends PreviewExpressionCommand{
                 	}
                 }
             }
-            writer.endArray();
+            writer.writeEndArray();
             
             //writing the absolutes
-            writer.key("absolutes"); writer.array();
+            writer.writeArrayFieldStart("absolutes");
             for (int i = 0; i < length; i++) {
-            	writer.value(absolutes[i]);
+            	writer.writeString(absolutes[i]);
             }
-            writer.endArray();
-            writer.key("code"); writer.value("ok");
+            writer.writeEndArray();
+            writer.writeStringField("code", "ok");
         } catch (ParsingException e) {
-        	writer.endArray();
-            writer.key("code"); writer.value("error");
-            writer.key("type"); writer.value("parser");
-            writer.key("message"); writer.value(e.getMessage());
+        	writer.writeEndArray();
+            writer.writeStringField("code", "error");
+            writer.writeStringField("type", "parser");
+            writer.writeStringField("message", e.getMessage());
         } catch (Exception e) {
-        	writer.endArray();
-            writer.key("code"); writer.value("error");
-            writer.key("type"); writer.value("other");
-            writer.key("message"); writer.value(e.getMessage());
+        	writer.writeEndArray();
+            writer.writeStringField("code", "error");
+            writer.writeStringField("type", "other");
+            writer.writeStringField("message", e.getMessage());
         }
         
-        writer.endObject();
+        writer.writeEndObject();
 
 	}
 	
 	
-	private void respondLiteralPreview(Project project, JSONWriter writer, JSONArray rowIndices, String expression, String columnName) throws JSONException{
+	private void respondLiteralPreview(Project project, JsonGenerator writer, JSONArray rowIndices, String expression, String columnName) throws IOException{
 		int length = rowIndices.length();
         
-        writer.object();
+        writer.writeStartObject();
         
         try {
-            writer.key("results"); writer.array();
+            writer.writeArrayFieldStart("results");
             for (int i = 0; i < length; i++) {
                 Object result = null;
                 int rowIndex = rowIndices.getInt(i);
@@ -151,32 +152,32 @@ public class PreviewRdfValueExpressionCommand extends PreviewExpressionCommand{
                 }
                 
                 if (result == null) {
-                    writer.value(null);
+                    writer.writeNull();
                 } else if (ExpressionUtils.isError(result)) {
-                    writer.object();
-                    writer.key("message"); writer.value(((EvalError) result).message);
-                    writer.endObject();
+                    writer.writeStartObject();
+                    writer.writeStringField("message", ((EvalError) result).message);
+                    writer.writeEndObject();
                 } else {
                     StringBuffer sb = new StringBuffer();
                     writeValue(sb, result, false);
-                    writer.value(sb.toString());
+                    writer.writeString(sb.toString());
                 }
             }
-            writer.endArray();
+            writer.writeEndArray();
             
-            writer.key("code"); writer.value("ok");
+            writer.writeStringField("code", "ok");
         } catch (ParsingException e) {
-            writer.key("code"); writer.value("error");
-            writer.key("type"); writer.value("parser");
-            writer.key("message"); writer.value(e.getMessage());
+            writer.writeStringField("code", "error");
+            writer.writeStringField("type", "parser");
+            writer.writeStringField("message", e.getMessage());
         } catch (Exception e) {
-        	writer.endArray();
-            writer.key("code"); writer.value("error");
-            writer.key("type"); writer.value("other");
-            writer.key("message"); writer.value(e.getMessage());
+        	writer.writeEndArray();
+            writer.writeStringField("code", "error");
+            writer.writeStringField("type", "other");
+            writer.writeStringField("message", e.getMessage());
         }
         
-        writer.endObject();
+        writer.writeEndObject();
 
 	}
 }

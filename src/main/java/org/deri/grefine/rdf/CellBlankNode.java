@@ -9,6 +9,9 @@ import org.eclipse.rdf4j.model.BNode;
 import org.eclipse.rdf4j.model.Resource;
 import org.eclipse.rdf4j.model.ValueFactory;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.refine.expr.EvalError;
 import com.google.refine.model.Project;
 import com.google.refine.model.Row;
@@ -19,10 +22,17 @@ public class CellBlankNode extends ResourceNode implements CellNode{
     final boolean isRowNumberCell;
     final private String expression;
     
-    public CellBlankNode(String columnName,String exp,boolean isRowNumberCell){
+    @JsonCreator
+    public CellBlankNode(
+    		@JsonProperty("columnName")
+    		String columnName,
+    		@JsonProperty("expression")
+    		String exp,
+    		@JsonProperty("isRowNumberCell")
+    		boolean isRowNumberCell){
         this.columnName = columnName;
         this.isRowNumberCell = isRowNumberCell;
-        this.expression = exp;
+        this.expression = exp == null ? "value" : exp;
     }
     
     @Override
@@ -64,5 +74,16 @@ public class CellBlankNode extends ResourceNode implements CellNode{
 	@Override
 	public String getColumnName() {
 		return columnName;
+	}
+
+	@Override
+	public String getNodeType() {
+		return "cell-as-blank";
+	}
+	
+	@JsonProperty("expression")
+	@JsonInclude(JsonInclude.Include.NON_NULL)
+	public String getExpressionJson() {
+		return "value".equals(expression) ? null : expression;
 	}
 }

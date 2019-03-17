@@ -8,20 +8,25 @@ import org.eclipse.rdf4j.model.BNode;
 import org.eclipse.rdf4j.model.Resource;
 import org.eclipse.rdf4j.model.ValueFactory;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.google.refine.model.Project;
 import com.google.refine.model.Row;
 
 public class ConstantBlankNode extends ResourceNode{
 
-    private int _id;
-    ConstantBlankNode(int id){
-        this._id = id;
+	private BNode bnode = null;
+	
+	@JsonCreator
+    ConstantBlankNode(){
     }
     
     @Override
     public Resource[] createResource(URI baseUri, ValueFactory factory, Project project,
             Row row, int rowIndex,BNode[] blanks) {
-        return new BNode[]{blanks[this._id]};
+    	if (bnode == null) {
+    		bnode = factory.createBNode();
+    	}
+        return new BNode[]{bnode};
     }
 
 	@Override
@@ -29,6 +34,9 @@ public class ConstantBlankNode extends ResourceNode{
 		writer.key("nodeType"); writer.value("blank");
 	}
 
-    
+	@Override
+	public String getNodeType() {
+		return "blank";
+	}
 
 }
