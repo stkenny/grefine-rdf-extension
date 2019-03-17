@@ -3,6 +3,8 @@ package org.deri.grefine.rdf.vocab;
 import org.json.JSONException;
 import org.json.JSONWriter;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class Vocabulary {
 	private String name;
 	private String uri;
@@ -12,10 +14,12 @@ public class Vocabulary {
     	this.uri = uri;
     }
     
-
+    @JsonProperty("name")
 	public String getName() {
 		return name;
 	}
+    
+    @JsonProperty("uri")
 	public String getUri() {
 		return uri;
 	}

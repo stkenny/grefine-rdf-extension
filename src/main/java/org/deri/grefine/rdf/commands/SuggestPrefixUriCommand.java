@@ -7,7 +7,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.deri.grefine.rdf.app.ApplicationContext;
-import org.json.JSONWriter;
+
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 
 public class SuggestPrefixUriCommand extends RdfCommand{
@@ -23,11 +25,11 @@ public class SuggestPrefixUriCommand extends RdfCommand{
 		try{
 			response.setCharacterEncoding("UTF-8");
 	        response.setHeader("Content-Type", "application/json");
-	        JSONWriter writer = new JSONWriter(response.getWriter());
-            writer.object();
-            writer.key("code"); writer.value("ok");
-            writer.key("uri"); writer.value(uri);
-            writer.endObject();
+	        JsonGenerator writer = (new ObjectMapper()).getFactory().createGenerator(response.getWriter());
+            writer.writeStartObject();
+            writer.writeStringField("code", "ok");
+            writer.writeStringField("uri", uri);
+            writer.writeEndObject();
 		}catch(Exception e){
 			respondException(response, e);
 		}

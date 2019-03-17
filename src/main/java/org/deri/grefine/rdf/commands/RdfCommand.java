@@ -10,8 +10,8 @@ import org.deri.grefine.rdf.Util;
 import org.deri.grefine.rdf.app.ApplicationContext;
 import org.deri.grefine.rdf.vocab.VocabularyIndexException;
 
-import com.google.refine.model.Project;
 import com.google.refine.commands.Command;
+import com.google.refine.model.Project;
 
 public abstract class RdfCommand extends Command {
 

@@ -18,6 +18,9 @@ import org.deri.grefine.rdf.vocab.Vocabulary;
 import org.json.JSONException;
 import org.json.JSONWriter;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.refine.Jsonizable;
 import com.google.refine.ProjectManager;
 import com.google.refine.model.Project;
@@ -39,21 +42,16 @@ public class SuggestTermCommand extends RdfCommand{
         
         response.setHeader("Content-Type", "application/json");
         
-        JSONWriter writer = new JSONWriter(response.getWriter());
+        JsonGenerator writer = (new ObjectMapper()).getFactory().createGenerator(response.getWriter());
         String type = request.getParameter("type_strict");
         
         String query = request.getParameter("prefix");
         
-        
-        
         try{
-            writer.object();
+            writer.writeStartObject();
             
-            writer.key("prefix");
-            writer.value(query);
+            writer.writeStringField("prefix", query);
             
-            writer.key("result");
-            writer.array();
             List<SearchResultItem> nodes;
             if(type!=null && type.trim().equals("property")){
                 nodes = getRdfContext().getVocabularySearcher().searchProperties(query,projectId);
@@ -68,16 +66,13 @@ public class SuggestTermCommand extends RdfCommand{
             for(SearchResultItem c:nodes){
                 c.writeAsSearchResult(writer);
             }
-            writer.endArray();
-            writer.endObject();
+            writer.writeEndArray();
+            writer.writeEndObject();
         }catch(Exception e){
             e.printStackTrace();
             throw new ServletException(e);
         }
     }
-
-    
-    
 
 	@Override
 	protected Project getProject(HttpServletRequest request)
@@ -116,16 +111,29 @@ public class SuggestTermCommand extends RdfCommand{
 }
 
 class Result implements Jsonizable{
+	
+	class IdName {
+		@JsonProperty("id")
+		String id;
+		@JsonProperty("name")
+		String name;
+		
+		IdName(String i, String n) {
+			id = i;
+			name = n;
+		}
+	}
 
-    private List<String[]> results = new ArrayList<String[]>();
+	@JsonProperty("results")
+    private List<IdName> results = new ArrayList<>();
+    @JsonProperty("prefix")
     private String prefix;
     
     Result(String p){
         this.prefix = p;
     }
     void addResult(String id, String name){
-        String[] res = new String[] {id,name};
-        results.add(res);
+        results.add(new IdName(id, name));
     }
     @Override
     public void write(JSONWriter writer, Properties options)
@@ -138,14 +146,14 @@ class Result implements Jsonizable{
         
         writer.key("result");
         writer.array();
-        for(String[] res:results){
+        for(IdName res:results){
             writer.object();
             
             writer.key("id");
-            writer.value(res[0]);
+            writer.value(res.id);
             
             writer.key("name");
-            writer.value(res[1]);
+            writer.value(res.name);
             
             writer.endObject();
         }

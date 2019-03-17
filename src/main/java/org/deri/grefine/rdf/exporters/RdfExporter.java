@@ -149,21 +149,7 @@ public class RdfExporter implements WriterExporter {
 
             //initializing repository
             model = new SailRepository(new MemoryStore());
-            try{
-            	model.initialize();
-            	RepositoryConnection con = model.getConnection();
-            	try{
-            		ValueFactory factory = con.getValueFactory();
-            		blanks = new BNode[schema.get_blanks().size()];
-            		for (int i = 0; i < blanks.length; i++) {
-            			blanks[i] = factory.createBNode();
-            		}
-            	}finally{
-            		con.close();
-            	}
-            }catch(RepositoryException ex){
-            	throw new RuntimeException(ex);
-            }
+            model.initialize();
         }
 
         public void end(Project project) {

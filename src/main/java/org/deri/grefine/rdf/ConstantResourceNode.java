@@ -8,6 +8,8 @@ import org.eclipse.rdf4j.model.BNode;
 import org.eclipse.rdf4j.model.Resource;
 import org.eclipse.rdf4j.model.ValueFactory;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.refine.model.Project;
 import com.google.refine.model.Row;
 
@@ -15,7 +17,7 @@ public class ConstantResourceNode extends ResourceNode{
 
     private String uri;
 
-
+    @JsonProperty("value")
     public String getUri() {
         return uri;
     }
@@ -24,8 +26,10 @@ public class ConstantResourceNode extends ResourceNode{
         this.uri = uri;
     }
     
-
-    public ConstantResourceNode(String uri){
+    @JsonCreator
+    public ConstantResourceNode(
+    		@JsonProperty("value")
+    		String uri){
         this.uri = uri;
     }
 
@@ -44,6 +48,11 @@ public class ConstantResourceNode extends ResourceNode{
 	protected void writeNode(JSONWriter writer) throws JSONException {
 		writer.key("nodeType"); writer.value("resource");
         writer.key("value"); writer.value(uri);	
+	}
+
+	@Override
+	public String getNodeType() {
+		return "resource";
 	}
 
 }

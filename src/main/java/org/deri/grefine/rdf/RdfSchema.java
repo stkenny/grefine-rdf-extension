@@ -3,6 +3,7 @@ package org.deri.grefine.rdf;
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +22,8 @@ import org.json.JSONWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.refine.model.OverlayModel;
 import com.google.refine.model.Project;
 
@@ -29,17 +32,12 @@ public class RdfSchema implements OverlayModel {
 	final static Logger logger = LoggerFactory.getLogger("RdfSchema");
 	
     final protected List<Node> _rootNodes = new ArrayList<Node>();
-    final protected List<ConstantBlankNode> _blanks = new ArrayList<ConstantBlankNode>();
     
     protected URI baseUri;
     /**
      * keys are the short name, values are the full URIs e.g. foaf --> http://xmlns.com/foaf/0.1/
      */
     protected Map<String,Vocabulary> prefixesMap;
-
-    public List<ConstantBlankNode> get_blanks() {
-        return _blanks;
-    }
     
     @Override
     public void onBeforeSave(Project project) {
@@ -96,18 +94,26 @@ public class RdfSchema implements OverlayModel {
     	this.prefixesMap.remove(name);
     }
     
+    @JsonProperty("baseUri")
     public URI getBaseUri() {
         return baseUri;
     }
 
+    @JsonIgnore
     public Map<String, Vocabulary> getPrefixesMap() {
 		return prefixesMap;
 	}
+    
+    @JsonProperty("prefixes")
+    public Collection<Vocabulary> getPrefixesList() {
+    	return prefixesMap.values();
+    }
     
     public void setPrefixesMap(Map<String, Vocabulary> map) {
 		this.prefixesMap = map;
 	}
 
+    @JsonProperty("rootNodes")
 	public List<Node> getRoots() {
         return _rootNodes;
     }
@@ -193,8 +199,7 @@ public class RdfSchema implements OverlayModel {
             lang = stripAtt(lang);
             node = new ConstantLiteralNode(o.getString("value"), valueType,lang);
         } else if ("blank".equals(nodeType)) {
-            node = new ConstantBlankNode(s._blanks.size());
-            s._blanks.add((ConstantBlankNode) node);
+            node = new ConstantBlankNode();
             reconstructTypes((ConstantBlankNode)node,o);
         }
 
