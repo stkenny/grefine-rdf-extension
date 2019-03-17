@@ -11,7 +11,7 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
 
-        <openrefine.version>3.1</openrefine.version>
+        <openrefine.version>3.2-beta</openrefine.version>
         <slf4j.version>1.7.5</slf4j.version>
         <guava.version>22.0</guava.version>
         <jena.version>3.8.0</jena.version>
