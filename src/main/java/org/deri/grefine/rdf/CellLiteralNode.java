@@ -6,6 +6,7 @@ import java.util.Properties;
 
 import org.json.JSONException;
 import org.json.JSONWriter;
+
 import org.eclipse.rdf4j.model.BNode;
 import org.eclipse.rdf4j.model.Literal;
 import org.eclipse.rdf4j.model.Value;
@@ -121,27 +122,27 @@ public class CellLiteralNode implements CellNode{
 	}
 
 	@Override
-	public void write(JSONWriter writer, Properties options)
-			throws JSONException {
-		writer.object();
-        writer.key("nodeType"); writer.value("cell-as-literal");
-        writer.key("expression"); writer.value(expression);
-        writer.key("isRowNumberCell"); writer.value(isRowNumberCell);
-        if(valueType!=null){
-        	writer.key("valueType"); writer.value(valueType);
-        }
-        if(lang!=null){
-            writer.key("lang"); writer.value(lang);
-        }
-        if(columnName!=null){
-        	writer.key("columnName"); writer.value(columnName);
-        }
-        writer.endObject();		
+	public String getNodeType() {
+		return "cell-as-literal";
 	}
 
 	@Override
-	public String getNodeType() {
-		return "cell-as-literal";
+	public void write(JSONWriter writer, Properties options)
+			throws JSONException {
+		writer.object();
+		writer.key("nodeType"); writer.value("cell-as-literal");
+		writer.key("expression"); writer.value(expression);
+		writer.key("isRowNumberCell"); writer.value(isRowNumberCell);
+		if(valueType!=null){
+			writer.key("valueType"); writer.value(valueType);
+		}
+		if(lang!=null){
+			writer.key("lang"); writer.value(lang);
+		}
+		if(columnName!=null){
+			writer.key("columnName"); writer.value(columnName);
+		}
+		writer.endObject();
 	}
 
 }

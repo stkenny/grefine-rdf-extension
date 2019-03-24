@@ -10,10 +10,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.deri.grefine.rdf.Util;
-import org.json.JSONArray;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.JsonNode;
+
 import com.google.refine.commands.expr.PreviewExpressionCommand;
 import com.google.refine.expr.EvalError;
 import com.google.refine.expr.ExpressionUtils;
@@ -52,7 +53,7 @@ public class PreviewRdfValueExpressionCommand extends PreviewExpressionCommand{
             response.setCharacterEncoding("UTF-8");
             response.setHeader("Content-Type", "application/json");
             
-            JSONArray rowIndices = ParsingUtilities.evaluateJsonStringToArray(rowIndicesString);
+            JsonNode rowIndices = ParsingUtilities.evaluateJsonStringToArrayNode(rowIndicesString);
             
             ObjectMapper mapper = new ObjectMapper();
             JsonGenerator writer = mapper.getFactory().createGenerator(response.getWriter());
@@ -66,8 +67,8 @@ public class PreviewRdfValueExpressionCommand extends PreviewExpressionCommand{
         }
 	}
 	
-	private void respondUriPreview(Project project, JsonGenerator writer, JSONArray rowIndices, String expression, String columnName, URI base) throws IOException{
-		int length = rowIndices.length();
+	private void respondUriPreview(Project project, JsonGenerator writer, JsonNode rowIndices, String expression, String columnName, URI base) throws IOException{
+		int length = rowIndices.size();
         
         writer.writeStartObject();
         
@@ -77,7 +78,7 @@ public class PreviewRdfValueExpressionCommand extends PreviewExpressionCommand{
             for (int i = 0; i < length; i++) {
                 Object result = null;
                 absolutes[i] = null;
-                int rowIndex = rowIndices.getInt(i);
+                int rowIndex = rowIndices.get(i).asInt();
                 if (rowIndex >= 0 && rowIndex < project.rows.size()) {
                     Row row = project.rows.get(rowIndex);
                     result = Util.evaluateExpression(project, expression, columnName, row, rowIndex); 
@@ -136,8 +137,8 @@ public class PreviewRdfValueExpressionCommand extends PreviewExpressionCommand{
 	}
 	
 	
-	private void respondLiteralPreview(Project project, JsonGenerator writer, JSONArray rowIndices, String expression, String columnName) throws IOException{
-		int length = rowIndices.length();
+	private void respondLiteralPreview(Project project, JsonGenerator writer, JsonNode rowIndices, String expression, String columnName) throws IOException{
+		int length = rowIndices.size();
         
         writer.writeStartObject();
         
@@ -145,7 +146,7 @@ public class PreviewRdfValueExpressionCommand extends PreviewExpressionCommand{
             writer.writeArrayFieldStart("results");
             for (int i = 0; i < length; i++) {
                 Object result = null;
-                int rowIndex = rowIndices.getInt(i);
+                int rowIndex = rowIndices.get(i).asInt();
                 if (rowIndex >= 0 && rowIndex < project.rows.size()) {
                     Row row = project.rows.get(rowIndex);
                     result = Util.evaluateExpression(project, expression, columnName, row, rowIndex); 

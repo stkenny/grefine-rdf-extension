@@ -17,13 +17,9 @@ import org.deri.grefine.rdf.vocab.Vocabulary;
 import org.deri.grefine.rdf.vocab.VocabularyImportException;
 import org.deri.grefine.rdf.vocab.VocabularyImporter;
 import org.deri.grefine.rdf.vocab.VocabularyIndexException;
-import org.json.JSONException;
-import org.json.JSONWriter;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.refine.Jsonizable;
-
 
 public class GetDefaultPrefixesCommand extends RdfCommand{
 
@@ -67,7 +63,7 @@ public class GetDefaultPrefixesCommand extends RdfCommand{
 		respondJSON(response, new PrefixesList(voc));
 	}
 	
-	public class PrefixesList implements Jsonizable {
+	public class PrefixesList {
 		
 		@JsonProperty("prefixes")
 		public Collection<Vocabulary> prefixes;
@@ -82,23 +78,6 @@ public class GetDefaultPrefixesCommand extends RdfCommand{
 		public Map<String, Vocabulary> getMap() {
 			return prefixes.stream()
 					.collect(Collectors.toMap(Vocabulary::getName, Function.identity()));
-		}
-
-		@Override
-		public void write(JSONWriter writer, Properties options) throws JSONException {
-			writer.object();
-			writer.key("prefixes");
-			writer.array();
-			for (Vocabulary v : prefixes) {
-				writer.object();
-				writer.key("name");
-				writer.value(v.getName());
-				writer.key("uri");
-				writer.value(v.getUri());
-				writer.endObject();
-			}
-			writer.endArray();
-			writer.endObject();
 		}
 	}
 

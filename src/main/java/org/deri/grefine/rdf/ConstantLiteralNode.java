@@ -1,21 +1,22 @@
 package org.deri.grefine.rdf;
 
-import java.net.URI;
 import java.util.Properties;
 
 import org.json.JSONException;
 import org.json.JSONWriter;
-import org.eclipse.rdf4j.model.BNode;
-import org.eclipse.rdf4j.model.Literal;
-import org.eclipse.rdf4j.model.Value;
-import org.eclipse.rdf4j.model.ValueFactory;
-import org.eclipse.rdf4j.repository.RepositoryConnection;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.refine.model.Project;
 import com.google.refine.model.Row;
+import org.eclipse.rdf4j.model.BNode;
+import org.eclipse.rdf4j.model.Literal;
+import org.eclipse.rdf4j.model.Value;
+import org.eclipse.rdf4j.model.ValueFactory;
+import org.eclipse.rdf4j.repository.RepositoryConnection;
+
+import java.net.URI;
 
 public class ConstantLiteralNode implements Node{
 
@@ -69,21 +70,7 @@ public class ConstantLiteralNode implements Node{
     public void setValue(String value) {
         this.value = value;
     }
-    
-    @Override
-	public void write(JSONWriter writer, Properties options) throws JSONException {
-    	writer.object();
-        writer.key("nodeType"); writer.value("literal");
-        writer.key("value"); writer.value(value);
-        if(valueType!=null){
-        	writer.key("valueType"); writer.value(valueType);
-        }
-        if(lang!=null){
-        	writer.key("lang"); writer.value(lang);
-        }
-        writer.endObject();
-	}
-    
+
     @Override
 	public Value[] createNode(URI baseUri, ValueFactory factory, RepositoryConnection con, Project project,
             Row row, int rowIndex,BNode[] blanks) {
@@ -105,9 +92,26 @@ public class ConstantLiteralNode implements Node{
             return null;
         }
     }
+
 	@Override
 	public String getNodeType() {
 		return "literal";
 	}
+
+	@Override
+    public void write(JSONWriter writer, Properties options) throws JSONException {
+        writer.object();
+        writer.key("nodeType"); writer.value("literal");
+        writer.key("value"); writer.value(value);
+        if(valueType!=null){
+            writer.key("valueType"); writer.value(valueType);
+        }
+        if(lang!=null){
+            writer.key("lang"); writer.value(lang);
+        }
+        writer.endObject();
+    }
+
+
 
 }

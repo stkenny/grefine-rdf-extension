@@ -15,13 +15,10 @@ import org.deri.grefine.rdf.Util;
 import org.deri.grefine.rdf.app.ApplicationContext;
 import org.deri.grefine.rdf.vocab.SearchResultItem;
 import org.deri.grefine.rdf.vocab.Vocabulary;
-import org.json.JSONException;
-import org.json.JSONWriter;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.refine.Jsonizable;
 import com.google.refine.ProjectManager;
 import com.google.refine.model.Project;
 
@@ -110,7 +107,7 @@ public class SuggestTermCommand extends RdfCommand{
     }
 }
 
-class Result implements Jsonizable{
+class Result {
 	
 	class IdName {
 		@JsonProperty("id")
@@ -135,30 +132,4 @@ class Result implements Jsonizable{
     void addResult(String id, String name){
         results.add(new IdName(id, name));
     }
-    @Override
-    public void write(JSONWriter writer, Properties options)
-            throws JSONException {
-        writer.object();
-        
-        
-        writer.key("prefix");
-        writer.value(prefix);
-        
-        writer.key("result");
-        writer.array();
-        for(IdName res:results){
-            writer.object();
-            
-            writer.key("id");
-            writer.value(res.id);
-            
-            writer.key("name");
-            writer.value(res.name);
-            
-            writer.endObject();
-        }
-        writer.endArray();
-        writer.endObject();
-    }
-    
 }

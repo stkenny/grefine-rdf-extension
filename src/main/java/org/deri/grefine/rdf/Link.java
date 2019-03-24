@@ -2,15 +2,14 @@ package org.deri.grefine.rdf;
 
 import java.util.Properties;
 
-import org.json.JSONException;
-import org.json.JSONWriter;
-
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.refine.Jsonizable;
 
-public class Link implements Jsonizable{
+import org.json.JSONWriter;
+import org.json.JSONException;
+
+public class Link {
 
 	@JsonProperty("uri")
     public final String propertyUri;
@@ -32,16 +31,16 @@ public class Link implements Jsonizable{
         this.target = t;
         this.curie = curie;
     }
-    
-    public void write(JSONWriter writer, Properties options)throws  JSONException{
 
-        writer.object();
-        writer.key("uri"); writer.value(propertyUri);
-        writer.key("curie"); writer.value(curie);
-        if (target != null) {
-            writer.key("target");
-            target.write(writer, options);
-        }
-        writer.endObject();
-    }
+	public void write(JSONWriter writer, Properties options)throws  JSONException{
+
+		writer.object();
+		writer.key("uri"); writer.value(propertyUri);
+		writer.key("curie"); writer.value(curie);
+		if (target != null) {
+			writer.key("target");
+			target.write(writer, options);
+		}
+		writer.endObject();
+	}
 }

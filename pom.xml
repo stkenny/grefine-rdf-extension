@@ -101,41 +101,11 @@
                 </exclusion>
             </exclusions>
         </dependency>
-        
-	<!-- <dependency>
-            <groupId>org.apache.any23</groupId>
-            <artifactId>apache-any23-core</artifactId>
-            <version>${any23.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>xerces</groupId>
-                    <artifactId>xercesImpl</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.json</groupId>
-                    <artifactId>json</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>commons-logging</groupId>
-                    <artifactId>commons-logging</artifactId>
-                </exclusion> 
-                <exclusion>
-                    <groupId>commons-loggingi-api</groupId>
-                    <artifactId>commons-logging-api</artifactId>
-                </exclusion>
-            </exclusions> 
-        </dependency>
-	 <dependency>
-            <groupId>org.apache.any23</groupId>
-            <artifactId>apache-any23-mime</artifactId>
-            <version>${any23.version}</version>
-	</dependency> -->
 
         <dependency>
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>
-            <version>20160810</version>
-            <scope>provided</scope>
+	    <version>20180813</version>
         </dependency>
  
         <dependency>

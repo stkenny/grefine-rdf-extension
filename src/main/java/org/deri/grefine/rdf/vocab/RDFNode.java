@@ -1,13 +1,11 @@
 package org.deri.grefine.rdf.vocab;
 
-import java.util.Properties;
-
 import org.json.JSONException;
 import org.json.JSONWriter;
 
-import com.google.refine.Jsonizable;
+import java.util.Properties;
 
-public class RDFNode implements Jsonizable{
+public class RDFNode {
     private String localPart;
     private String description;
     private String URI;

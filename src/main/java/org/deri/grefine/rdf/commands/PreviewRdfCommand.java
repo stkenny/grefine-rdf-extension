@@ -18,13 +18,9 @@ import org.eclipse.rdf4j.rio.RDFFormat;
 import org.eclipse.rdf4j.rio.RDFHandlerException;
 import org.eclipse.rdf4j.rio.RDFWriter;
 import org.eclipse.rdf4j.rio.Rio;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.json.JSONWriter;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.refine.Jsonizable;
 import com.google.refine.browsing.Engine;
 import com.google.refine.commands.Command;
 import com.google.refine.model.Project;
@@ -87,20 +83,12 @@ public class PreviewRdfCommand extends Command {
         }
     }
     
-    private class PreviewResponse implements Jsonizable {
+    private class PreviewResponse {
     	@JsonProperty("v")
     	String value;
     	
     	protected PreviewResponse(String v) {
     		value = v;
     	}
-
-		@Override
-		public void write(JSONWriter writer, Properties options) throws JSONException {
-			writer.object();
-            writer.key("v");
-            writer.value(value);
-            writer.endObject();
-		}
     }
 }

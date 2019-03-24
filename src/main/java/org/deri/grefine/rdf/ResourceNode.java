@@ -1,26 +1,21 @@
 package org.deri.grefine.rdf;
 
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
-
-import org.json.JSONException;
-import org.json.JSONWriter;
-import org.eclipse.rdf4j.model.BNode;
-import org.eclipse.rdf4j.model.Resource;
-import org.eclipse.rdf4j.model.Statement;
-import org.eclipse.rdf4j.model.Value;
-import org.eclipse.rdf4j.model.ValueFactory;
-import org.eclipse.rdf4j.model.vocabulary.RDF;
-import org.eclipse.rdf4j.repository.RepositoryConnection;
-import org.eclipse.rdf4j.repository.RepositoryException;
-
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.refine.model.Project;
 import com.google.refine.model.Row;
+import org.eclipse.rdf4j.model.*;
+import org.eclipse.rdf4j.model.vocabulary.RDF;
+import org.eclipse.rdf4j.repository.RepositoryConnection;
+import org.eclipse.rdf4j.repository.RepositoryException;
+import org.json.JSONException;
+import org.json.JSONWriter;
+
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
 
 
 abstract public class ResourceNode implements Node {
@@ -57,7 +52,6 @@ abstract public class ResourceNode implements Node {
     }
 
     protected abstract void writeNode(JSONWriter writer) throws JSONException;
-    @Override
     public void write(JSONWriter writer, Properties options)throws JSONException{
         writer.object();
         //writer node
@@ -80,12 +74,11 @@ abstract public class ResourceNode implements Node {
             l.write(writer,options);
         }
         writer.endArray();
-        
+
         writer.endObject();
-        
+
     }
 
-    
     protected void addTypes(Resource[] rs,ValueFactory factory, RepositoryConnection con, URI baseUri) throws RepositoryException {
     	for(Resource r:rs){
     		for(RdfType type:this.getTypes()){

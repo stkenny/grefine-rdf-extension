@@ -1,15 +1,11 @@
 package org.deri.grefine.rdf;
 
-import java.io.IOException;
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Properties;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.JsonNode;
 
+import com.google.refine.model.OverlayModel;
+import com.google.refine.model.Project;
 import org.deri.grefine.rdf.ResourceNode.RdfType;
 import org.deri.grefine.rdf.app.ApplicationContext;
 import org.deri.grefine.rdf.vocab.PrefixExistException;
@@ -22,10 +18,15 @@ import org.json.JSONWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.refine.model.OverlayModel;
-import com.google.refine.model.Project;
+import java.io.IOException;
+import java.net.URI;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Properties;
+import java.util.Collection;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.HashMap;
 
 public class RdfSchema implements OverlayModel {
 
@@ -118,9 +119,9 @@ public class RdfSchema implements OverlayModel {
         return _rootNodes;
     }
 
-    static public RdfSchema reconstruct(JSONObject o) throws JSONException {
+    static public RdfSchema reconstruct(JsonNode o) throws JSONException {
         RdfSchema s = new RdfSchema();
-        s.baseUri = Util.buildURI(o.getString("baseUri"));
+        s.baseUri = Util.buildURI(o.get("baseUri").asText());
         
         JSONArray prefixesArr;
         //for backward compatibility
@@ -149,10 +150,10 @@ public class RdfSchema implements OverlayModel {
         return s;
     }
 
-    static protected Node reconstructNode(JSONObject o, RdfSchema s)
+    static protected Node reconstructNode(JsonNode o, RdfSchema s)
             throws JSONException {
         Node node = null;
-        String nodeType = o.getString("nodeType");
+        String nodeType = o.get("nodeType").asText();
         if (nodeType.startsWith("cell-as-")) {
         	
         	boolean isRowNumberCell;
@@ -237,32 +238,31 @@ public class RdfSchema implements OverlayModel {
         }
     }
 
-    @Override
     public void write(JSONWriter writer, Properties options)
             throws JSONException {
         writer.object();
         writer.key("baseUri"); writer.value(baseUri);
-        
+
         writer.key("prefixes");
         writer.array();
         for(Vocabulary v:this.prefixesMap.values()){
-        	writer.object();
-        	writer.key("name"); writer.value(v.getName());
-        	writer.key("uri"); writer.value(v.getUri());
-        	writer.endObject();
+            writer.object();
+            writer.key("name"); writer.value(v.getName());
+            writer.key("uri"); writer.value(v.getUri());
+            writer.endObject();
         }
         writer.endArray();
-        
+
         writer.key("rootNodes");
         writer.array();
-       	for (Node node : _rootNodes) {
-        	node.write(writer, options);
-       	}
+        for (Node node : _rootNodes) {
+            node.write(writer, options);
+        }
 
-       	writer.endArray();
+        writer.endArray();
         writer.endObject();
     }
-    
+
     static public RdfSchema load(Project project, JSONObject obj) throws Exception {
         return reconstruct(obj);
     }

@@ -2,9 +2,6 @@ package org.deri.grefine.rdf.expr.functions.strings;
 
 import java.util.Properties;
 
-import org.json.JSONException;
-import org.json.JSONWriter;
-
 import com.google.refine.expr.EvalError;
 import com.google.refine.grel.ControlFunctionRegistry;
 import com.google.refine.grel.Function;
@@ -23,14 +20,19 @@ public class Urlify implements Function {
         return new EvalError(ControlFunctionRegistry.getFunctionName(this) + " expects 1 string");
     }
 
-    public void write(JSONWriter writer, Properties options)
-            throws JSONException {
-        writer.object();
-        writer.key("description"); writer.value("replaces spaces with underscore");
-        writer.key("params"); writer.value("string s");
-        writer.key("returns"); writer.value("string");
-        writer.endObject();
-        
+    @Override
+    public String getDescription() {
+            return "replaces spaces with underscore";
+    }
+
+    @Override
+    public String getParams() {
+        return "string s";
+    }
+
+    @Override
+    public String getReturns() {
+        return "string";
     }
 
 }

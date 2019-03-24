@@ -11,6 +11,7 @@ import org.json.JSONObject;
 import org.json.JSONWriter;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.google.refine.history.Change;
 import com.google.refine.history.HistoryEntry;
 import com.google.refine.model.AbstractOperation;
@@ -27,10 +28,10 @@ public class SaveRdfSchemaOperation extends AbstractOperation {
         this._schema = schema;
     }
 
-    static public AbstractOperation reconstruct(Project project, JSONObject obj)
+    static public AbstractOperation reconstruct(Project project, JsonNode obj)
             throws Exception {
         return new SaveRdfSchemaOperation(RdfSchema.reconstruct(obj
-                .getJSONObject("schema")));
+                .get("schema")));
     }
     
     @JsonProperty("description")
@@ -47,19 +48,6 @@ public class SaveRdfSchemaOperation extends AbstractOperation {
     @JsonProperty("op")
     public String getOperationIdentifier() {
     	return OperationRegistry.s_opClassToName.get(this.getClass());
-    }
-
-    public void write(JSONWriter writer, Properties options)
-            throws JSONException {
-        writer.object();
-        writer.key("op");
-        writer.value(OperationRegistry.s_opClassToName.get(this.getClass()));
-        writer.key("description");
-        writer.value("Save RDF schema skeleton");
-        writer.key("schema");
-        _schema.write(writer, options);
-        writer.endObject();
-
     }
 
     @Override
@@ -126,10 +114,10 @@ public class SaveRdfSchemaOperation extends AbstractOperation {
                 
                 if ("oldSchema".equals(field) && value.length() > 0) {
                     oldSchema = RdfSchema.reconstruct(ParsingUtilities
-                            .evaluateJsonStringToObject(value));
+                            .evaluateJsonStringToObjectNode(value));
                 } else if ("newSchema".equals(field) && value.length() > 0) {
                     newSchema = RdfSchema.reconstruct(ParsingUtilities
-                            .evaluateJsonStringToObject(value));
+                            .evaluateJsonStringToObjectNode(value));
                 }
             }
             
