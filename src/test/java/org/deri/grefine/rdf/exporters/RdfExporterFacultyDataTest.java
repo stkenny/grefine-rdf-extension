@@ -1,5 +1,6 @@
 package org.deri.grefine.rdf.exporters;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.google.refine.browsing.Engine;
 import com.google.refine.expr.ExpressionUtils;
 import com.google.refine.grel.ControlFunctionRegistry;
@@ -22,7 +23,6 @@ import org.eclipse.rdf4j.repository.sail.SailRepository;
 import org.eclipse.rdf4j.repository.util.RepositoryUtil;
 import org.eclipse.rdf4j.rio.RDFFormat;
 import org.eclipse.rdf4j.sail.memory.MemoryStore;
-import org.json.JSONObject;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -183,7 +183,7 @@ public class RdfExporterFacultyDataTest {
 	
 	RdfSchema getRdfSchema() throws Exception{
 		String json = "{\"baseUri\":\"http://lab.linkeddata.deri.ie/test#\",\"rootNodes\":[{\"nodeType\":\"cell-as-resource\",\"isRowNumberCell\":false,\"expression\":\"value.urlify()\",\"columnName\":\"Name\",\"rdfTypes\":[{\"uri\":\"http://xmlns.com/foaf/0.1/Person\",\"curie\":\"foaf:Person\"}],\"links\":[{\"uri\":\"http://xmlns.com/foaf/0.1/name\",\"curie\":\"foaf:name\",\"target\":{\"nodeType\":\"cell-as-literal\",\"expression\":\"value\",\"isRowNumberCell\":false,\"columnName\":\"Name\"}},{\"uri\":\"http://xmlns.com/foaf/0.1/mbox\",\"curie\":\"foaf:mbox\",\"target\":{\"nodeType\":\"cell-as-resource\",\"isRowNumberCell\":false,\"expression\":\"'mailto:' + value\",\"rdfTypes\":[],\"columnName\":\"Email\",\"links\":[]}},{\"uri\":\"officeNumber\",\"curie\":\":officeNumber\",\"target\":{\"nodeType\":\"cell-as-literal\",\"expression\":\"value\",\"isRowNumberCell\":false,\"valueType\":\"http://www.w3.org/2001/XMLSchema#int\",\"columnName\":\"Office\"}},{\"uri\":\"http://xmlns.com/foaf/0.1/member\",\"curie\":\"foaf:member\",\"target\":{\"nodeType\":\"resource\",\"value\":\"http://example.org/UMBC\",\"rdfTypes\":[{\"uri\":\"http://xmlns.com/foaf/0.1/Organization\",\"curie\":\"foaf:Organization\"}],\"links\":[{\"uri\":\"http://www.w3.org/2000/01/rdf-schema#label\",\"curie\":\"rdfs:label\",\"target\":{\"nodeType\":\"literal\",\"value\":\"University of Maryland Baltimore County\",\"lang\":\"en\"}}]}},{\"uri\":\"advisor\",\"curie\":\":advisor\",\"target\":{\"nodeType\":\"cell-as-resource\",\"isRowNumberCell\":false,\"expression\":\"value.urlify()\",\"columnName\":\"Advisor\",\"rdfTypes\":[{\"uri\":\"Advisor\",\"curie\":\":Advisor\"}],\"links\":[{\"uri\":\"http://xmlns.com/foaf/0.1/name\",\"curie\":\"foaf:name\",\"target\":{\"nodeType\":\"cell-as-literal\",\"expression\":\"value\",\"isRowNumberCell\":false,\"columnName\":\"Advisor\"}}]}}]}]}";
-		JSONObject o = ParsingUtilities.evaluateJsonStringToObject(json);
+		JsonNode o = ParsingUtilities.evaluateJsonStringToObjectNode(json);
 		return RdfSchema.reconstruct(o);
 	}
 	

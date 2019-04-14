@@ -1,4 +1,4 @@
-import com.google.refine.model.metadata.ProjectMetadata;
+import com.google.refine.ProjectMetadata;
 import com.google.refine.model.Project;
 
 public class ProjectFake extends Project{

@@ -1,36 +1,19 @@
 package org.deri.grefine.util;
 
-import static org.testng.Assert.assertEquals;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.*;
+import org.testng.Assert;
 
 import java.io.IOException;
 import java.io.LineNumberReader;
 import java.io.StringReader;
 import java.io.StringWriter;
-import java.util.Properties;
 
-import org.json.JSONWriter;
-import org.testng.Assert;
-
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.MapperFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.google.refine.Jsonizable;
+import static org.testng.Assert.assertEquals;
 
 public class TestUtils {
-	public static void isSerializedTo(Jsonizable obj, String json) {
-		StringWriter sw = new StringWriter();
-		JSONWriter writer = new JSONWriter(sw);
-		obj.write(writer, new Properties());
-		
-		sw.flush();
-		testJsonEquivalence(sw.toString(), json);
-		
-        // also check Jackson serialization
+	public static void isSerializedTo(Object obj, String json) {
         try {
             ObjectMapper mapper = new ObjectMapper();
             String jacksonJson = mapper.writeValueAsString(obj);

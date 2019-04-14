@@ -3,13 +3,15 @@ package org.deri.grefine.rdf.vocab;
 import org.json.JSONException;
 import org.json.JSONWriter;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Vocabulary {
 	private String name;
 	private String uri;
 
-    public Vocabulary(String name, String uri){
+	@JsonCreator
+    public Vocabulary(@JsonProperty("name") String name, @JsonProperty("uri") String uri){
     	this.name = name;
     	this.uri = uri;
     }

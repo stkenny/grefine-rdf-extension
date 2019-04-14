@@ -13,7 +13,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.refine.model.Project;
 import com.google.refine.model.Row;
 
-public class ConstantResourceNode extends ResourceNode{
+public class ConstantResourceNode extends ResourceNode {
 
     private String uri;
 

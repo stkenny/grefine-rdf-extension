@@ -3,6 +3,8 @@ package org.deri.grefine.rdf;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 
 import com.google.refine.model.OverlayModel;
 import com.google.refine.model.Project;
@@ -123,24 +125,24 @@ public class RdfSchema implements OverlayModel {
         RdfSchema s = new RdfSchema();
         s.baseUri = Util.buildURI(o.get("baseUri").asText());
         
-        JSONArray prefixesArr;
+        JsonNode prefixesArr;
         //for backward compatibility
         if(o.has("prefixes")){
-        	prefixesArr = o.getJSONArray("prefixes");
+        	prefixesArr = o.get("prefixes");
         }else{
-        	prefixesArr = new JSONArray();
+        	prefixesArr = JsonNodeFactory.instance.arrayNode();
         }
-        for (int i = 0; i < prefixesArr.length(); i++) {
-        	JSONObject prefixObj = prefixesArr.getJSONObject(i);
-        	String name = prefixObj.getString("name");
-        	s.prefixesMap.put(name,new Vocabulary(name, prefixObj.getString("uri")));
+        for (int i = 0; i < prefixesArr.size(); i++) {
+        	JsonNode prefixObj = prefixesArr.get(i);
+        	String name = prefixObj.get("name").asText();
+        	s.prefixesMap.put(name, new Vocabulary(name, prefixObj.get("uri").asText()));
         }
         
-        JSONArray rootNodes = o.getJSONArray("rootNodes");
-        int count = rootNodes.length();
+        JsonNode rootNodes = o.get("rootNodes");
+        int count = rootNodes.size();
 
         for (int i = 0; i < count; i++) {
-            JSONObject o2 = rootNodes.getJSONObject(i);
+            JsonNode o2 = rootNodes.get(i);
             Node node = reconstructNode(o2, s);
             if (node != null) {
                 s._rootNodes.add(node);
@@ -156,30 +158,24 @@ public class RdfSchema implements OverlayModel {
         String nodeType = o.get("nodeType").asText();
         if (nodeType.startsWith("cell-as-")) {
         	
-        	boolean isRowNumberCell;
-        	try{
-        		isRowNumberCell = o.getBoolean("isRowNumberCell");
-        	}catch(JSONException e){
-            	//should never arrive here
-            	//but for backward compatibility
-        		isRowNumberCell = false;
-            }        	
+        	boolean isRowNumberCell = o.get("isRowNumberCell").asBoolean(false);
+
             String columnName = null;
             if(!isRowNumberCell){
-            	columnName = o.getString("columnName");
+            	columnName = o.get("columnName").asText();
             }
             if ("cell-as-resource".equals(nodeType)) {
-                String exp = o.getString("expression");
+                String exp = o.get("expression").asText();
                 node = new CellResourceNode(columnName, exp,isRowNumberCell);
                 reconstructTypes((CellResourceNode)node,o);
             } else if ("cell-as-literal".equals(nodeType)) {
-                String valueType = o.has("valueType")?Util.getDataType(s.getBaseUri(),o.getString("valueType")):null;
-                String lang = o.has("lang") ? o.getString("lang"):null;
+                String valueType = o.has("valueType") ? Util.getDataType(s.getBaseUri(),o.get("valueType").asText()) : null;
+                String lang = o.has("lang") ? o.get("lang").asText() : null;
                 //strip off @
                 lang = stripAtt(lang);
                 String exp;
                 if (o.has("expression")){
-                	exp = o.getString("expression");
+                	exp = o.get("expression").asText();
                 }else{
                 	//TODO backward compatibility 
                 	exp = "value";
@@ -187,18 +183,18 @@ public class RdfSchema implements OverlayModel {
                 node = new CellLiteralNode(columnName, exp, valueType, lang,isRowNumberCell);
             } else if ("cell-as-blank".equals(nodeType)) {
             	//TODO blank nodes just accept value as expression
-                node = new CellBlankNode(columnName,"value",isRowNumberCell);
-                reconstructTypes((CellBlankNode)node,o);
+                node = new CellBlankNode(columnName,"value", isRowNumberCell);
+                reconstructTypes((CellBlankNode)node, o);
             }
         } else if ("resource".equals(nodeType)) {
-            node = new ConstantResourceNode(o.getString("value"));
+            node = new ConstantResourceNode(o.get("value").asText());
             reconstructTypes((ConstantResourceNode)node,o);
         } else if ("literal".equals(nodeType)) {
-            String valueType = o.has("valueType")?Util.getDataType(s.getBaseUri(),o.getString("valueType")):null;
-            String lang = o.has("lang") ? o.getString("lang"):null;
+            String valueType = o.has("valueType") ? Util.getDataType(s.getBaseUri(), o.get("valueType").asText()) : null;
+            String lang = o.has("lang") ? o.get("lang").asText() : null;
             //strip off @
             lang = stripAtt(lang);
-            node = new ConstantLiteralNode(o.getString("value"), valueType,lang);
+            node = new ConstantLiteralNode(o.get("value").asText(), valueType,lang);
         } else if ("blank".equals(nodeType)) {
             node = new ConstantBlankNode();
             reconstructTypes((ConstantBlankNode)node,o);
@@ -207,31 +203,31 @@ public class RdfSchema implements OverlayModel {
         if (node != null && node instanceof ResourceNode && o.has("links")) {
             ResourceNode node2 = (ResourceNode) node;
 
-            JSONArray links = o.getJSONArray("links");
-            int linkCount = links.length();
+            JsonNode links = o.get("links");
+            int linkCount = links.size();
 
             for (int j = 0; j < linkCount; j++) {
-                JSONObject oLink = links.getJSONObject(j);
+                JsonNode oLink = links.get(j);
 
-                node2.addLink(new Link(oLink.getString("uri"), oLink.getString("curie"),oLink
+                node2.addLink(new Link(oLink.get("uri").asText(), oLink.get("curie").asText(),oLink
                         .has("target")
-                        && !oLink.isNull("target") ? reconstructNode(oLink
-                        .getJSONObject("target"), s) : null));
+                        && !oLink.get("target").isNull() ? reconstructNode(oLink
+                        .get("target"), s) : null));
             }
         }
 
         return node;
     }
 
-    static private void reconstructTypes(ResourceNode node, JSONObject o)
+    static private void reconstructTypes(ResourceNode node, JsonNode o)
             throws JSONException {
     	
     	if (o.has("rdfTypes")) {
-    		JSONArray arr = o.getJSONArray("rdfTypes");
+    		JsonNode arr = o.get("rdfTypes");
     		List<RdfType> types = new ArrayList<RdfType>();
-            for (int i = 0; i < arr.length(); i++) {
-                String uri = arr.getJSONObject(i).getString("uri");
-                String curie = arr.getJSONObject(i).getString("curie");
+            for (int i = 0; i < arr.size(); i++) {
+                String uri = arr.get(i).get("uri").asText();
+                String curie = arr.get(i).get("curie").asText();
                 types.add(new RdfType(uri, curie));
             }            
             node.setTypes(types);
@@ -263,7 +259,7 @@ public class RdfSchema implements OverlayModel {
         writer.endObject();
     }
 
-    static public RdfSchema load(Project project, JSONObject obj) throws Exception {
+    static public RdfSchema load(Project project, JsonNode obj) throws Exception {
         return reconstruct(obj);
     }
     

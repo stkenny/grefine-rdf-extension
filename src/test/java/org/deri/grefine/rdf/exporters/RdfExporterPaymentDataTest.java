@@ -1,32 +1,11 @@
 package org.deri.grefine.rdf.exporters;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
-
-import java.io.InputStream;
-import java.util.Properties;
-
+import com.google.refine.browsing.Engine;
+import com.google.refine.model.Project;
 import org.eclipse.rdf4j.repository.Repository;
-import org.eclipse.rdf4j.repository.RepositoryConnection;
 import org.eclipse.rdf4j.repository.RepositoryException;
-import org.eclipse.rdf4j.repository.sail.SailRepository;
-import org.eclipse.rdf4j.repository.util.RepositoryUtil;
-import org.eclipse.rdf4j.rio.RDFFormat;
-import org.eclipse.rdf4j.sail.memory.MemoryStore;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-
-import com.google.refine.model.metadata.ProjectMetadata;
-import com.google.refine.browsing.Engine;
-import com.google.refine.expr.ExpressionUtils;
-import com.google.refine.grel.ControlFunctionRegistry;
-import com.google.refine.importers.SeparatorBasedImporter;
-import com.google.refine.model.Project;
-import org.deri.grefine.rdf.RdfSchema;
-import org.deri.grefine.rdf.app.ApplicationContext;
-import org.deri.grefine.rdf.expr.RdfBinder;
-import org.deri.grefine.rdf.expr.functions.strings.Urlify;
-import com.google.refine.util.ParsingUtilities;
 
 public class RdfExporterPaymentDataTest {
 
