@@ -38,11 +38,8 @@ public class SearchResultItem {
 
 	public void writeAsSearchResult(JsonGenerator writer) throws IOException {
 		writer.writeStartObject();
-
 		writer.writeStringField("id", id);
-
 		writer.writeStringField("name", prefix + ":" + localName);
-
 		writer.writeStringField("description", id + "<br/><em>label: </em>" + label
 				+ "<br/><em>description: </em>" + description);
 		writer.writeEndObject();

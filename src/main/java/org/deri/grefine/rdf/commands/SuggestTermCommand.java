@@ -1,26 +1,25 @@
 package org.deri.grefine.rdf.commands;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
-import java.util.regex.Pattern;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.google.refine.ProjectManager;
+import com.google.refine.model.Project;
+import com.google.refine.util.ParsingUtilities;
 import org.deri.grefine.rdf.RdfSchema;
 import org.deri.grefine.rdf.Util;
 import org.deri.grefine.rdf.app.ApplicationContext;
 import org.deri.grefine.rdf.vocab.SearchResultItem;
 import org.deri.grefine.rdf.vocab.Vocabulary;
+import org.deri.grefine.rdf.vocab.VocabularyIndexException;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.refine.ProjectManager;
-import com.google.refine.model.Project;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.Writer;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Pattern;
 
 public class SuggestTermCommand extends RdfCommand{
 
@@ -38,37 +37,47 @@ public class SuggestTermCommand extends RdfCommand{
         String projectId = request.getParameter("type");
         
         response.setHeader("Content-Type", "application/json");
-        
-        JsonGenerator writer = (new ObjectMapper()).getFactory().createGenerator(response.getWriter());
+
+		Writer w = response.getWriter();
+        JsonGenerator writer = ParsingUtilities.mapper.getFactory().createGenerator(w);
         String type = request.getParameter("type_strict");
         
         String query = request.getParameter("prefix");
-        
-        try{
-            writer.writeStartObject();
-            
-            writer.writeStringField("prefix", query);
-            
-            List<SearchResultItem> nodes;
-            if(type!=null && type.trim().equals("property")){
-                nodes = getRdfContext().getVocabularySearcher().searchProperties(query,projectId);
-            }else{
-                nodes = getRdfContext().getVocabularySearcher().searchClasses(query,projectId);
-            }
-            
-            if(nodes.size()==0){
-            	RdfSchema schema = Util.getProjectSchema(getRdfContext(),getProject(request));
-            	nodes = search(schema,query);
-            }
-            for(SearchResultItem c:nodes){
-                c.writeAsSearchResult(writer);
-            }
-            writer.writeEndArray();
-            writer.writeEndObject();
-        }catch(Exception e){
-            e.printStackTrace();
-            throw new ServletException(e);
+
+        writer.writeStartObject();
+        writer.writeStringField("prefix", query);
+
+        List<SearchResultItem> nodes;
+        if (type != null && type.trim().equals("property")) {
+            nodes = getRdfContext().getVocabularySearcher().searchProperties(query, projectId);
+        } else {
+            nodes = getRdfContext().getVocabularySearcher().searchClasses(query, projectId);
         }
+
+        if (nodes.size() == 0) {
+            RdfSchema schema;
+            try {
+				schema = Util.getProjectSchema(getRdfContext(), getProject(request));
+			} catch(VocabularyIndexException v){
+				v.printStackTrace();
+				throw new ServletException(v);
+			}
+			nodes = search(schema, query);
+        }
+
+        writer.writeFieldName("result");
+        writer.writeStartArray();
+        for (SearchResultItem c : nodes) {
+            c.writeAsSearchResult(writer);
+        }
+        writer.writeEndArray();
+
+        writer.writeEndObject();
+
+        writer.flush();
+        writer.close();
+        w.flush();
+        w.close();
     }
 
 	@Override
