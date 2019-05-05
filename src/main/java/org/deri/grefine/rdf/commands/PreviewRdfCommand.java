@@ -1,13 +1,12 @@
 package org.deri.grefine.rdf.commands;
 
-import java.io.IOException;
-import java.io.StringWriter;
-import java.util.Properties;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.google.refine.browsing.Engine;
+import com.google.refine.commands.Command;
+import com.google.refine.model.Project;
+import com.google.refine.model.Row;
+import com.google.refine.util.ParsingUtilities;
 import org.deri.grefine.rdf.Node;
 import org.deri.grefine.rdf.RdfSchema;
 import org.deri.grefine.rdf.exporters.RdfExporter;
@@ -19,13 +18,11 @@ import org.eclipse.rdf4j.rio.RDFHandlerException;
 import org.eclipse.rdf4j.rio.RDFWriter;
 import org.eclipse.rdf4j.rio.Rio;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.refine.browsing.Engine;
-import com.google.refine.commands.Command;
-import com.google.refine.model.Project;
-import com.google.refine.model.Row;
-import com.google.refine.util.ParsingUtilities;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.StringWriter;
 
 public class PreviewRdfCommand extends Command {
 
@@ -40,8 +37,8 @@ public class PreviewRdfCommand extends Command {
             response.setHeader("Content-Type", "application/json");
 
             String jsonString = request.getParameter("schema");
-            ObjectMapper mapper = new ObjectMapper();
-            final RdfSchema schema = mapper.readValue(jsonString, RdfSchema.class);
+            JsonNode jsonNode = ParsingUtilities.evaluateJsonStringToObjectNode(jsonString);
+            final RdfSchema schema = RdfSchema.reconstruct(jsonNode);
 
 	        StringWriter sw = new StringWriter();
 	        RDFWriter w = Rio.createWriter(RDFFormat.TURTLE, sw);

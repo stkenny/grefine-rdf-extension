@@ -12,9 +12,11 @@ import org.deri.grefine.rdf.app.ApplicationContext;
 import org.deri.grefine.rdf.operations.SaveRdfSchemaOperation;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.google.refine.model.AbstractOperation;
 import com.google.refine.model.Project;
 import com.google.refine.process.Process;
+import com.google.refine.util.ParsingUtilities;
 
 public class SaveRdfSchemaCommand extends RdfCommand{
 
@@ -28,17 +30,15 @@ public class SaveRdfSchemaCommand extends RdfCommand{
         
         try {
             Project project = getProject(request);
-            
+
             String jsonString = request.getParameter("schema");
-            ObjectMapper mapper = new ObjectMapper();
-            RdfSchema schema = mapper.readValue(jsonString, RdfSchema.class);
-            
+            JsonNode json = ParsingUtilities.evaluateJsonStringToObjectNode(jsonString);
+            RdfSchema schema = RdfSchema.reconstruct(json);
+
             AbstractOperation op = new SaveRdfSchemaOperation(schema);
             Process process = op.createProcess(project, new Properties());
-            
+
             performProcessAndRespond(request, response, project, process);
-       
-            
         } catch (Exception e) {
             respondException(response, e);
         }
