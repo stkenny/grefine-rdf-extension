@@ -6,12 +6,12 @@ import java.io.Writer;
 import java.util.Properties;
 
 import org.deri.grefine.rdf.RdfSchema;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.json.JSONWriter;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonGenerationException;
+
 import com.google.refine.history.Change;
 import com.google.refine.history.HistoryEntry;
 import com.google.refine.model.AbstractOperation;
@@ -130,10 +130,10 @@ public class SaveRdfSchemaOperation extends AbstractOperation {
         static protected void writeRdfSchema(RdfSchema s, Writer writer)
                 throws IOException {
             if (s != null) {
-                JSONWriter jsonWriter = new JSONWriter(writer);
+                JsonGenerator jsonWriter = ParsingUtilities.mapper.getFactory().createGenerator(writer);
                 try {
                     s.write(jsonWriter, new Properties());
-                } catch (JSONException e) {
+                } catch (IOException e) {
                     e.printStackTrace();
                 }
             }

@@ -2,6 +2,7 @@ package org.deri.grefine.rdf.commands;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonGenerationException;
 import com.google.refine.ProjectManager;
 import com.google.refine.model.Project;
 import com.google.refine.util.ParsingUtilities;
@@ -41,7 +42,6 @@ public class SuggestTermCommand extends RdfCommand{
 		Writer w = response.getWriter();
         JsonGenerator writer = ParsingUtilities.mapper.getFactory().createGenerator(w);
         String type = request.getParameter("type_strict");
-        
         String query = request.getParameter("prefix");
 
         writer.writeStartObject();

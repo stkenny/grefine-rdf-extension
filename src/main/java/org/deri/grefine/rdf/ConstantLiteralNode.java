@@ -2,8 +2,8 @@ package org.deri.grefine.rdf;
 
 import java.util.Properties;
 
-import org.json.JSONException;
-import org.json.JSONWriter;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonGenerationException;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -17,6 +17,7 @@ import org.eclipse.rdf4j.model.ValueFactory;
 import org.eclipse.rdf4j.repository.RepositoryConnection;
 
 import java.net.URI;
+import java.io.IOException;
 
 public class ConstantLiteralNode implements Node{
 
@@ -99,17 +100,17 @@ public class ConstantLiteralNode implements Node{
 	}
 
 	@Override
-    public void write(JSONWriter writer, Properties options) throws JSONException {
-        writer.object();
-        writer.key("nodeType"); writer.value("literal");
-        writer.key("value"); writer.value(value);
+    public void write(JsonGenerator writer, Properties options) throws JsonGenerationException, IOException {
+        writer.writeStartObject();
+        writer.writeStringField("nodeType", "literal");
+        writer.writeStringField("value", value);
         if(valueType!=null){
-            writer.key("valueType"); writer.value(valueType);
+            writer.writeStringField("valueType", valueType);
         }
         if(lang!=null){
-            writer.key("lang"); writer.value(lang);
+            writer.writeStringField("lang", lang);
         }
-        writer.endObject();
+        writer.writeEndObject();
     }
 
 

@@ -1,9 +1,10 @@
 package org.deri.grefine.rdf;
 
 import java.net.URI;
+import java.io.IOException;
 
-import org.json.JSONException;
-import org.json.JSONWriter;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonGenerationException;
 import org.eclipse.rdf4j.model.BNode;
 import org.eclipse.rdf4j.model.Resource;
 import org.eclipse.rdf4j.model.ValueFactory;
@@ -30,8 +31,8 @@ public class ConstantBlankNode extends ResourceNode{
     }
 
 	@Override
-	protected void writeNode(JSONWriter writer) throws JSONException {
-		writer.key("nodeType"); writer.value("blank");
+	protected void writeNode(JsonGenerator writer) throws JsonGenerationException, IOException {
+		writer.writeStringField("nodeType", "blank");
 	}
 
 	@Override

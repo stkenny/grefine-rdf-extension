@@ -3,7 +3,6 @@ package org.deri.grefine.rdf;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.json.JSONObject;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 

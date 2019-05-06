@@ -3,20 +3,20 @@ package org.deri.grefine.rdf;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonGenerationException;
 import com.google.refine.model.Project;
 import com.google.refine.model.Row;
 import org.eclipse.rdf4j.model.*;
 import org.eclipse.rdf4j.model.vocabulary.RDF;
 import org.eclipse.rdf4j.repository.RepositoryConnection;
 import org.eclipse.rdf4j.repository.RepositoryException;
-import org.json.JSONException;
-import org.json.JSONWriter;
 
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
-
+import java.io.IOException;
 
 abstract public class ResourceNode implements Node {
 
@@ -51,32 +51,31 @@ abstract public class ResourceNode implements Node {
         return this.rdfTypes;
     }
 
-    protected abstract void writeNode(JSONWriter writer) throws JSONException;
-    public void write(JSONWriter writer, Properties options)throws JSONException{
-        writer.object();
+    protected abstract void writeNode(JsonGenerator writer) throws JsonGenerationException, IOException;
+    public void write(JsonGenerator writer, Properties options) throws JsonGenerationException, IOException {
+        writer.writeStartObject();
         //writer node
         writeNode(writer);
         //write types
-        writer.key("rdfTypes");
-        writer.array();
+        writer.writeFieldName("rdfTypes");
+        writer.writeStartArray();
         for(RdfType type:this.getTypes()){
-            writer.object();
-            writer.key("uri");writer.value(type.uri);
-            writer.key("curie");writer.value(type.curie);
-            writer.endObject();
+            writer.writeStartObject();
+            writer.writeStringField("uri", type.uri);
+            writer.writeStringField("curie", type.curie);
+            writer.writeEndObject();
         }
-        writer.endArray();
+        writer.writeEndArray();
         //write links
-        writer.key("links");
-        writer.array();
+        writer.writeFieldName("links");
+        writer.writeStartArray();
         for(int i=0;i<getLinkCount();i++){
             Link l = getLink(i);
-            l.write(writer,options);
+            l.write(writer, options);
         }
-        writer.endArray();
+        writer.writeEndArray();
 
-        writer.endObject();
-
+        writer.writeEndObject();
     }
 
     protected void addTypes(Resource[] rs,ValueFactory factory, RepositoryConnection con, URI baseUri) throws RepositoryException {

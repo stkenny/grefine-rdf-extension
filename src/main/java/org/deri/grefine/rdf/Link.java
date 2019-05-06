@@ -1,13 +1,14 @@
 package org.deri.grefine.rdf;
 
 import java.util.Properties;
+import java.io.IOException;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import org.json.JSONWriter;
-import org.json.JSONException;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonGenerationException;
 
 public class Link {
 
@@ -32,15 +33,14 @@ public class Link {
         this.curie = curie;
     }
 
-	public void write(JSONWriter writer, Properties options)throws  JSONException{
-
-		writer.object();
-		writer.key("uri"); writer.value(propertyUri);
-		writer.key("curie"); writer.value(curie);
+	public void write(JsonGenerator writer, Properties options) throws JsonGenerationException, IOException{
+		writer.writeStartObject();
+		writer.writeStringField("uri", propertyUri);
+		writer.writeStringField("curie", curie);
 		if (target != null) {
-			writer.key("target");
+			writer.writeFieldName("target");
 			target.write(writer, options);
 		}
-		writer.endObject();
+		writer.writeEndObject();
 	}
 }

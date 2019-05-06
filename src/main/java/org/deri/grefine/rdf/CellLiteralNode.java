@@ -3,9 +3,10 @@ package org.deri.grefine.rdf;
 import java.lang.reflect.Array;
 import java.net.URI;
 import java.util.Properties;
+import java.io.IOException;
 
-import org.json.JSONException;
-import org.json.JSONWriter;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonGenerationException;
 
 import org.eclipse.rdf4j.model.BNode;
 import org.eclipse.rdf4j.model.Literal;
@@ -127,22 +128,22 @@ public class CellLiteralNode implements CellNode{
 	}
 
 	@Override
-	public void write(JSONWriter writer, Properties options)
-			throws JSONException {
-		writer.object();
-		writer.key("nodeType"); writer.value("cell-as-literal");
-		writer.key("expression"); writer.value(expression);
-		writer.key("isRowNumberCell"); writer.value(isRowNumberCell);
+	public void write(JsonGenerator writer, Properties options)
+			throws JsonGenerationException, IOException {
+		writer.writeStartObject();
+		writer.writeStringField("nodeType", "cell-as-literal");
+		writer.writeStringField("expression", expression);
+		writer.writeBooleanField("isRowNumberCell", isRowNumberCell);
 		if(valueType!=null){
-			writer.key("valueType"); writer.value(valueType);
+			writer.writeStringField("valueType", valueType);
 		}
 		if(lang!=null){
-			writer.key("lang"); writer.value(lang);
+			writer.writeStringField("lang", lang);
 		}
 		if(columnName!=null){
-			writer.key("columnName"); writer.value(columnName);
+			writer.writeStringField("columnName", columnName);
 		}
-		writer.endObject();
+		writer.writeEndObject();
 	}
 
 }
