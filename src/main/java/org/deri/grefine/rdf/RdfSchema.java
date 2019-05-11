@@ -108,6 +108,12 @@ public class RdfSchema implements OverlayModel {
 		this.prefixesMap = map;
 	}
 
+    public void setPrefixes(Vocabulary[] vocabularies) {
+        for(Vocabulary vocab : vocabularies) {
+            this.prefixesMap.put(vocab.getName(), vocab);
+        }
+    }
+
     @JsonProperty("rootNodes")
 	public List<Node> getRoots() {
         return _rootNodes;
@@ -232,7 +238,7 @@ public class RdfSchema implements OverlayModel {
         writer.writeFieldName("prefixes");
         writer.writeStartArray();
 
-        for(Vocabulary v:this.prefixesMap.values()){
+        for(Vocabulary v: this.prefixesMap.values()){
             writer.writeStartObject();
             writer.writeStringField("name", v.getName());
             writer.writeStringField("uri", v.getUri());
