@@ -81,12 +81,12 @@ function init() {
 	
 	RefineServlet.cacheClass(Packages.org.deri.grefine.rdf.operations.SaveRdfSchemaOperation$RdfSchemaChange);
 	/*
-     * Context Initialization. This is mainly to allow testability. a simple attempt to mimic dependency injection
-     */
-    var initializer = new Packages.org.deri.grefine.rdf.app.InitilizationCommand();
-    RefineServlet.registerCommand(module, "initialize", initializer);
-    var ctxt = new Packages.org.deri.grefine.rdf.app.ApplicationContext();
-    initializer.initRdfExportApplicationContext(ctxt);
+     	* Context Initialization. This is mainly to allow testability. a simple attempt to mimic dependency injection
+     	*/
+    	var initializer = new Packages.org.deri.grefine.rdf.app.InitializationCommand();
+    	RefineServlet.registerCommand(module, "initialize", initializer);
+    	var ctxt = new Packages.org.deri.grefine.rdf.app.ApplicationContext();
+    	initializer.initRdfExportApplicationContext(ctxt);
     
     /*
      *  Attach an rdf schema to each project.

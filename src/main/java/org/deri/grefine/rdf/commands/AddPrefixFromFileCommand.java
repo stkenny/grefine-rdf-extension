@@ -22,7 +22,6 @@ import org.eclipse.rdf4j.repository.sail.SailRepository;
 import org.eclipse.rdf4j.rio.RDFFormat;
 import org.eclipse.rdf4j.sail.inferencer.fc.ForwardChainingRDFSInferencer;
 import org.eclipse.rdf4j.sail.memory.MemoryStore;
-import org.json.JSONException;
 
 import com.google.refine.ProjectManager;
 import com.google.refine.model.Project;
@@ -87,7 +86,7 @@ public class AddPrefixFromFileCommand extends RdfCommand {
                     prefix, uri, repository, projectId, new VocabularyImporter());
 
             respondJSON(response, CodeResponse.ok);
-        } catch (JSONException e){
+        } catch (IOException e){
             respondException(response, e);
         } catch (org.eclipse.rdf4j.RDF4JException e){
             respondException(response, e);

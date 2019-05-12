@@ -9,7 +9,6 @@ import org.deri.grefine.rdf.vocab.IVocabularySearcher;
 import org.deri.grefine.rdf.vocab.PrefixManager;
 import org.deri.grefine.rdf.vocab.imp.PredefinedVocabularyManager;
 import org.deri.grefine.rdf.vocab.imp.VocabularySearcher;
-import org.json.JSONException;
 
 public class ApplicationContext {
 
@@ -26,7 +25,7 @@ public class ApplicationContext {
         return vocabularySearcher;
     }
 
-    protected void init(File workingDir) throws IOException, JSONException {
+    protected void init(File workingDir) throws IOException {
         this.workingDir = workingDir;
         this.vocabularySearcher = new VocabularySearcher(this.workingDir);
         this.predefinedVocabularyManager = new PredefinedVocabularyManager(this, this.workingDir);

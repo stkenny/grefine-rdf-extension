@@ -19,13 +19,15 @@ import org.deri.grefine.rdf.app.ApplicationContext;
 import org.deri.grefine.rdf.vocab.IPredefinedVocabularyManager;
 import org.deri.grefine.rdf.vocab.Vocabulary;
 import org.deri.grefine.rdf.vocab.VocabularyImporter;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.json.JSONTokener;
-import org.json.JSONWriter;
+import com.google.refine.util.ParsingUtilities;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonGenerationException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 
 public class PredefinedVocabularyManager implements IPredefinedVocabularyManager{
@@ -37,7 +39,7 @@ public class PredefinedVocabularyManager implements IPredefinedVocabularyManager
 	private ApplicationContext applicationContext;
 	private Map<String, Vocabulary> predefinedVocabulariesMap = new HashMap<String,Vocabulary>();
 	
-	public PredefinedVocabularyManager(ApplicationContext ctxt, File workingDir) throws IOException, JSONException{
+	public PredefinedVocabularyManager(ApplicationContext ctxt, File workingDir) throws IOException {
 		this.workingDir = workingDir;
 		this.applicationContext = ctxt;
 		try{
@@ -68,7 +70,7 @@ public class PredefinedVocabularyManager implements IPredefinedVocabularyManager
 				String uri = tokenizer.nextToken();
 				String url = tokenizer.nextToken();
 				//import and index
-				this.applicationContext.getVocabularySearcher().importAndIndexVocabulary(name, uri,url, new VocabularyImporter());
+				this.applicationContext.getVocabularySearcher().importAndIndexVocabulary(name, uri, url, new VocabularyImporter());
 				this.predefinedVocabulariesMap.put(name,new Vocabulary(name, uri));
 			} catch (Exception e) {
 				// predefined vocabularies are not defined properly
@@ -85,7 +87,7 @@ public class PredefinedVocabularyManager implements IPredefinedVocabularyManager
 		return this.getClass().getResourceAsStream(PREDEFINED_VOCABS_FILE_NAME);
 	}
 	
-	private void reconstructVocabulariesFromFile() throws IOException, JSONException{
+	private void reconstructVocabulariesFromFile() throws IOException {
 		File vocabulariesFile =  new File(workingDir, SAVED_VOCABULARIES_FILE_NAME);
 		if(vocabulariesFile.exists()){
 			load();
@@ -119,41 +121,35 @@ public class PredefinedVocabularyManager implements IPredefinedVocabularyManager
 	private void saveToFile(File metadataFile) throws Exception {
         Writer writer = new OutputStreamWriter(new FileOutputStream(metadataFile));
         try {
-            JSONWriter jsonWriter = new JSONWriter(writer);
-            write(jsonWriter,new Properties());
+			JsonGenerator jsonWriter = ParsingUtilities.mapper.getFactory().createGenerator(writer);
+            write(jsonWriter, new Properties());
         } finally {
             writer.close();
         }
     }
 
-    protected void load() throws IOException, JSONException{
-    	File vocabsFile = new File(workingDir,SAVED_VOCABULARIES_FILE_NAME);
-    	FileReader reader = new FileReader(vocabsFile);
-        try {
-            JSONTokener tokener = new JSONTokener(reader);
-            JSONObject obj = (JSONObject) tokener.nextValue();
-            JSONArray prefixes = obj.getJSONArray("prefixes");
-            for(int i=0;i<prefixes.length();i++){
-            	JSONObject p = prefixes.getJSONObject(i);
-            	String name = p.getString("name");
-            	String uri = p.getString("uri");
-            	this.predefinedVocabulariesMap.put(name,new Vocabulary(name,uri));
-            }
-        } finally {
-            reader.close();
-        }
+    protected void load() throws IOException {
+    	File vocabsFile = new File(workingDir, SAVED_VOCABULARIES_FILE_NAME);
+    	ObjectMapper mapper = new ObjectMapper();
+		JsonNode vocabs = mapper.readTree(vocabsFile);
+		JsonNode prefixes = vocabs.get("prefixes");
 
+		for(JsonNode prefix : prefixes) {
+			String name = prefix.get("name").asText();
+			String uri = prefix.get("uri").asText();
+			this.predefinedVocabulariesMap.put(name, new Vocabulary(name, uri));
+		}
     }
     
-    private void write(JSONWriter writer,Properties options) throws JSONException{
-    	writer.object();
-    	writer.key("prefixes");
-    	writer.array();
+    private void write(JsonGenerator writer, Properties options) throws JsonGenerationException, IOException {
+    	writer.writeStartObject();
+    	writer.writeFieldName("prefixes");
+    	writer.writeStartArray();
     	for(Vocabulary v:this.predefinedVocabulariesMap.values()){
     		v.write(writer);
     	}
-    	writer.endArray();
-		writer.endObject();
+    	writer.writeEndArray();
+		writer.writeEndObject();
 	}
     
     //this is added just to enable testing

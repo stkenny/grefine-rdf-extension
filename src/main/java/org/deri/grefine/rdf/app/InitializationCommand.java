@@ -7,12 +7,10 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.json.JSONException;
-
 import com.google.refine.RefineServlet;
 import com.google.refine.commands.Command;
 
-public class InitilizationCommand extends Command{
+public class InitializationCommand extends Command{
 
 	private File workingDir;
 	
@@ -34,7 +32,7 @@ public class InitilizationCommand extends Command{
 		throw new UnsupportedOperationException("This command is not meant to be called. It is just necessary for initialization");
 	}
 	
-	public void initRdfExportApplicationContext(ApplicationContext ctxt) throws IOException, JSONException{
+	public void initRdfExportApplicationContext(ApplicationContext ctxt) throws IOException {
 		ctxt.init(workingDir);
 	}
 

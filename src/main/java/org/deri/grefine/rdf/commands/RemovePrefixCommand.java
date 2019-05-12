@@ -7,7 +7,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.deri.grefine.rdf.app.ApplicationContext;
-import org.json.JSONException;
 
 public class RemovePrefixCommand extends RdfCommand{
 
@@ -25,7 +24,7 @@ public class RemovePrefixCommand extends RdfCommand{
 		getRdfContext().getVocabularySearcher().deleteTermsOfVocab(name, projectId);
 		try{
 			respondJSON(response, CodeResponse.ok);
-		} catch (JSONException e) {
+		} catch (IOException e) {
 			respondException(response, e);
 		} 
 	}

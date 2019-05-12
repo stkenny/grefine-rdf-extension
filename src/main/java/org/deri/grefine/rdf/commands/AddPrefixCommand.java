@@ -9,7 +9,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.deri.grefine.rdf.app.ApplicationContext;
 import org.deri.grefine.rdf.vocab.PrefixExistException;
 import org.deri.grefine.rdf.vocab.VocabularyImporter;
-import org.json.JSONException;
 
 public class AddPrefixCommand extends RdfCommand{
 
@@ -33,8 +32,6 @@ public class AddPrefixCommand extends RdfCommand{
         		getRdfContext().getVocabularySearcher().importAndIndexVocabulary(name, uri, fetchUrl, projectId, new VocabularyImporter());
         	}
             respondJSON(response, CodeResponse.ok);
-        } catch (JSONException e) {
-            respondException(response, e);
         } catch (PrefixExistException e) {
             respondException(response, e);
         } catch (Exception e){
