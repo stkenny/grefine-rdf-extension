@@ -3,6 +3,8 @@ package org.deri.grefine.rdf.vocab.imp;
 import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
+import java.nio.file.StandardCopyOption;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -68,11 +70,20 @@ public class VocabularySearcher implements IVocabularySearcher {
 	
 	public VocabularySearcher(File dir) throws IOException {
 		_directory = FSDirectory.open(new File(dir, "luceneIndex").toPath());
-        Analyzer a = new StandardAnalyzer();
-        IndexWriterConfig conf = new IndexWriterConfig(a);
+		Analyzer a = new StandardAnalyzer();
+		IndexWriterConfig conf = new IndexWriterConfig(a);
 
-        writer = new IndexWriter(_directory, conf);
-        writer.commit();
+		try {
+			writer = new IndexWriter(_directory, conf);
+			writer.commit();
+		} catch (org.apache.lucene.index.IndexFormatTooOldException e) {
+            writer.close();
+			Files.move(new File(dir, "luceneIndex").toPath(),
+					new File(dir, "luceneIndex_41").toPath(), StandardCopyOption.REPLACE_EXISTING);
+
+			writer = new IndexWriter(_directory, conf);
+			writer.commit();
+		}
         r = DirectoryReader.open(FSDirectory.open(new File(dir, "luceneIndex").toPath()));
         searcher = new IndexSearcher(r);
 	}
