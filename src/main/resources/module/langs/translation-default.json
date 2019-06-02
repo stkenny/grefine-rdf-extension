@@ -5,7 +5,7 @@
     "rdf-ext-schema/row-index": "Row index", 
     "rdf-ext-schema/use-content": "Use content", 
     "rdf-ext-sparql/type": "Type", 
-    "rdf-ext-vocab/header": "Vocabulary header", 
+    "rdf-ext-vocab/header": "List of defined prefixes", 
     "rdf-ext-menu/set-up-service": "Set up service", 
     "rdf-ext-virtuoso/endpoint-type": "Endpoint type", 
     "rdf-ext-schema/no-matches": "No matches found", 
