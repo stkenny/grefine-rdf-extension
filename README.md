@@ -7,6 +7,17 @@ This project adds a graphical user interface(GUI) for exporting data of OpenRefi
 
 ## INSTALL
 
+### From compiled release
+You need to have OpenRefine (version 3.1) installed on your machine.
+
+1. If it does not exist, create a folder named **extensions/rdf-extension** under your user workspace directory for OpenRefine. The workspace should be located in the following places depending on your operating system:
+    * Linux ~/.local/share/OpenRefine
+    * Windows C:/Documents and Settings/<user>/Application Data/OpenRefine OR C:/Documents and Settings/<user>/Local Settings/Application Data/OpenRefine
+    * Mac OSX ~/Library/Application Support/OpenRefine
+2. Unzip the downloaded release into the extensions/rdf-extension folder (step 1).
+It is recommended that you have an active internet connection during the first run of the extension, as it will try to download a set of predefined vocabularies (rdf, rdfs, owl and foad). You can download them later also.
+3. Restart OpenRefine
+
 ### To build from source
 - Clone this extension repository to your local machine
 - Checkout the orefine branch `git checkout orefine`
