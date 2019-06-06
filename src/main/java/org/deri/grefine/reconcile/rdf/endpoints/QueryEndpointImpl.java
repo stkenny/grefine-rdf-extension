@@ -12,8 +12,8 @@ import org.deri.grefine.reconcile.model.SearchResultItem;
 import org.deri.grefine.reconcile.rdf.executors.QueryExecutor;
 import org.deri.grefine.reconcile.rdf.factories.PreviewResourceCannedQuery;
 import org.deri.grefine.reconcile.rdf.factories.SparqlQueryFactory;
-import org.json.JSONException;
-import org.json.JSONWriter;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonGenerationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -64,15 +64,14 @@ public class QueryEndpointImpl implements QueryEndpoint {
     }
 
     @Override
-    public void write(JSONWriter writer) throws JSONException {
-        writer.object();
-        writer.key("type");
-        writer.value(getType());
-        writer.key("queryFactory");
+    public void write(JsonGenerator writer) throws JsonGenerationException, IOException {
+        writer.writeStartObject();
+        writer.writeStringField("type", getType());
+        writer.writeFieldName("queryFactory");
         this.queryFactory.write(writer);
-        writer.key("queryExecutor");
+        writer.writeFieldName("queryExecutor");
         this.queryExecutor.write(writer);
-        writer.endObject();
+        writer.writeEndObject();
     }
 
     @Override

@@ -1,12 +1,13 @@
 package org.deri.grefine.reconcile.rdf.factories;
 
 import java.util.List;
+import java.io.IOException;
 
 import org.deri.grefine.reconcile.model.ReconciliationCandidate;
 import org.deri.grefine.reconcile.model.ReconciliationRequest;
 import org.deri.grefine.reconcile.model.SearchResultItem;
-import org.json.JSONException;
-import org.json.JSONWriter;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonGenerationException;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Multimap;
@@ -72,5 +73,5 @@ public interface SparqlQueryFactory {
 	public String getEntitySearchSparqlQuery(String prefix ,ImmutableList<String> searchPropertyUris, int limit);
 	public ImmutableList<SearchResultItem> wrapEntitySearchResultSet(ResultSet resultSet, int limit);
 	
-	public void write(JSONWriter writer)throws JSONException;
+	public void write(JsonGenerator writer)throws JsonGenerationException, IOException;
 }

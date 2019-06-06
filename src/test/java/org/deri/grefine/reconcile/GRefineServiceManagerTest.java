@@ -9,8 +9,9 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.StringWriter;
 
-import org.json.JSONException;
-import org.json.JSONWriter;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonGenerationException;
+
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -22,9 +23,12 @@ import org.deri.grefine.reconcile.rdf.executors.DumpQueryExecutor;
 import org.deri.grefine.reconcile.rdf.executors.RemoteQueryExecutor;
 import org.deri.grefine.reconcile.rdf.factories.JenaTextSparqlQueryFactory;
 import org.deri.grefine.reconcile.util.GRefineJsonUtilitiesImpl;
+
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.commons.io.FileUtils;
+
+import com.google.refine.util.ParsingUtilities;
 
 public class GRefineServiceManagerTest {
 
@@ -49,7 +53,7 @@ public class GRefineServiceManagerTest {
 	}
 	
 	@Test
-	public void saveServiceTest() throws JSONException, IOException{
+	public void saveServiceTest() throws IOException{
 		String id = "sparql-test";
 		ServiceRegistry registry = new ServiceRegistry(new GRefineJsonUtilitiesImpl(),null);
 		GRefineServiceManager manager = new GRefineServiceManager(registry, dir);
@@ -82,13 +86,14 @@ public class GRefineServiceManagerTest {
 	}
 	
 	@Test
-	public void saveRdfServiceTest() throws JSONException, IOException{
+	public void saveRdfServiceTest() throws IOException{
 		String id = "rdf-test";
-		ServiceRegistry registry = new ServiceRegistry(new GRefineJsonUtilitiesImpl(),null);
+		ServiceRegistry registry = new ServiceRegistry(new GRefineJsonUtilitiesImpl(), null);
 		GRefineServiceManager manager = new GRefineServiceManager(registry, dir);
 		
 		Model m = ModelFactory.createDefaultModel();
-		ReconciliationService service = new RdfReconciliationService(id,id, new QueryEndpointImpl(new JenaTextSparqlQueryFactory(), 
+		ReconciliationService service = new RdfReconciliationService(id, id,
+				new QueryEndpointImpl(new JenaTextSparqlQueryFactory(),
 				new DumpQueryExecutor(m)), 0);
 		manager.addAndSaveService(service);
 		
@@ -124,11 +129,11 @@ public class GRefineServiceManagerTest {
 		assertTrue(service3.reconcile(request).getResults().isEmpty());
 	}
 
-	private void verifyCorrectService(ReconciliationService service,ReconciliationService expected) throws JSONException {
+	private void verifyCorrectService(ReconciliationService service,ReconciliationService expected) throws IOException, JsonGenerationException {
 		StringWriter w1 = new StringWriter();
-		JSONWriter j1 = new JSONWriter(w1);
+		JsonGenerator j1 = ParsingUtilities.mapper.getFactory().createGenerator(w1);
 		StringWriter w2 = new StringWriter();
-		JSONWriter j2 = new JSONWriter(w2);
+		JsonGenerator j2 = ParsingUtilities.mapper.getFactory().createGenerator(w2);
 		service.writeAsJson(j1);
 		expected.writeAsJson(j2);
 		w1.flush(); w2.flush();

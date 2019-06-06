@@ -9,8 +9,9 @@ import org.deri.grefine.reconcile.model.ReconciliationCandidate;
 import org.deri.grefine.reconcile.model.ReconciliationRequest;
 import org.deri.grefine.reconcile.model.SearchResultItem;
 import org.deri.grefine.reconcile.rdf.factories.PreviewResourceCannedQuery;
-import org.json.JSONException;
-import org.json.JSONWriter;
+
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonGenerationException;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Multimap;
@@ -51,6 +52,6 @@ public interface QueryEndpoint {
 	
 	public void save(String serviceId, FileOutputStream out) throws IOException;
 	
-	public void write(JSONWriter writer)throws JSONException;
+	public void write(JsonGenerator writer) throws JsonGenerationException, IOException;
 	public void initialize(FileInputStream in);
 }

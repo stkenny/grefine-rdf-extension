@@ -1,10 +1,11 @@
 package org.deri.grefine.reconcile.rdf.executors;
 
 import java.util.Collections;
+import java.io.IOException;
 
 import org.apache.jena.query.ResultSetFactory;
-import org.json.JSONException;
-import org.json.JSONWriter;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonGenerationException;
 
 import org.apache.jena.query.ResultSet;
 import org.apache.jena.sparql.engine.http.QueryEngineHTTP;
@@ -35,16 +36,13 @@ public class VirtuosoRemoteQueryExecutor extends RemoteQueryExecutor {
     }
 
     @Override
-    public void write(JSONWriter writer) throws JSONException {
-        writer.object();
-        writer.key("type");
-        writer.value("remote-virtuoso");
-        writer.key("sparql-url");
-        writer.value(sparqlEndpointUrl);
+    public void write(JsonGenerator writer) throws JsonGenerationException, IOException {
+        writer.writeStartObject();
+        writer.writeStringField("type", "remote-virtuoso");
+        writer.writeStringField("sparql-url", sparqlEndpointUrl);
         if (defaultGraphUri != null) {
-            writer.key("default-graph-uri");
-            writer.value(defaultGraphUri);
+            writer.writeStringField("default-graph-uri", defaultGraphUri);
         }
-        writer.endObject();
+        writer.writeEndObject();
     }
 }

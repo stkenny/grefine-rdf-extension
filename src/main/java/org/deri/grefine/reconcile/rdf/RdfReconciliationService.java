@@ -17,8 +17,9 @@ import org.deri.grefine.reconcile.model.ReconciliationResponse;
 import org.deri.grefine.reconcile.model.SearchResultItem;
 import org.deri.grefine.reconcile.rdf.endpoints.QueryEndpoint;
 import org.deri.grefine.reconcile.rdf.factories.PreviewResourceCannedQuery;
-import org.json.JSONException;
-import org.json.JSONWriter;
+
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonGenerationException;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Multimap;
@@ -132,25 +133,21 @@ public class RdfReconciliationService extends AbstractReconciliationService {
     }
 
     @Override
-    public void writeAsJson(JSONWriter writer, boolean saveMode) throws JSONException {
-        writer.object();
-        writer.key("type");
-        writer.value("rdf");
-        writer.key("id");
-        writer.value(this.getId());
-        writer.key("name");
-        writer.value(this.getName());
-        writer.key("matchThreshold");
-        writer.value(this.matchThreshold);
-        writer.key("searchPropertyUris");
-        writer.array();
+    public void writeAsJson(JsonGenerator writer, boolean saveMode) throws JsonGenerationException, IOException {
+        writer.writeStartObject();
+        writer.writeStringField("type", "rdf");
+        writer.writeStringField("id", this.getId());
+        writer.writeStringField("name", this.getName());
+        writer.writeNumberField("matchThreshold", this.matchThreshold);
+        writer.writeFieldName("searchPropertyUris");
+        writer.writeStartArray();
         for (String uri : this.searchPropertyUris) {
-            writer.value(uri);
+            writer.writeString(uri);
         }
-        writer.endArray();
-        writer.key("endpoint");
+        writer.writeEndArray();
+        writer.writeFieldName("endpoint");
         this.queryEndpoint.write(writer);
-        writer.endObject();
+        writer.writeEndObject();
     }
 
     @Override
@@ -189,4 +186,3 @@ public class RdfReconciliationService extends AbstractReconciliationService {
 
     private static final String RDFS_LABEL = "http://www.w3.org/2000/01/rdf-schema#label";
 }
-

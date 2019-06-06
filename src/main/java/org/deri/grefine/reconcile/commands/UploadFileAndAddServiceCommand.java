@@ -26,9 +26,9 @@ import org.deri.grefine.reconcile.rdf.executors.QueryExecutor;
 import org.deri.grefine.reconcile.rdf.factories.JenaTextSparqlQueryFactory;
 import org.deri.grefine.reconcile.rdf.factories.SparqlQueryFactory;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.json.JSONWriter;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonGenerationException;
+import com.google.refine.util.ParsingUtilities;
 
 import com.google.common.collect.ImmutableList;
 import org.apache.jena.rdf.model.Model;
@@ -37,23 +37,23 @@ import org.apache.jena.rdf.model.ModelFactory;
 public class UploadFileAndAddServiceCommand extends AbstractAddServiceCommand{
 
 	@Override
-	public void doPost(HttpServletRequest request, HttpServletResponse response)throws ServletException, IOException {
+	public void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		try{
 			//write results
 			response.setCharacterEncoding("UTF-8");
 	        response.setHeader("Content-Type", "application/json");
 	        PrintWriter out = response.getWriter();
 			StringWriter sw = new StringWriter();
-			JSONWriter w = new JSONWriter(sw);
-			w.object();
-	        w.key("code"); w.value("ok");
-	        w.key("service");
+			JsonGenerator w = ParsingUtilities.mapper.getFactory().createGenerator(sw);
+			w.writeStartObject();
+	        w.writeStringField("code", "ok");
+	        w.writeFieldName("service");
 	        ReconciliationService service = getReconciliationService(request);
 	        service.writeAsJson(w);
-	        w.endObject();
+	        w.writeEndObject();
 	        sw.flush();
-			//out.print("<html><body><textarea>" + sw.toString() + "</textarea></body></html>");
-	        out.print(sw.toString());
+			out.print(sw.toString());
 	        out.flush();
 		} catch (Exception e) {
 			respondError(response,e);
@@ -61,7 +61,7 @@ public class UploadFileAndAddServiceCommand extends AbstractAddServiceCommand{
 	}
 
 	@Override
-	protected ReconciliationService getReconciliationService(HttpServletRequest request) throws JSONException, IOException {
+	protected ReconciliationService getReconciliationService(HttpServletRequest request) throws IOException {
 		FileItemFactory factory = new DiskFileItemFactory();
 
 		// Create a new file upload handler
@@ -118,16 +118,15 @@ public class UploadFileAndAddServiceCommand extends AbstractAddServiceCommand{
 			GRefineServiceManager.singleton.addAndSaveService(service);
 
 			return service;
-		}catch(FileUploadException fe){
+		} catch(FileUploadException fe){
 			throw new IOException(fe);
 		}
 	}
 
-	private void respondError(HttpServletResponse response, Exception e) throws IOException, ServletException{
+	private void respondError(HttpServletResponse response, Exception e) throws IOException, ServletException {
 		try{
-			JSONObject o = new JSONObject();
-			o.put("code", "error");
-			o.put("message", e.getMessage());
+			String o = "{\"code\":\"error\"";
+			o += ",\"message\": \"" + e.getMessage() + "\"";
 
 			StringWriter sw = new StringWriter();
 			PrintWriter pw = new PrintWriter(sw);
@@ -135,15 +134,15 @@ public class UploadFileAndAddServiceCommand extends AbstractAddServiceCommand{
 			pw.flush();
 			sw.flush();
 
-			o.put("stack", sw.toString());
+			o += ",\"stack\": \"" + sw.toString() + "\"}";
 
 			response.setCharacterEncoding("UTF-8");
-			respond(response, "<html><body><textarea>\n" + o.toString() + "\n</textarea></body></html>");
-		} catch (JSONException e1) {
+			respond(response, "<html><body><textarea>\n" + o + "\n</textarea></body></html>");
+		} catch (IOException e1) {
             e1.printStackTrace(response.getWriter());
         }
 	}
-	
+
 	private String guessFormat(String filename){
 		if(filename.lastIndexOf('.')!=-1){
 			String extension = filename.substring(filename.lastIndexOf('.')).toLowerCase();

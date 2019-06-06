@@ -9,11 +9,12 @@ import org.deri.grefine.reconcile.model.ReconciliationRequest;
 import org.deri.grefine.reconcile.model.ReconciliationRequestContext.PropertyContext;
 import org.deri.grefine.reconcile.model.SearchResultItem;
 import org.deri.grefine.reconcile.util.StringUtils;
-import org.json.JSONException;
-import org.json.JSONWriter;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonGenerationException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.io.IOException;
 
 /**
  * factories for queries understood by <a href="https://jena.apache.org/documentation/query/text-query.html">Jena Text</a>
@@ -57,11 +58,10 @@ public class JenaTextSparqlQueryFactory extends AbstractSparqlQueryFactory {
     }
 
     @Override
-    public void write(JSONWriter writer) throws JSONException {
-        writer.object();
-        writer.key("type");
-        writer.value("jena-text");
-        writer.endObject();
+    public void write(JsonGenerator writer) throws JsonGenerationException, IOException {
+        writer.writeStartObject();
+        writer.writeStringField("type", "jena-text");
+        writer.writeEndObject();
     }
 
     private String getReconciliationSparqlQuery(String queryTemplate, ImmutableList<String> searchPropertyUris, String query, String typesFilter, String contextFilter, String labelPlaceHolder, String labelFilter, int limit) {

@@ -10,8 +10,9 @@ import org.apache.jena.vocabulary.RDFS;
 import org.apache.jena.vocabulary.SKOS;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.RAMDirectory;
-import org.json.JSONException;
-import org.json.JSONWriter;
+
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonGenerationException;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -79,15 +80,13 @@ public class DumpQueryExecutor implements QueryExecutor {
 
 
     @Override
-    public void write(JSONWriter writer) throws JSONException {
-        writer.object();
-        writer.key("type");
-        writer.value("dump");
+    public void write(JsonGenerator writer) throws JsonGenerationException, IOException {
+        writer.writeStartObject();
+        writer.writeStringField("type", "dump");
         if (propertyUri != null) {
-            writer.key("propertyUri");
-            writer.value(propertyUri);
+            writer.writeStringField("propertyUri", propertyUri);
         }
-        writer.endObject();
+        writer.writeEndObject();
     }
 
     public void dispose() {

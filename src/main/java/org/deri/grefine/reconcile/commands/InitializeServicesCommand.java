@@ -6,10 +6,8 @@ import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
-
 import org.deri.grefine.reconcile.GRefineServiceManager;
 import org.deri.grefine.reconcile.model.ReconciliationService;
-import org.json.JSONException;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -19,7 +17,7 @@ import com.google.refine.util.ParsingUtilities;
 public class InitializeServicesCommand extends AbstractAddServiceCommand{
 
 	@Override
-	protected ReconciliationService getReconciliationService(HttpServletRequest request) throws JSONException, IOException {
+	protected ReconciliationService getReconciliationService(HttpServletRequest request) {
 		try {
 			JsonNode arr = ParsingUtilities.evaluateJsonStringToArrayNode(request.getParameter("services"));
 			Set<String> urls = new HashSet<String>();
@@ -35,7 +33,7 @@ public class InitializeServicesCommand extends AbstractAddServiceCommand{
                 return services.iterator().next();
             }
 
-		} catch (JSONException e) {
+		} catch (Exception e) {
 			throw new RuntimeException("Failed to initialize services", e);
 		}
 	}

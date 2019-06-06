@@ -21,8 +21,6 @@ import org.deri.grefine.reconcile.model.ReconciliationService;
 import org.deri.grefine.reconcile.util.GRefineJsonUtilitiesImpl;
 import org.deri.grefine.reconcile.util.PrefixManager;
 
-import org.json.JSONException;
-
 public class GRefineServiceManager {
 
     static public GRefineServiceManager singleton;
@@ -36,7 +34,7 @@ public class GRefineServiceManager {
     }
 
     //TODO ... ugly, isn't it?
-    static public synchronized void initialize(File workingDir) throws JSONException, IOException {
+    static public synchronized void initialize(File workingDir) throws IOException {
         if (singleton == null) {
             InputStream prefixesIn = GRefineServiceManager.class.getResourceAsStream("/files/prefixes");
             PrefixManager prefixManager = new PrefixManager(prefixesIn);
@@ -72,13 +70,13 @@ public class GRefineServiceManager {
         return registry.getServices();
     }
 
-    public synchronized void addService(ReconciliationService service) throws JSONException, IOException {
+    public synchronized void addService(ReconciliationService service) throws IOException {
         registry.addService(service);
         FileOutputStream servicesFile = new FileOutputStream(new File(workingDir, "services"));
         registry.save(servicesFile);
     }
 
-    public synchronized void addAndSaveService(ReconciliationService service) throws JSONException, IOException {
+    public synchronized void addAndSaveService(ReconciliationService service) throws IOException {
         FileOutputStream serviceModelFile = new FileOutputStream(new File(workingDir, service.getId() + ".ttl"));
         registry.addAndSaveService(service, serviceModelFile);
         FileOutputStream servicesFile = new FileOutputStream(new File(workingDir, "services"));
@@ -157,9 +155,8 @@ public class GRefineServiceManager {
      *
      * @param ids
      * @throws IOException
-     * @throws JSONException
      */
-    public synchronized void synchronizeServices(Set<String> urls) throws JSONException, IOException {
+    public synchronized void synchronizeServices(Set<String> urls) throws IOException {
         Set<String> services = this.registry.getServiceIds();
         Pattern pattern = Pattern.compile("rdf-extension\\/services\\/([-.a-zA-Z0-9_]+)");
         Set<String> ids = getServiceIds(urls, pattern);

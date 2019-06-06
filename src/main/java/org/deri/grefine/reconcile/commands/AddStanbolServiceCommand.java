@@ -17,7 +17,10 @@ import org.apache.http.HttpEntity;
 
 import org.deri.grefine.rdf.utils.HttpUtils;
 import org.deri.grefine.reconcile.model.ReconciliationStanbolSite;
-import org.json.JSONArray;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -99,9 +102,10 @@ public class AddStanbolServiceCommand extends Command {
 	}
 
 	private void serializeReconciliations(HttpServletResponse res, Set<ReconciliationStanbolSite> reconciliations) throws IOException {
-		JSONArray json = new JSONArray();
+		ObjectMapper mapper = new ObjectMapper();
+		ArrayNode json = mapper.createArrayNode();
 		for (ReconciliationStanbolSite reconciliation : reconciliations) {
-			json.put(reconciliation.getJSON());
+			json.add(reconciliation.getJSON());
 		}
 		res.setStatus(HttpServletResponse.SC_OK);
 		res.setContentType(JSON);

@@ -4,8 +4,8 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import org.json.JSONException;
-import org.json.JSONWriter;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonGenerationException;
 
 import org.apache.jena.query.QueryExecution;
 import org.apache.jena.query.QueryExecutionFactory;
@@ -42,14 +42,14 @@ public class RemoteQueryExecutor implements QueryExecutor{
 	}
 	
 	@Override
-	public void write(JSONWriter writer) throws JSONException {
-		writer.object();
-		writer.key("type"); writer.value("remote");
-		writer.key("sparql-url"); writer.value(sparqlEndpointUrl);
+	public void write(JsonGenerator writer) throws JsonGenerationException, IOException {
+		writer.writeStartObject();
+		writer.writeStringField("type", "remote");
+		writer.writeStringField("sparql-url", sparqlEndpointUrl);
 		if(defaultGraphUri!=null){
-			writer.key("default-graph-uri"); writer.value(defaultGraphUri);
+			writer.writeStringField("default-graph-uri", defaultGraphUri);
 		}
-		writer.endObject();
+		writer.writeEndObject();
 	}
 
 	@Override
