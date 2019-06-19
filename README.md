@@ -15,7 +15,7 @@ You need to have OpenRefine (version 3.1) installed on your machine.
     * Windows C:/Documents and Settings/<user>/Application Data/OpenRefine OR C:/Documents and Settings/<user>/Local Settings/Application Data/OpenRefine
     * Mac OSX ~/Library/Application Support/OpenRefine
 2. Unzip the downloaded release into the extensions/rdf-extension folder (step 1).
-It is recommended that you have an active internet connection during the first run of the extension, as it will try to download a set of predefined vocabularies (rdf, rdfs, owl and foad). You can download them later also.
+It is recommended that you have an active internet connection during the first run of the extension, as it will try to download a set of predefined vocabularies (rdf, rdfs, owl and foaf). You can add them later also.
 3. Restart OpenRefine
 
 ### To build from source
