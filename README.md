@@ -3,12 +3,15 @@
 This project adds a graphical user interface(GUI) for exporting data of OpenRefine projects in RDF format. The export is based on mapping the data to a template graph using the GUI. It also provides a service for reconciling data against SPARQL endpoints (e.g., DBpedia).
 
 ## DOWNLOAD LATEST RELEASE (v1.1.1)
-[https://github.com/stkenny/grefine-rdf-extension/releases](https://github.com/stkenny/grefine-rdf-extension/releases)
+Download the release for your OpenRefine version:
+[OpenRefine 3.1](https://github.com/stkenny/grefine-rdf-extension/releases/tag/v1.1.1)
+
+[OpenRefine 3.2-beta](https://github.com/stkenny/grefine-rdf-extension/releases/tag/v1.1.1-orefine-3.2-beta)
 
 ## INSTALL
 
 ### From compiled release
-You need to have OpenRefine (version 3.1) installed on your machine.
+You need to have OpenRefine installed on your machine.
 
 1. If it does not exist, create a folder named **extensions/rdf-extension** under your user workspace directory for OpenRefine. The workspace should be located in the following places depending on your operating system:
     * Linux ~/.local/share/OpenRefine
