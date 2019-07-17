@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.deri.grefine.rdf.app.ApplicationContext;
 import org.deri.grefine.rdf.vocab.PrefixExistException;
+import org.deri.grefine.rdf.vocab.VocabularyImportException;
 import org.deri.grefine.rdf.vocab.VocabularyImporter;
 import org.json.JSONException;
 import org.json.JSONWriter;
@@ -27,8 +28,8 @@ public class AddPrefixCommand extends RdfCommand{
         String uri = request.getParameter("uri").trim();
         String projectId = request.getParameter("project");
         String fetchOption = request.getParameter("fetch");
-        try {    
-        	getRdfSchema(request).addPrefix(name, uri);
+        Boolean forceImport = Boolean.valueOf(request.getParameter("force-import"));
+        try {
         	if(fetchOption.equals("web")){
         		String fetchUrl = request.getParameter("fetch-url");
         		if(fetchUrl==null || fetchOption.trim().isEmpty()){
@@ -36,20 +37,26 @@ public class AddPrefixCommand extends RdfCommand{
         		}
         		getRdfContext().getVocabularySearcher().importAndIndexVocabulary(name, uri, fetchUrl, projectId, new VocabularyImporter());
         	}
-            respondJSON(response, new Jsonizable() {
-                
-                @Override
-                public void write(JSONWriter writer, Properties options)
-                        throws JSONException {
-                    writer.object();
-                    writer.key("code"); writer.value("ok");
-                    writer.endObject();
-                }
-            });
+
+            getRdfSchema(request).addPrefix(name, uri);
+            respond(response,"ok","Vocabulary loaded.");
         } catch (JSONException e) {
             respondException(response, e);
         } catch (PrefixExistException e) {
             respondException(response, e);
+        } catch (VocabularyImportException e) {
+            if(forceImport) {
+                try {
+                    respond(response,"ok", "Vocabulary added, but not imported.");
+                } catch (JSONException e1) {
+                    respondException(response,e1);
+                }
+
+            }
+            else {
+                getRdfSchema(request).removePrefix(name);
+                respondException(response,e);
+            }
         } catch (Exception e){
             respondException(response, e);
         }
