@@ -41,8 +41,10 @@ public class AddPrefixCommand extends RdfCommand{
             getRdfSchema(request).addPrefix(name, uri);
             respond(response,"ok","Vocabulary loaded.");
         } catch (JSONException e) {
+            getRdfSchema(request).removePrefix(name);
             respondException(response, e);
         } catch (PrefixExistException e) {
+            getRdfSchema(request).removePrefix(name);
             respondException(response, e);
         } catch (VocabularyImportException e) {
             if(forceImport) {
@@ -51,7 +53,6 @@ public class AddPrefixCommand extends RdfCommand{
                 } catch (JSONException e1) {
                     respondException(response,e1);
                 }
-
             }
             else {
                 getRdfSchema(request).removePrefix(name);
