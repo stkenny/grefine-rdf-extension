@@ -77,7 +77,6 @@ public class VocabularySearcher implements IVocabularySearcher {
 			writer = new IndexWriter(_directory, conf);
 			writer.commit();
 		} catch (org.apache.lucene.index.IndexFormatTooOldException e) {
-            writer.close();
 			Files.move(new File(dir, "luceneIndex").toPath(),
 					new File(dir, "luceneIndex_41").toPath(), StandardCopyOption.REPLACE_EXISTING);
 
