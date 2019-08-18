@@ -71,7 +71,7 @@ public class PredefinedVocabularyManager implements IPredefinedVocabularyManager
 				String url = tokenizer.nextToken();
 				//import and index
 				this.applicationContext.getVocabularySearcher().importAndIndexVocabulary(name, uri, url, new VocabularyImporter());
-				this.predefinedVocabulariesMap.put(name,new Vocabulary(name, uri));
+				this.predefinedVocabulariesMap.put(name, new Vocabulary(name, uri));
 			} catch (Exception e) {
 				// predefined vocabularies are not defined properly
 				// ignore the exception, just log it
@@ -89,7 +89,7 @@ public class PredefinedVocabularyManager implements IPredefinedVocabularyManager
 	
 	private void reconstructVocabulariesFromFile() throws IOException {
 		File vocabulariesFile =  new File(workingDir, SAVED_VOCABULARIES_FILE_NAME);
-		if(vocabulariesFile.exists()){
+		if(vocabulariesFile.exists() && vocabulariesFile.length() != 0){
 			load();
 		}else{
 			throw new FileNotFoundException();
@@ -150,6 +150,7 @@ public class PredefinedVocabularyManager implements IPredefinedVocabularyManager
     	}
     	writer.writeEndArray();
 		writer.writeEndObject();
+		writer.flush();
 	}
     
     //this is added just to enable testing
