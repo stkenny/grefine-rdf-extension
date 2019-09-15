@@ -3,7 +3,7 @@
 
     <groupId>nl.dtls</groupId>
     <artifactId>rdf-extension</artifactId>
-    <version>1.1.4</version>
+    <version>1.1.5</version>
     <packaging>jar</packaging>
 
     <properties>

@@ -7,6 +7,7 @@ import java.util.Properties;
 
 import org.deri.grefine.rdf.RdfSchema;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -24,6 +25,7 @@ public class SaveRdfSchemaOperation extends AbstractOperation {
 
     final protected RdfSchema _schema;
 
+    @JsonCreator
     public SaveRdfSchemaOperation(RdfSchema schema) {
         this._schema = schema;
     }
@@ -42,12 +44,6 @@ public class SaveRdfSchemaOperation extends AbstractOperation {
     @JsonProperty("schema")
     public RdfSchema getSchema() {
     	return _schema;
-    }
-    
-    // This should be deleted once we update OpenRefine to 3.1
-    @JsonProperty("op")
-    public String getOperationIdentifier() {
-    	return OperationRegistry.s_opClassToName.get(this.getClass());
     }
 
     @Override
