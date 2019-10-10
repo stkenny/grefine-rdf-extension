@@ -32,12 +32,13 @@ public abstract class AbstractAddServiceCommand extends Command{
 	        
 	        writer.writeStartObject();
 	        writer.writeStringField("code", "ok");
-
+            
 	        if(service != null) {
                 writer.writeFieldName("service");
                 service.writeAsJson(writer);
             }
 	        writer.writeEndObject();
+	        writer.flush();
 	        w.flush();
 	        w.close();
 		} catch (Exception e) {
