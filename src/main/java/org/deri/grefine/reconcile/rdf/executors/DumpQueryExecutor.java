@@ -1,13 +1,13 @@
 package org.deri.grefine.reconcile.rdf.executors;
 
-import org.apache.jena.query.*;
-import org.apache.jena.query.text.EntityDefinition;
-import org.apache.jena.query.text.TextDatasetFactory;
-import org.apache.jena.query.text.TextIndexConfig;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.ModelFactory;
-import org.apache.jena.vocabulary.RDFS;
-import org.apache.jena.vocabulary.SKOS;
+import org.shaded.apache.jena.query.*;
+import org.shaded.apache.jena.query.text.EntityDefinition;
+import org.shaded.apache.jena.query.text.TextDatasetFactory;
+import org.shaded.apache.jena.query.text.TextIndexConfig;
+import org.shaded.apache.jena.rdf.model.Model;
+import org.shaded.apache.jena.rdf.model.ModelFactory;
+import org.shaded.apache.jena.vocabulary.RDFS;
+import org.shaded.apache.jena.vocabulary.SKOS;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.RAMDirectory;
 

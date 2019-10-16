@@ -1,9 +1,9 @@
 package org.deri.grefine.reconcile.rdf.factories;
 
 import com.google.common.collect.ImmutableList;
-import org.apache.jena.query.QuerySolution;
-import org.apache.jena.query.ResultSet;
-import org.apache.jena.rdf.model.Literal;
+import org.shaded.apache.jena.query.QuerySolution;
+import org.shaded.apache.jena.query.ResultSet;
+import org.shaded.apache.jena.rdf.model.Literal;
 import org.apache.lucene.queryparser.classic.QueryParser;
 import org.deri.grefine.reconcile.model.ReconciliationRequest;
 import org.deri.grefine.reconcile.model.ReconciliationRequestContext.PropertyContext;

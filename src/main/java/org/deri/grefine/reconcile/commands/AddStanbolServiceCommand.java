@@ -25,12 +25,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.refine.commands.Command;
-import org.apache.jena.query.QueryExecution;
-import org.apache.jena.query.QueryExecutionFactory;
-import org.apache.jena.query.QuerySolution;
-import org.apache.jena.query.ResultSet;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.ModelFactory;
+import org.shaded.apache.jena.query.QueryExecution;
+import org.shaded.apache.jena.query.QueryExecutionFactory;
+import org.shaded.apache.jena.query.QuerySolution;
+import org.shaded.apache.jena.query.ResultSet;
+import org.shaded.apache.jena.rdf.model.Model;
+import org.shaded.apache.jena.rdf.model.ModelFactory;
 
 /**
  * Command for adding Stanbol Reconciliation services

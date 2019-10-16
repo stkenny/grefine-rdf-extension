@@ -7,9 +7,9 @@ import java.io.IOException;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonGenerationException;
 
-import org.apache.jena.query.QueryExecution;
-import org.apache.jena.query.QueryExecutionFactory;
-import org.apache.jena.query.ResultSet;
+import org.shaded.apache.jena.query.QueryExecution;
+import org.shaded.apache.jena.query.QueryExecutionFactory;
+import org.shaded.apache.jena.query.ResultSet;
 
 /**
  * @author fadmaa

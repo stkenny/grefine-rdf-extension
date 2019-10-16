@@ -31,8 +31,8 @@ import com.fasterxml.jackson.core.JsonGenerationException;
 import com.google.refine.util.ParsingUtilities;
 
 import com.google.common.collect.ImmutableList;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.ModelFactory;
+import org.shaded.apache.jena.rdf.model.Model;
+import org.shaded.apache.jena.rdf.model.ModelFactory;
 
 public class UploadFileAndAddServiceCommand extends AbstractAddServiceCommand{
 
@@ -52,6 +52,7 @@ public class UploadFileAndAddServiceCommand extends AbstractAddServiceCommand{
 	        ReconciliationService service = getReconciliationService(request);
 	        service.writeAsJson(w);
 	        w.writeEndObject();
+	        w.flush();
 	        sw.flush();
 			out.print(sw.toString());
 	        out.flush();

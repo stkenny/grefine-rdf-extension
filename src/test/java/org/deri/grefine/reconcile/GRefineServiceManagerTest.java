@@ -24,8 +24,8 @@ import org.deri.grefine.reconcile.rdf.executors.RemoteQueryExecutor;
 import org.deri.grefine.reconcile.rdf.factories.JenaTextSparqlQueryFactory;
 import org.deri.grefine.reconcile.util.GRefineJsonUtilitiesImpl;
 
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.ModelFactory;
+import org.shaded.apache.jena.rdf.model.Model;
+import org.shaded.apache.jena.rdf.model.ModelFactory;
 import org.apache.commons.io.FileUtils;
 
 import com.google.refine.util.ParsingUtilities;

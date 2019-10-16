@@ -3,12 +3,12 @@ package org.deri.grefine.reconcile.rdf.executors;
 import java.util.Collections;
 import java.io.IOException;
 
-import org.apache.jena.query.ResultSetFactory;
+import org.shaded.apache.jena.query.ResultSetFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonGenerationException;
 
-import org.apache.jena.query.ResultSet;
-import org.apache.jena.sparql.engine.http.QueryEngineHTTP;
+import org.shaded.apache.jena.query.ResultSet;
+import org.shaded.apache.jena.sparql.engine.http.QueryEngineHTTP;
 
 public class VirtuosoRemoteQueryExecutor extends RemoteQueryExecutor {
 

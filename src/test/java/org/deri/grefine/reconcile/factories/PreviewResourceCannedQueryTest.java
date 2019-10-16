@@ -9,14 +9,14 @@ import org.testng.annotations.Test;
 
 import com.google.common.collect.Multimap;
 import org.deri.grefine.reconcile.rdf.factories.PreviewResourceCannedQuery;
-import org.apache.jena.query.Query;
-import org.apache.jena.query.QueryExecution;
-import org.apache.jena.query.QueryExecutionFactory;
-import org.apache.jena.query.QueryFactory;
-import org.apache.jena.query.ResultSet;
-import org.apache.jena.query.Syntax;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.ModelFactory;
+import org.shaded.apache.jena.query.Query;
+import org.shaded.apache.jena.query.QueryExecution;
+import org.shaded.apache.jena.query.QueryExecutionFactory;
+import org.shaded.apache.jena.query.QueryFactory;
+import org.shaded.apache.jena.query.ResultSet;
+import org.shaded.apache.jena.query.Syntax;
+import org.shaded.apache.jena.rdf.model.Model;
+import org.shaded.apache.jena.rdf.model.ModelFactory;
 
 public class PreviewResourceCannedQueryTest {
 	private String classPrefix = "/org/deri/grefine/reconcile/resources/";
