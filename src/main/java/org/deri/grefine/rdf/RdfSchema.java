@@ -233,6 +233,9 @@ public class RdfSchema implements OverlayModel {
     public void write(JsonGenerator writer, Properties options)
             throws JsonGenerationException, IOException {
         writer.writeStartObject();
+        if (baseUri == null) {
+            baseUri = Util.buildURI("http://localhost:3333/");
+        }
         writer.writeStringField("baseUri", baseUri.toString());
 
         writer.writeFieldName("prefixes");

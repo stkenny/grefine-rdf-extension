@@ -23,10 +23,13 @@ import com.google.refine.util.Pool;
 
 public class SaveRdfSchemaOperation extends AbstractOperation {
 
+    @JsonProperty("schema")
     final protected RdfSchema _schema;
 
     @JsonCreator
-    public SaveRdfSchemaOperation(RdfSchema schema) {
+    public SaveRdfSchemaOperation(
+                @JsonProperty("schema")
+                RdfSchema schema) {
         this._schema = schema;
     }
 
@@ -41,7 +44,6 @@ public class SaveRdfSchemaOperation extends AbstractOperation {
     	return "Save RDF schema skeleton";
     }
     
-    @JsonProperty("schema")
     public RdfSchema getSchema() {
     	return _schema;
     }
