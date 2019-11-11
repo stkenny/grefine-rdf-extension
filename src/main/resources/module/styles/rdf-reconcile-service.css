@@ -59,17 +59,17 @@ div.rdf-flyout-content div.rdf-header{
 	margin:4px;
 	}	
 	
-div.dialog-body p {
+div.rdf-reconcile-dialog-body p {
     margin-top: 0.7em;
     margin-bottom: 0.7em;
 }
 
-div.dialog-body img.validation {
+div.rdf-reconcile-dialog-body img.validation {
     margin-left: 0.5em;
 }
 
-div.dialog-body input[type=text], div.dialog-body input[type=password] {
-    width: 80%;
+div.rdf-reconcile-dialog-body input[type=text], div.rdf-reconcile-dialog-body input[type=password] {
+    //width: 80%;
     margin-left: 1em;
     padding: 3px;
     font-size: 1em;
@@ -85,7 +85,7 @@ div#stanbol-service {
     background-position: right bottom; 
 }
 	
-div.registering {
+div.rdf-reconcile-registering {
     border: 1px solid #F8DCBB;
     margin: 1em;
     padding: 1em;
@@ -94,10 +94,10 @@ div.registering {
     overflow: auto;
 }
 
-div.registering dl dd {
+div.rdf-reconcile-registering dl dd {
     margin-left: 2em;
 }
 
-div.dialog-body input[type=text].error {
+div.rdf-reconcile-dialog-body input[type=text].error {
     border: solid 1px red;
 }

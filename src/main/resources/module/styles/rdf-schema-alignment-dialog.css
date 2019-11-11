@@ -1,12 +1,3 @@
-td.highlighted {
-  background: #e8e8e8;
-}
-
-.emphasized{
-  font-weight:bold;
-  font-size: 11pt;
-}
-
 div.rdf-schema-alignment-dialog-preview {
     height: 375px;
 }
@@ -19,11 +10,6 @@ div.rdf-schema-alignment-dialog-preview pre {
 div.rdf-schema-alignment-dialog-canvas {
     height: 275px;
     overflow: auto;
-}
-
-div.note{
-	font-size:1em;
-	color: #333333;/*#FF6A00;*/
 }
 
 div.vocabulary-manager-list{
@@ -39,9 +25,6 @@ div.vocabulary-manager-footer h2{
 	margin:0;
 }
 
-.fadedElement{
-	background:none repeat scroll 0 0 #DDDDDD;
-	}
 .rdf-schema-alignment-node-dialog-column-list{
 	height: 300px;
     width: 230px;
@@ -106,11 +89,9 @@ div.rdf-schema-prefixes{
     -moz-border-radius: 0.5em;	
 }
 
-div.message{
-	border:solid 1px #cccccc;
-	margin:0.5em 0.5em 1em 0;
-	padding:0.5em;	
-	
+div.rdf-schema-alignment-note{
+	font-size:1em;
+	color: #333333;/*#FF6A00;*/
 }
 
 img.vocab_action_icon{
