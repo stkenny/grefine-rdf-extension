@@ -5,14 +5,14 @@
   <script type="text/javascript">
     jQuery(function(){
       jQuery.get("$previewResourceUrl",{},function(data){
-        jQuery('div.flyout-content').empty().html(data);
+        jQuery('div.rdf-resource-preview-flyout-content').empty().html(data);
       });
     });
   </script>
 </head>
 <body>
     <div><a href="$resourceUri">$resourceUri</a></div>
-    <div class="flyout-content">
+    <div class="rdf-resource-preview-flyout-content">
       <img src="/images/large-spinner.gif" /> 
       <div>
         Fetching for information about $resourceUri
