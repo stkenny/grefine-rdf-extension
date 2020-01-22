@@ -47,7 +47,7 @@ public class PreviewRdfValueExpressionCommand extends PreviewExpressionCommand{
             try{
             	base = new URI(baseUri);
             }catch(URISyntaxException ex){
-            	respond(response, "{ \"code\" : \"error\", \"message\" : \"Invalie Base URI\" }");
+            	respond(response, "{ \"code\" : \"error\", \"message\" : \"Invalid Base URI\" }");
                 return;
             }
             response.setCharacterEncoding("UTF-8");
@@ -134,6 +134,8 @@ public class PreviewRdfValueExpressionCommand extends PreviewExpressionCommand{
         
         writer.writeEndObject();
 
+        writer.flush();
+        writer.close();
 	}
 	
 	
@@ -168,6 +170,7 @@ public class PreviewRdfValueExpressionCommand extends PreviewExpressionCommand{
             
             writer.writeStringField("code", "ok");
         } catch (ParsingException e) {
+            writer.writeEndArray();
             writer.writeStringField("code", "error");
             writer.writeStringField("type", "parser");
             writer.writeStringField("message", e.getMessage());
@@ -179,6 +182,7 @@ public class PreviewRdfValueExpressionCommand extends PreviewExpressionCommand{
         }
         
         writer.writeEndObject();
-
+        writer.flush();
+        writer.close();
 	}
 }
