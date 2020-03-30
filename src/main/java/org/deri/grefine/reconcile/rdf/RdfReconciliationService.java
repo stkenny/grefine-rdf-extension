@@ -73,7 +73,6 @@ public class RdfReconciliationService extends AbstractReconciliationService {
 
     @Override
     public ImmutableList<SearchResultItem> suggestType(String prefix) {
-        System.out.println("RdfRecon service suggestType: " + prefix + " endpoint: " + this.queryEndpoint.getClass().getName());
         return this.queryEndpoint.suggestType(prefix, limitForSuggestion);
     }
 
