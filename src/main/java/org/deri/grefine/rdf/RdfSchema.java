@@ -79,6 +79,7 @@ public class RdfSchema implements OverlayModel {
     public void addPrefix(String name, String uri) throws PrefixExistException{
     	synchronized(prefixesMap){
     		if(this.prefixesMap.containsKey(name)){
+    		    System.out.println(name + " already defined");
     			throw new PrefixExistException(name + " already defined");
     		}
     		this.prefixesMap.put(name, new Vocabulary(name, uri));

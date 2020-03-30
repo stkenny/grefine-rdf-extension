@@ -118,7 +118,7 @@ RdfDataTableView.getUriPreviewWidget = function(isLiteral,isRowNumberCell,baseUr
 		this._prepareUpdate(params);
     
 		var cmdUrl = "command/rdf-extension/preview-rdf-expression?" ;
-		$.post(
+		Refine.postCSRF(
 				cmdUrl + $.param(params), 
 				{
 					rowIndices: JSON.stringify(this._rowIndices) 

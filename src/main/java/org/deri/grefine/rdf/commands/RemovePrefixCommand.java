@@ -17,6 +17,10 @@ public class RemovePrefixCommand extends RdfCommand{
 	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		if(!hasValidCSRFToken(request)) {
+			respondCSRFError(response);
+			return;
+		}
 		String name = request.getParameter("name");
 		String projectId = request.getParameter("project");
 		getRdfSchema(request).removePrefix(name);

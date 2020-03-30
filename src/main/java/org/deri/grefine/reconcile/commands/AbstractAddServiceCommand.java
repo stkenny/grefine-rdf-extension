@@ -22,6 +22,10 @@ public abstract class AbstractAddServiceCommand extends Command{
 
 	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		if(!hasValidCSRFToken(request)) {
+			respondCSRFError(response);
+			return;
+		}
 		try{
 			ReconciliationService service = getReconciliationService(request);
 			response.setCharacterEncoding("UTF-8");

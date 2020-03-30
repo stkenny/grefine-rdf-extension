@@ -19,6 +19,10 @@ public class RefreshPrefixCommand extends RdfCommand{
 	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		if(!hasValidCSRFToken(request)) {
+			respondCSRFError(response);
+			return;
+		}
 		String name = request.getParameter("name");
 		String uri = request.getParameter("uri");
 		String projectId = request.getParameter("project");

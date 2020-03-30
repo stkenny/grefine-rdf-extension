@@ -22,7 +22,11 @@ public class SavePrefixesCommand extends RdfCommand{
 
 	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		try{
+		if(!hasValidCSRFToken(request)) {
+			respondCSRFError(response);
+			return;
+		}
+        try{
 			Map<String, Vocabulary> prefixesMap = new HashMap<String, Vocabulary>();
 			ArrayNode prefixesArr = ParsingUtilities.evaluateJsonStringToArrayNode(request.getParameter("prefixes"));
 			for(int i =0;i<prefixesArr.size();i++){

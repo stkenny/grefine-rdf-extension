@@ -84,9 +84,10 @@ NewPrefixWidget.prototype.show = function(msg,def_prefix, onDone){
     	} 
     	
 		dismissBusy = DialogSystem.showBusy($.i18n('rdf-ext-prefix/try-upload')+' ' + uri);
-    	
-		$.post("command/rdf-extension/add-prefix",
+    	Refine.wrapCSRF(function(token) {
+		    $.post("command/rdf-extension/add-prefix",
     			{
+    			    "csrf_token": token,
     				name:name,
     				uri:uri,
     				"fetch-url":uri,
@@ -108,7 +109,7 @@ NewPrefixWidget.prototype.show = function(msg,def_prefix, onDone){
 
 				}
 			);
-	    	
+		});
     });
     
     

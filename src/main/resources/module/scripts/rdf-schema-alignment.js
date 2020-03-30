@@ -114,7 +114,7 @@ RdfSchemaAlignmentDialog.prototype._previewRdf = function(){
     var self = this;
     var schema = self.getJSON();
     self._previewPane.empty().html('<img src="images/large-spinner.gif" title='+$.i18n('rdf-ext-schema/loading')+'"..."/>');
-    $.post(
+    $.get(
             "command/rdf-extension/preview-rdf?" + $.param({ project: theProject.id }),
             { schema: JSON.stringify(schema), engine: JSON.stringify(ui.browsingEngine.getJSON()) },
             function(data) {
@@ -226,7 +226,8 @@ RdfSchemaAlignmentDialog.prototype._replaceBaseUri = function(newBaseUri,doNotSa
     var self = this;
     RdfSchemaAlignment._defaultNamespace = newBaseUri;
     if(!doNotSave){
-        $.post("command/rdf-extension/save-baseURI?" + $.param({project: theProject.id }),{baseURI:newBaseUri},function(data){
+        Refine.postCSRF
+        ("command/rdf-extension/save-baseURI?" + $.param({project: theProject.id }),{baseURI:newBaseUri},function(data){
             if (data.code === "error"){
                 alert($.i18n('rdf-ext-schema/error')+':' + data.message);
                 return;

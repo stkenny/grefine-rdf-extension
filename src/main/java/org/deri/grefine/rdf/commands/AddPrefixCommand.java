@@ -19,7 +19,11 @@ public class AddPrefixCommand extends RdfCommand{
 
 	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-	String name = request.getParameter("name").trim();
+		if(!hasValidCSRFToken(request)) {
+			respondCSRFError(response);
+			return;
+		}
+		String name = request.getParameter("name").trim();
         String uri = request.getParameter("uri").trim();
         String projectId = request.getParameter("project");
         String fetchOption = request.getParameter("fetch");

@@ -39,6 +39,10 @@ public class UploadFileAndAddServiceCommand extends AbstractAddServiceCommand{
 	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		if(!hasValidCSRFToken(request)) {
+			respondCSRFError(response);
+			return;
+		}
 		try{
 			//write results
 			response.setCharacterEncoding("UTF-8");

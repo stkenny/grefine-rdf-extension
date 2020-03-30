@@ -53,6 +53,10 @@ public class AddStanbolServiceCommand extends Command {
 	 */
 	@Override
 	public void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+		if(!hasValidCSRFToken(req)) {
+			respondCSRFError(res);
+			return;
+		}
 		String uri = req.getParameter("uri") + ENTITYHUB_PATH;
 		log.debug("Requesting referenced site to Stanbol EntityHub '" + uri + "'...");
 		Set<ReconciliationStanbolSite> reconciliations = retrieveReconciliations(uri);

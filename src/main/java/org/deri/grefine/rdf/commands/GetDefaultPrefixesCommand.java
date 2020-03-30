@@ -38,17 +38,6 @@ public class GetDefaultPrefixesCommand extends RdfCommand{
         }
 	}
 
-	@Override
-	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		response.setCharacterEncoding("UTF-8");
-		response.setHeader("Content-Type", "application/json");
-		try {
-			getDefaultPrefixes(request, response);
-		} catch (Exception e) {
-			respondException(response, e);
-		}
-	}
-
 	private void getDefaultPrefixes(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		String projectId = request.getParameter("project");

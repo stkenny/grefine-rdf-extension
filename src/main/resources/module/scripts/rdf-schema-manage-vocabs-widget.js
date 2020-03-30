@@ -53,11 +53,13 @@ ManageVocabsWidget.prototype.renderBody = function(){
 		return function(e){
 			e.preventDefault();
 			dismissBusy = DialogSystem.showBusy($.i18n('rdf-ext-vocab/deleting-pref')+' ' + name);
-			$.post(
+			Refine.wrapCSRF(function(token) {
+			    $.post(
 					'command/rdf-extension/remove-prefix',
 					{
 						'name':name,
-						'project':theProject.id
+						'project':theProject.id,
+						'csrf_token': token,
 					},
 					function(data)
 					{
@@ -71,6 +73,7 @@ ManageVocabsWidget.prototype.renderBody = function(){
 						}
 					}
 				);
+			});
     	}; 
     };
     
@@ -82,12 +85,13 @@ ManageVocabsWidget.prototype.renderBody = function(){
     		{
     			
     			dismissBusy = DialogSystem.showBusy($.i18n('rdf-ext-vocab/refresh-pref')+' ' + name);
-    			$.post('command/rdf-extension/refresh-prefix',
+    			Refine.wrapCSRF(function(token) {
+    			    $.post('command/rdf-extension/refresh-prefix',
     					{
     						'name':name,
     						'uri':uri,
-    						'project':theProject.id
-    						
+    						'project':theProject.id,
+    						'csrf_token': token
     					},
 						function(data) {
 							dismissBusy();
@@ -95,12 +99,11 @@ ManageVocabsWidget.prototype.renderBody = function(){
 		    					alert($.i18n('rdf-ext-vocab/alert-wrong')+': ' + data.messge);
 		    				}
 						});
-    		}
-    	}; 
+    		        });
+    		    }
+    	    };
     };
-    
-	
-	
+
 	for(var i = 0; i< self._prefixesManager._prefixes.length; i++){
 		var name = self._prefixesManager._prefixes[i].name;
 		var uri = self._prefixesManager._prefixes[i].uri;
