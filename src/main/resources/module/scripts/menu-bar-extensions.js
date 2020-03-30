@@ -301,7 +301,7 @@ ReconciliationRdfServiceDialog.prototype._footer = function(footer){
 	    	Refine.wrapCSRF(function(token) {
 	    	    $.post("command/rdf-extension/addService",
 				{
-				    'csrf_token': token,
+				    "csrf_token":token,
 				    "datasource":"file_url",
 					"name":name,"url":file_url,
 					properties:prop_uris,
