@@ -36,6 +36,7 @@ NewPrefixWidget.prototype.show = function(msg,def_prefix, onDone){
     	self.suggestUri(def_prefix);
     }
 
+   Refine.wrapCSRF(function(token) {
    self._elmts.file_upload_form.submit(function(e){
 	   e.preventDefault();
 	   
@@ -57,20 +58,19 @@ NewPrefixWidget.prototype.show = function(msg,def_prefix, onDone){
     		$('#vocab-hidden-prefix').val(name);
     		$('#vocab-hidden-uri').val(uri);
     		$('#vocab-hidden-project').val(theProject.id);
-    			
+
     		dismissBusy = DialogSystem.showBusy($.i18n('rdf-ext-prefix/voc-upload')+' ');
 
-    		$(this).ajaxSubmit({
-    				
+    		    $(this).ajaxSubmit({
     				url: "command/rdf-extension/upload-file-add-prefix",
-    				type: "POST",
+    				type: "post",
     				dataType: "json",
+    				headers: { 'X-CSRF-TOKEN': token },
     				success:function(data) {
     					dismissBusy();
     					if (data.code === 'error')
     					{
     						alert("Error: " + data.message);
-    						
     					} else {
 	    			    	if(onDone){
 	    						onDone(name,uri);
@@ -78,10 +78,12 @@ NewPrefixWidget.prototype.show = function(msg,def_prefix, onDone){
 	    			    	}	
     					}
     			    }
-    		});
+    		    });
+
 
     		return false;
-    	} 
+    	}
+    	});
     	
 		dismissBusy = DialogSystem.showBusy($.i18n('rdf-ext-prefix/try-upload')+' ' + uri);
     	Refine.wrapCSRF(function(token) {

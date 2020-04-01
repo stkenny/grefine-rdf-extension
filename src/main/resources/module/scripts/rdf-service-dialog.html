@@ -16,6 +16,7 @@
     <form id="file-upload-form" bind="file_upload_form" action="command/rdf-extension/uploadFileAndAddService" enctype="multipart/form-data">
       <input type="hidden" name="service_name" bind="hidden_service_name" />
       <input type="hidden" name="properties" bind="hidden_properties" />
+      <input type="hidden" name="csrf_token" bind="hidden_csrf_token" />
       <table>
         <tr>
           <td>

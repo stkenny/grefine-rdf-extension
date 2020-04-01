@@ -36,4 +36,17 @@ public abstract class RdfCommand extends Command {
             throw new ServletException("Unable to create index for RDF schema",e);
 		}
 	}
+
+	protected boolean hasValidCSRFTokenAsHeader(HttpServletRequest request) throws ServletException {
+		if (request == null) {
+			throw new IllegalArgumentException("parameter 'request' should not be null");
+		}
+		try {
+			String token = request.getHeader("X-CSRF-TOKEN");
+			return token != null && csrfFactory.validToken(token);
+		} catch (Exception e) {
+			// ignore
+		}
+		throw new ServletException("Can't find CSRF token: missing or bad URL parameter");
+	}
 }

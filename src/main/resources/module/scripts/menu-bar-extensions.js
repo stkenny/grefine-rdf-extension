@@ -317,16 +317,19 @@ ReconciliationRdfServiceDialog.prototype._footer = function(footer){
 	    
 	    self._elmts.hidden_service_name.val(name);
 	    self._elmts.hidden_properties.val(prop_uris);
-	    
-	    self._elmts.file_upload_form.ajaxSubmit({
-	    	dataType:  'json',
-	    	type:'post',
-	    	success: function(data) {
-	    		self._dismissBusy();
-	    		RdfReconciliationManager.registerService(data,self._level);
-			}
+
+        Refine.wrapCSRF(function(token) {
+	        self._elmts.file_upload_form.ajaxSubmit({
+	    	    dataType: 'json',
+	    	    type:'post',
+	    	    headers: { 'X-CSRF-TOKEN': token },
+	    	    success: function(data) {
+	    		    self._dismissBusy();
+	    		    RdfReconciliationManager.registerService(data,self._level);
+			    }
+		    });
 		});
-	    
+
 	}).appendTo(footer);
 	
 	$('<button></button>').addClass('button').text($.i18n('rdf-ext-buttons/cancel')).click(function() {
@@ -415,7 +418,14 @@ ReconciliationSparqlServiceDialog.prototype._footer = function(footer){
                                 function(){
                                     Refine.wrapCSRF(function(token) {
                                         $.post("command/rdf-extension/addService",
-                                              {"datasource":"sparql","name":name,"url":endpoint,"type":type,"graph":graph_uri,properties:prop_uris},
+                                              {
+                                                "datasource":"sparql",
+                                                "name":name,
+                                                "url":endpoint,
+                                                "type":type,
+                                                "graph":graph_uri,properties:prop_uris,
+                                                "csrf_token":token
+                                              },
                                                 function(data){
                                                     self._dismissBusy();
                                                     RdfReconciliationManager.registerService(data,self._level);

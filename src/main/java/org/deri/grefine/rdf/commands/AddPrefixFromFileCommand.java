@@ -34,13 +34,15 @@ public class AddPrefixFromFileCommand extends RdfCommand {
 
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        if(!hasValidCSRFTokenAsHeader(request)) {
+            respondCSRFError(response);
+            return;
+        }
         try {
             FileItemFactory factory = new DiskFileItemFactory();
-
             // Create a new file upload handler
             ServletFileUpload upload = new ServletFileUpload(factory);
-
-            String uri = null, prefix = null, format = null, projectId = null, filename = "";
+            String uri = null, prefix = null, format = null, projectId = null, filename = "", token = null;
             InputStream in = null;
             @SuppressWarnings("unchecked")
             List<FileItem> items = upload.parseRequest(request);
@@ -63,7 +65,6 @@ public class AddPrefixFromFileCommand extends RdfCommand {
                     new ForwardChainingRDFSInferencer(new MemoryStore()));
             repository.initialize();
             RepositoryConnection con = repository.getConnection();
-
             RDFFormat rdfFormat;
             if (format.equals("auto-detect")) {
                 rdfFormat = guessFormat(filename);
@@ -91,9 +92,7 @@ public class AddPrefixFromFileCommand extends RdfCommand {
         } catch (org.eclipse.rdf4j.RDF4JException e){
             respondException(response, e);
         } catch (Exception e){
-            response.setCharacterEncoding("UTF-8");
-            response.setHeader("Content-Type", "application/json");
-            respond(response,"{\"code\":\"ok\"}");
+            respondException(response, e);
         }
     }
 
