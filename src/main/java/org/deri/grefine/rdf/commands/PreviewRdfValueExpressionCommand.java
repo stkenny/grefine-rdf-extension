@@ -26,7 +26,7 @@ import com.google.refine.util.ParsingUtilities;
 public class PreviewRdfValueExpressionCommand extends PreviewExpressionCommand{
 
 	@Override
-	public void doPost(HttpServletRequest request, HttpServletResponse response)
+	public void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		try {
             Project project = getProject(request);
