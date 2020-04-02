@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.deri.grefine.reconcile.GRefineServiceManager;
-import org.json.JSONException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,8 +24,6 @@ public class InitializationCommand extends Command{
 		File workingDir = servlet.getCacheDir("rdfExtension/reconcile");
 		try {
 			GRefineServiceManager.initialize(workingDir);
-		} catch (JSONException e) {
-			logger.error("Failed to initialize the extension. ", e);
 		} catch (IOException e) {
 			logger.error("Failed to initialize the extension. ", e);
 		}

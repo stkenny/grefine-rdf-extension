@@ -4,8 +4,10 @@ import com.google.common.collect.ImmutableList;
 import com.google.refine.commands.Command;
 import org.apache.commons.lang.StringUtils;
 import org.deri.grefine.reconcile.model.ReconciliationService;
-import org.json.JSONException;
-import org.json.JSONWriter;
+
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonGenerationException;
+import com.google.refine.util.ParsingUtilities;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -20,22 +22,27 @@ public abstract class AbstractAddServiceCommand extends Command{
 
 	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		if(!hasValidCSRFToken(request)) {
+			respondCSRFError(response);
+			return;
+		}
 		try{
 			ReconciliationService service = getReconciliationService(request);
 			response.setCharacterEncoding("UTF-8");
 	        response.setHeader("Content-Type", "application/json");
 
 	        Writer w = response.getWriter();
-	        JSONWriter writer = new JSONWriter(w);
+	        JsonGenerator writer = ParsingUtilities.mapper.getFactory().createGenerator(w);
 	        
-	        writer.object();
-	        writer.key("code"); writer.value("ok");
-
+	        writer.writeStartObject();
+	        writer.writeStringField("code", "ok");
+            
 	        if(service != null) {
-                writer.key("service");
+                writer.writeFieldName("service");
                 service.writeAsJson(writer);
             }
-	        writer.endObject();
+	        writer.writeEndObject();
+	        writer.flush();
 	        w.flush();
 	        w.close();
 		} catch (Exception e) {
@@ -61,6 +68,19 @@ public abstract class AbstractAddServiceCommand extends Command{
 		}
 		return ImmutableList.copyOf(lst);
 	}
-	
-	protected abstract ReconciliationService getReconciliationService(HttpServletRequest request)throws JSONException, IOException;	
+
+	protected boolean hasValidCSRFTokenAsHeader(HttpServletRequest request) throws ServletException {
+		if (request == null) {
+			throw new IllegalArgumentException("parameter 'request' should not be null");
+		}
+		try {
+			String token = request.getHeader("X-CSRF-TOKEN");
+			return token != null && csrfFactory.validToken(token);
+		} catch (Exception e) {
+			// ignore
+		}
+		throw new ServletException("Can't find CSRF token: missing or bad URL parameter");
+	}
+
+	protected abstract ReconciliationService getReconciliationService(HttpServletRequest request) throws IOException;
 }

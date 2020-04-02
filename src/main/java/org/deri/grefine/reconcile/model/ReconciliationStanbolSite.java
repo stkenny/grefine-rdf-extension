@@ -3,7 +3,9 @@ package org.deri.grefine.reconcile.model;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.json.JSONObject;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Reconciliation Stanbol Site 
@@ -80,12 +82,14 @@ public class ReconciliationStanbolSite {
 		return true;
 	}
 
-	public JSONObject getJSON() {
-		Map<String,Object> map = new HashMap<String,Object>();
+	public JsonNode getJSON() {
+		ObjectMapper mapper = new ObjectMapper();
+		ObjectNode map = mapper.createObjectNode();
 		map.put(URI, this.uri);
 		map.put(NAME, this.name);
-		map.put(LOCAL, this.local); 
-		return new JSONObject(map);
+		map.put(LOCAL, this.local);
+
+		return map;
 	}
 
 }

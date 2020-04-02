@@ -5,9 +5,8 @@ import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 
 import com.google.common.collect.ImmutableList;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.ModelFactory;
-
+import org.shaded.apache.jena.rdf.model.Model;
+import org.shaded.apache.jena.rdf.model.ModelFactory;
 
 import org.deri.grefine.reconcile.GRefineServiceManager;
 import org.deri.grefine.reconcile.model.ReconciliationService;
@@ -24,14 +23,13 @@ import org.deri.grefine.reconcile.rdf.factories.JenaTextSparqlQueryFactory;
 import org.deri.grefine.reconcile.rdf.factories.PlainSparqlQueryFactory;
 import org.deri.grefine.reconcile.rdf.factories.SparqlQueryFactory;
 import org.deri.grefine.reconcile.rdf.factories.VirtuosoSparqlQueryFactory;
-import org.json.JSONException;
 
 public class AddServiceCommand extends AbstractAddServiceCommand{
 
 	final static double DEFAULT_MATCH_THRESHOLD = 0.9;
 	
 	@Override
-	protected ReconciliationService getReconciliationService(HttpServletRequest request) throws JSONException, IOException {
+	protected ReconciliationService getReconciliationService(HttpServletRequest request) throws IOException {
 		String name = request.getParameter("name");
 		String id = getIdForString(name);
 		String url = request.getParameter("url");

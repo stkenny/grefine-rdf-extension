@@ -6,6 +6,7 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.io.IOException;
 
 import org.deri.grefine.reconcile.model.ReconciliationCandidate;
 import org.deri.grefine.reconcile.model.ReconciliationRequest;
@@ -13,14 +14,14 @@ import org.deri.grefine.reconcile.model.SearchResultItem;
 import org.deri.grefine.reconcile.model.ReconciliationRequestContext.PropertyContext;
 import org.deri.grefine.reconcile.rdf.factories.JenaTextSparqlQueryFactory.ScoredLabel;
 import org.deri.grefine.reconcile.util.StringUtils;
-import org.json.JSONException;
-import org.json.JSONWriter;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonGenerationException;
 
 import com.google.common.collect.ImmutableList;
-import org.apache.jena.query.QuerySolution;
-import org.apache.jena.query.ResultSet;
-import org.apache.jena.rdf.model.Literal;
-import org.apache.jena.rdf.model.Resource;
+import org.shaded.apache.jena.query.QuerySolution;
+import org.shaded.apache.jena.query.ResultSet;
+import org.shaded.apache.jena.rdf.model.Literal;
+import org.shaded.apache.jena.rdf.model.Resource;
 
 public class PlainSparqlQueryFactory extends AbstractSparqlQueryFactory{
 
@@ -183,10 +184,10 @@ public class PlainSparqlQueryFactory extends AbstractSparqlQueryFactory{
 
 	
 	@Override
-	public void write(JSONWriter writer) throws JSONException {
-		writer.object();
-		writer.key("type"); writer.value("plain");
-		writer.endObject();
+	public void write(JsonGenerator writer) throws JsonGenerationException, IOException {
+		writer.writeStartObject();
+		writer.writeStringField("type", "plain");
+		writer.writeEndObject();
 	}
 
 	/**

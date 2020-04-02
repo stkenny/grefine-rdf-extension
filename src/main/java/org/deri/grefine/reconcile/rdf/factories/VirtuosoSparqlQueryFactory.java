@@ -3,10 +3,12 @@ package org.deri.grefine.reconcile.rdf.factories;
 import org.deri.grefine.reconcile.model.ReconciliationRequest;
 import org.deri.grefine.reconcile.model.ReconciliationRequestContext.PropertyContext;
 import org.deri.grefine.reconcile.util.StringUtils;
-import org.json.JSONException;
-import org.json.JSONWriter;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonGenerationException;
 
 import com.google.common.collect.ImmutableList;
+
+import java.io.IOException;
 
 public class VirtuosoSparqlQueryFactory extends AbstractSparqlQueryFactory{
 
@@ -82,10 +84,10 @@ public class VirtuosoSparqlQueryFactory extends AbstractSparqlQueryFactory{
 	}
 
 	@Override
-	public void write(JSONWriter writer) throws JSONException {
-		writer.object();
-		writer.key("type");	writer.value("virtuoso");
-		writer.endObject();
+	public void write(JsonGenerator writer) throws JsonGenerationException, IOException {
+		writer.writeStartObject();
+		writer.writeStringField("type", "virtuoso");
+		writer.writeEndObject();
 	}
 	
 	protected int getQueryLimit(int limit){

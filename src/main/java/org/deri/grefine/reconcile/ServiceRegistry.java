@@ -2,6 +2,7 @@ package org.deri.grefine.reconcile;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.refine.util.ParsingUtilities;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 import org.deri.grefine.reconcile.model.ReconciliationRequest;
@@ -19,7 +20,11 @@ import org.deri.grefine.reconcile.rdf.executors.VirtuosoRemoteQueryExecutor;
 import org.deri.grefine.reconcile.rdf.factories.*;
 import org.deri.grefine.reconcile.util.GRefineJsonUtilities;
 import org.deri.grefine.reconcile.util.PrefixManager;
-import org.json.*;
+
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonGenerationException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.*;
 import java.util.*;
@@ -63,18 +68,20 @@ public class ServiceRegistry {
         service.save(out);
     }
 
-    public void save(FileOutputStream out) throws JSONException, IOException {
+    public void save(FileOutputStream out) throws JsonGenerationException, IOException {
         Writer writer = new OutputStreamWriter(out);
         try {
-            JSONWriter jsonWriter = new JSONWriter(writer);
-            jsonWriter.object();
-            jsonWriter.key("services");
-            jsonWriter.array();
+            JsonGenerator jsonWriter = ParsingUtilities.mapper.getFactory().createGenerator(writer);
+            jsonWriter.writeStartObject();
+            jsonWriter.writeFieldName("services");
+            jsonWriter.writeStartArray();
             for (ReconciliationService service : this.services.values()) {
                 service.writeAsJson(jsonWriter, true);
             }
-            jsonWriter.endArray();
-            jsonWriter.endObject();
+            jsonWriter.writeEndArray();
+            jsonWriter.writeEndObject();
+            jsonWriter.flush();
+            jsonWriter.close();
         } finally {
             writer.close();
         }
@@ -164,14 +171,14 @@ public class ServiceRegistry {
         return html;
     }
 
-    public void loadFromFile(FileInputStream in) throws JSONException, IOException {
+    public void loadFromFile(FileInputStream in) throws IOException {
         try {
-            JSONTokener tokener = new JSONTokener(new InputStreamReader(in));
-            JSONObject obj = (JSONObject) tokener.nextValue();
-            JSONArray services = obj.getJSONArray("services");
-            for (int i = 0; i < services.length(); i++) {
-                JSONObject serviceObj = services.getJSONObject(i);
-                String type = serviceObj.getString("type");
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode tokener = objectMapper.readTree(in);
+            JsonNode services = tokener.get("services");
+            for (int i = 0; i < services.size(); i++) {
+                JsonNode serviceObj = services.get(i);
+                String type = serviceObj.get("type").asText();
                 ReconciliationService service;
                 if (type.equals("rdf")) {
                     service = loadRdfServiceFromJSON(serviceObj);
@@ -187,23 +194,23 @@ public class ServiceRegistry {
 
     }
 
-    private RdfReconciliationService loadRdfServiceFromJSON(JSONObject serviceObj)
-            throws JSONException {
-        String serviceId = serviceObj.getString("id");
+    private RdfReconciliationService loadRdfServiceFromJSON(JsonNode serviceObj)
+            throws IOException {
+        String serviceId = serviceObj.get("id").asText();
         List<String> searchPropertyUris = new ArrayList<String>();
-        JSONArray propertiesArray = serviceObj.getJSONArray("searchPropertyUris");
-        for (int i = 0; i < propertiesArray.length(); i++) {
-            searchPropertyUris.add(propertiesArray.getString(i));
+        JsonNode propertiesArray = serviceObj.get("searchPropertyUris");
+        for (int i = 0; i < propertiesArray.size(); i++) {
+            searchPropertyUris.add(propertiesArray.get(i).asText());
         }
-        QueryEndpoint endpoint = loadEndpointFromJSON(serviceObj.getJSONObject("endpoint"));
-        return new RdfReconciliationService(serviceId, serviceObj.getString("name"),
-                ImmutableList.copyOf(searchPropertyUris), endpoint, serviceObj.getDouble("matchThreshold"));
+        QueryEndpoint endpoint = loadEndpointFromJSON(serviceObj.get("endpoint"));
+        return new RdfReconciliationService(serviceId, serviceObj.get("name").asText(),
+                ImmutableList.copyOf(searchPropertyUris), endpoint, serviceObj.get("matchThreshold").asDouble());
     }
 
-    private QueryEndpoint loadEndpointFromJSON(JSONObject endpointObj) throws JSONException {
-        String type = endpointObj.getString("type");
-        QueryExecutor executor = loadQueryExecutorFromJSON(endpointObj.getJSONObject("queryExecutor"));
-        SparqlQueryFactory factory = loadQueryFactoryFromJSON(endpointObj.getJSONObject("queryFactory"));
+    private QueryEndpoint loadEndpointFromJSON(JsonNode endpointObj) throws IOException {
+        String type = endpointObj.get("type").asText();
+        QueryExecutor executor = loadQueryExecutorFromJSON(endpointObj.get("queryExecutor"));
+        SparqlQueryFactory factory = loadQueryFactoryFromJSON(endpointObj.get("queryFactory"));
         if (type.equals("plain")) {
             return new PlainSparqlQueryEndpoint((PlainSparqlQueryFactory) factory, executor);
         } else {
@@ -213,20 +220,20 @@ public class ServiceRegistry {
 
     }
 
-    private QueryExecutor loadQueryExecutorFromJSON(JSONObject jsonObject)
-            throws JSONException {
-        String type = jsonObject.getString("type");
+    private QueryExecutor loadQueryExecutorFromJSON(JsonNode jsonObject)
+            throws IOException {
+        String type = jsonObject.get("type").asText();
         if (type.equals("dump")) {
             if (jsonObject.has("propertyUri")) {
-                return new DumpQueryExecutor(jsonObject.getString("propertyUri"));
+                return new DumpQueryExecutor(jsonObject.get("propertyUri").asText());
             } else {
                 return new DumpQueryExecutor();
             }
         } else {
-            String url = jsonObject.getString("sparql-url");
+            String url = jsonObject.get("sparql-url").asText();
             String graph = null;
             if (jsonObject.has("default-graph-uri")) {
-                graph = jsonObject.getString("default-graph-uri");
+                graph = jsonObject.get("default-graph-uri").asText();
             }
             if (type.equals("remote-virtuoso")) {
                 return new VirtuosoRemoteQueryExecutor(url, graph);
@@ -237,9 +244,9 @@ public class ServiceRegistry {
         }
     }
 
-    private SparqlQueryFactory loadQueryFactoryFromJSON(JSONObject factoryObj)
-            throws JSONException {
-        String type = factoryObj.getString("type");
+    private SparqlQueryFactory loadQueryFactoryFromJSON(JsonNode factoryObj)
+            throws IOException {
+        String type = factoryObj.get("type").asText();
         if (type.equals("virtuoso")) {
             return new VirtuosoSparqlQueryFactory();
         } else if (type.equals("jena-text")) {

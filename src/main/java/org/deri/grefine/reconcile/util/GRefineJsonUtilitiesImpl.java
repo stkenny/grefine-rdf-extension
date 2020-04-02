@@ -26,11 +26,8 @@ import org.deri.grefine.reconcile.model.SearchResultItem;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.json.JSONTokener;
 
-public class GRefineJsonUtilitiesImpl implements GRefineJsonUtilities{
+public class GRefineJsonUtilitiesImpl implements GRefineJsonUtilities {
 
 	@Override
 	public String getServiceMetadataAsJsonP(ReconciliationService service, String callback, String baseServiceUrl){
@@ -168,7 +165,7 @@ public class GRefineJsonUtilitiesImpl implements GRefineJsonUtilities{
 	}
 	
 	@Override
-	public JSONObject getJSONObjectFromUrl(URL url) throws JSONException, IOException{
+	public JsonNode getJSONObjectFromUrl(URL url) throws JsonParseException, IOException {
         URLConnection connection = url.openConnection();
         connection.setRequestProperty("Accept", "application/json");
         connection.setConnectTimeout(30000);
@@ -191,13 +188,9 @@ public class GRefineJsonUtilitiesImpl implements GRefineJsonUtilities{
         } finally {
             reader.close();
         }
-        JSONTokener t = new JSONTokener(s);
-        Object o = t.nextValue();
-        if (o instanceof JSONObject) {
-            return (JSONObject) o;
-        } else {
-            throw new JSONException(s + " couldn't be parsed as JSON object");
-        }
+		ObjectMapper mapper = new ObjectMapper();
+		JsonNode o = mapper.readTree(s);
+        return o;
 	}
 	
 	private ObjectNode getResponse(ReconciliationResponse response, PrefixManager prefixManager) {

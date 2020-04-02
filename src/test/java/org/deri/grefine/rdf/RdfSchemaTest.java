@@ -3,12 +3,12 @@ package org.deri.grefine.rdf;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.json.JSONObject;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import static org.testng.Assert.*;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.refine.util.ParsingUtilities;
 import org.deri.grefine.rdf.CellLiteralNode;
 import org.deri.grefine.rdf.CellResourceNode;
@@ -22,14 +22,14 @@ public class RdfSchemaTest {
 
 	private RdfSchema schema;
 	private CellResourceNode root;
+	private ObjectMapper mapper = new ObjectMapper();
 	
 	@BeforeClass
 	public void init()throws Exception{
 		//see image in docs for the schema
 		//String json = "{\"baseUri\":\"http://data.bis.gov.uk/data/organogram/2010-08-26/\",\"rootNodes\":[{\"nodeType\":\"cell-as-resource\",\"expression\":\"'http://reference.data.gov.uk/id/department/bis/post/' + value\",\"columnName\":\"Post unique reference\",\"rdfTypes\":[{\"uri\":\"http://reference.data.gov.uk/def/central-government/CivilServicePost\",\"curie\":\"gov:CivilServicePost\"}],\"links\":[{\"uri\":\"http://reference.data.gov.uk/def/central-government/heldBy\",\"curie\":\"http://reference.data.gov.uk/def/central-government/heldBy\",\"target\":{\"nodeType\":\"cell-as-resource\",\"columnIndex\":-1,\"expression\":\"('#person' + value).urlify(baseURI)\",\"isRowNumberCell\":true,\"rdfTypes\":[{\"uri\":\"http://xmlns.com/foaf/0.1/Person\",\"curie\":\"foaf:Person\"}],\"links\":[{\"uri\":\"http://xmlns.com/foaf/0.1/name\",\"curie\":\"foaf:name\",\"target\":{\"nodeType\":\"cell-as-literal\",\"columnIndex\":2,\"valueType\":\"untyped\",\"columnName\":\"Name\"}},{\"uri\":\"http://xmlns.com/foaf/0.1/mbox\",\"curie\":\"foaf:mbox\",\"target\":{\"nodeType\":\"cell-as-resource\",\"columnIndex\":12,\"expression\":\"'mailto:' + value\",\"isRowNumberCell\":false,\"columnName\":\"Contact e-mail\",\"rdfTypes\":[],\"links\":[]}}]}},{\"uri\":\"http://www.w3.org/2000/01/rdf-schema#label\",\"curie\":\"rdfs:label\",\"target\":{\"nodeType\":\"cell-as-literal\",\"columnIndex\":5,\"valueType\":\"untyped\",\"lang\":\"en\",\"columnName\":\"Job Title\"}},{\"uri\":\"http://reference.data.gov.uk/def/central-government/postIn\",\"curie\":\"http://reference.data.gov.uk/def/central-government/postIn\",\"target\":{\"nodeType\":\"cell-as-resource\",\"columnIndex\":10,\"expression\":\"value.urlify(baseURI)\",\"isRowNumberCell\":false,\"columnName\":\"Unit\",\"rdfTypes\":[],\"links\":[{\"uri\":\"http://reference.data.gov.uk/def/central-government/hasPost\",\"curie\":\"http://reference.data.gov.uk/def/central-government/hasPost\",\"target\":{\"nodeType\":\"cell-as-resource\",\"columnIndex\":0,\"expression\":\"'http://reference.data.gov.uk/id/department/bis/post/' + value\",\"isRowNumberCell\":false,\"columnName\":\"Post unique reference\",\"rdfTypes\":[],\"links\":[]}}]}}]}]}";
 		String json = "{\"baseUri\":\"http://data.bis.gov.uk/data/organogram/2010-08-26/\",\"rootNodes\":[{\"nodeType\":\"cell-as-resource\",\"isRowNumberCell\":false,\"expression\":\"'http://reference.data.gov.uk/id/department/bis/post/' + value\",\"columnName\":\"Post unique reference\",\"rdfTypes\":[{\"uri\":\"http://reference.data.gov.uk/def/central-government/CivilServicePost\",\"curie\":\"gov:CivilServicePost\"}],\"links\":[{\"uri\":\"http://reference.data.gov.uk/def/central-government/heldBy\",\"curie\":\"http://reference.data.gov.uk/def/central-government/heldBy\",\"target\":{\"nodeType\":\"cell-as-resource\",\"isRowNumberCell\":true,\"expression\":\"('#person' + value).urlify()\",\"rdfTypes\":[{\"uri\":\"http://xmlns.com/foaf/0.1/Person\",\"curie\":\"foaf:Person\"}],\"links\":[{\"uri\":\"http://xmlns.com/foaf/0.1/name\",\"curie\":\"foaf:name\",\"target\":{\"nodeType\":\"cell-as-literal\",\"isRowNumberCell\":false,\"columnName\":\"Name\"}},{\"uri\":\"http://xmlns.com/foaf/0.1/mbox\",\"curie\":\"foaf:mbox\",\"target\":{\"nodeType\":\"cell-as-resource\",\"isRowNumberCell\":false,\"expression\":\"'mailto:' + value\",\"columnName\":\"Contact e-mail\",\"rdfTypes\":[],\"links\":[]}}]}},{\"uri\":\"http://www.w3.org/2000/01/rdf-schema#label\",\"curie\":\"rdfs:label\",\"target\":{\"nodeType\":\"cell-as-literal\",\"isRowNumberCell\":false,\"lang\":\"en\",\"columnName\":\"Job Title\"}},{\"uri\":\"http://reference.data.gov.uk/def/central-government/postIn\",\"curie\":\"http://reference.data.gov.uk/def/central-government/postIn\",\"target\":{\"nodeType\":\"cell-as-resource\",\"isRowNumberCell\":false,\"expression\":\"value.urlify()\",\"columnName\":\"Unit\",\"rdfTypes\":[],\"links\":[{\"uri\":\"http://reference.data.gov.uk/def/central-government/hasPost\",\"curie\":\"http://reference.data.gov.uk/def/central-government/hasPost\",\"target\":{\"nodeType\":\"cell-as-resource\",\"isRowNumberCell\":false,\"expression\":\"'http://reference.data.gov.uk/id/department/bis/post/' + value\",\"columnName\":\"Post unique reference\",\"rdfTypes\":[],\"links\":[]}}]}}]}]}";
-		JSONObject o = ParsingUtilities.evaluateJsonStringToObject(json);
-		schema = RdfSchema.reconstruct(o);
+		schema = mapper.readValue(json, RdfSchema.class);
 		root = (CellResourceNode)schema.getRoots().get(0);
 	}
 	

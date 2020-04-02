@@ -2,13 +2,16 @@ package org.deri.grefine.rdf;
 
 import java.lang.reflect.Array;
 import java.net.URI;
+import java.io.IOException;
 
-import org.json.JSONException;
-import org.json.JSONWriter;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonGenerationException;
 import org.eclipse.rdf4j.model.BNode;
 import org.eclipse.rdf4j.model.Resource;
 import org.eclipse.rdf4j.model.ValueFactory;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.refine.expr.EvalError;
 import com.google.refine.model.Project;
 import com.google.refine.model.Row;
@@ -19,29 +22,35 @@ public class CellResourceNode extends ResourceNode implements CellNode{
     final private String columnName;
     final private boolean isRowNumberCell; 
     
+    @JsonProperty("expression")
     public String getUriExpression() {
         return uriExpression;
     }
 
-    
-    
-    public CellResourceNode(String columnName,String exp,boolean isRowNumberCell) {
+    @JsonCreator
+    public CellResourceNode(
+    		@JsonProperty("columnName")
+    		String columnName,
+    		@JsonProperty("expression")
+    		String exp,
+    		@JsonProperty("isRowNumberCell")
+    		boolean isRowNumberCell) {
     	this.columnName = columnName;
         this.uriExpression = exp;
         this.isRowNumberCell = isRowNumberCell;
     }
 
     @Override
-    public Resource[] createResource(URI baseUri,ValueFactory factory,Project project,Row row,int rowIndex,BNode[] blanks) {
+    public Resource[] createResource(URI baseUri, ValueFactory factory, Project project, Row row, int rowIndex, BNode[] blanks) {
         try{
         	Object result = Util.evaluateExpression(project, uriExpression, columnName, row, rowIndex);
             if(result.getClass()==EvalError.class){
             	return null;
             }
             if(result.getClass().isArray()){
-            	int lngth = Array.getLength(result);
-            	Resource[] rs = new org.eclipse.rdf4j.model.URI[lngth];
-            	for(int i=0;i<lngth;i++){
+            	int length = Array.getLength(result);
+            	Resource[] rs = new org.eclipse.rdf4j.model.URI[length];
+            	for(int i=0;i<length;i++){
             		String uri = Util.resolveUri(baseUri,  Array.get(result, i).toString());
             		rs[i] = factory.createURI(uri);
             	}
@@ -62,29 +71,29 @@ public class CellResourceNode extends ResourceNode implements CellNode{
         
     }
 
-
 	@Override
 	public boolean isRowNumberCellNode() {
 		return isRowNumberCell;
 	}
-
-
 
 	@Override
 	public String getColumnName() {
 		return columnName;
 	}
 
-
-
 	@Override
-	protected void writeNode(JSONWriter writer) throws JSONException {
-		writer.key("nodeType"); writer.value("cell-as-resource");
-        writer.key("expression"); writer.value(uriExpression);
-        writer.key("isRowNumberCell"); writer.value(isRowNumberCell);
+	protected void writeNode(JsonGenerator writer) throws JsonGenerationException, IOException {
+		writer.writeStringField("nodeType", "cell-as-resource");
+        writer.writeStringField("expression", uriExpression);
+        writer.writeBooleanField("isRowNumberCell", isRowNumberCell);
         if(columnName!=null){
-        	writer.key("columnName"); writer.value(columnName);
+        	writer.writeStringField("columnName", columnName);
         }
 		
+	}
+
+	@Override
+	public String getNodeType() {
+		return "cell-as-resource";
 	}
 }

@@ -1,5 +1,7 @@
 package org.deri.grefine.rdf.commands;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.google.refine.browsing.Engine;
 import com.google.refine.commands.Command;
 import com.google.refine.model.Project;
@@ -10,8 +12,6 @@ import org.deri.grefine.rdf.RdfSchema;
 import org.deri.grefine.rdf.exporters.RdfExporter;
 import org.deri.grefine.rdf.exporters.RdfExporter.RdfRowVisitor;
 import org.deri.grefine.rdf.vocab.Vocabulary;
-import org.json.JSONObject;
-import org.json.JSONWriter;
 import org.eclipse.rdf4j.repository.RepositoryException;
 import org.eclipse.rdf4j.rio.RDFFormat;
 import org.eclipse.rdf4j.rio.RDFHandlerException;
@@ -27,9 +27,9 @@ import java.io.StringWriter;
 public class PreviewRdfCommand extends Command {
 
     @Override
-    public void doPost(HttpServletRequest request, HttpServletResponse response)
+    public void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        try {
+		try {
             Project project = getProject(request);
             Engine engine = getEngine(request, project);
 
@@ -37,8 +37,8 @@ public class PreviewRdfCommand extends Command {
             response.setHeader("Content-Type", "application/json");
 
             String jsonString = request.getParameter("schema");
-            JSONObject json = ParsingUtilities.evaluateJsonStringToObject(jsonString);
-            final RdfSchema schema = RdfSchema.reconstruct(json);
+            JsonNode jsonNode = ParsingUtilities.evaluateJsonStringToObjectNode(jsonString);
+            final RdfSchema schema = RdfSchema.reconstruct(jsonNode);
 
 	        StringWriter sw = new StringWriter();
 	        RDFWriter w = Rio.createWriter(RDFFormat.TURTLE, sw);
@@ -74,14 +74,18 @@ public class PreviewRdfCommand extends Command {
 	        }
 	        RdfExporter.buildModel(project, engine, visitor);
 
-            JSONWriter writer = new JSONWriter(response.getWriter());
-            writer.object();
-            writer.key("v");
-            writer.value(sw.getBuffer().toString());
-            writer.endObject();
-            //respond(response, "{v:" + sw.getBuffer().toString() + "}");
+            respondJSON(response, new PreviewResponse(sw.getBuffer().toString()));
         }catch (Exception e) {
             respondException(response, e);
         }
+    }
+    
+    private class PreviewResponse {
+    	@JsonProperty("v")
+    	String value;
+    	
+    	protected PreviewResponse(String v) {
+    		value = v;
+    	}
     }
 }

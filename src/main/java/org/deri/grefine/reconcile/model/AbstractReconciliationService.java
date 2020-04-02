@@ -3,9 +3,9 @@ package org.deri.grefine.reconcile.model;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-
-import org.json.JSONException;
-import org.json.JSONWriter;
+import java.io.IOException;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonGenerationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,14 +17,14 @@ import com.google.common.collect.ImmutableMap;
  * 
  */
 
-public abstract class AbstractReconciliationService implements ReconciliationService{
+public abstract class AbstractReconciliationService implements ReconciliationService {
 	final static Logger logger = LoggerFactory.getLogger("AbstractReconciliationService");
 	
 	protected String name;
 	protected String id;
 	
 	protected AbstractReconciliationService(String id, String name){
-		this.name= name;
+		this.name = name;
 		this.id = id;
 	}
 	
@@ -57,7 +57,7 @@ public abstract class AbstractReconciliationService implements ReconciliationSer
 	}
 
 	@Override
-	public void writeAsJson(JSONWriter w) throws JSONException {
+	public void writeAsJson(JsonGenerator w) throws JsonGenerationException, IOException {
 		writeAsJson(w,false);
 	}
 	

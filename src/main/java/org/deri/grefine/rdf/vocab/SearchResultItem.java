@@ -1,7 +1,8 @@
 package org.deri.grefine.rdf.vocab;
 
-import org.json.JSONException;
-import org.json.JSONWriter;
+import java.io.IOException;
+
+import com.fasterxml.jackson.core.JsonGenerator;
 
 public class SearchResultItem {
 	private String label;
@@ -35,19 +36,13 @@ public class SearchResultItem {
 		return description;
 	}
 
-	public void writeAsSearchResult(JSONWriter writer) throws JSONException {
-		writer.object();
-
-		writer.key("id");
-		writer.value(id);
-
-		writer.key("name");
-		writer.value(prefix + ":" + localName);
-
-		writer.key("description");
-		writer.value(id + "<br/><em>label: </em>" + label
+	public void writeAsSearchResult(JsonGenerator writer) throws IOException {
+		writer.writeStartObject();
+		writer.writeStringField("id", id);
+		writer.writeStringField("name", prefix + ":" + localName);
+		writer.writeStringField("description", id + "<br/><em>label: </em>" + label
 				+ "<br/><em>description: </em>" + description);
-		writer.endObject();
+		writer.writeEndObject();
 	}
 
 }

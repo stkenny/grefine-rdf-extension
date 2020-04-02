@@ -22,6 +22,8 @@ import org.deri.grefine.rdf.app.ApplicationContext;
 import org.deri.grefine.rdf.commands.AddPrefixCommand;
 import org.deri.grefine.rdf.vocab.imp.VocabularySearcher;
 
+import com.google.refine.commands.Command;
+
 import static org.testng.Assert.*;
 
 public class AddPrefixCommandTest{
@@ -62,6 +64,7 @@ public class AddPrefixCommandTest{
 		request.addParameter("fetch", "web");
 		request.addParameter("project", projectId);
 		request.addParameter("fetch-url", uri);
+		request.addParameter("csrf_token", Command.csrfFactory.getFreshToken());
 		
 		assertFalse(schema.getPrefixesMap().containsKey("foaf"));
 		assertTrue(searcher.searchClasses("foaf:P", projectId).isEmpty());

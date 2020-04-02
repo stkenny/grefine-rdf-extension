@@ -4,10 +4,10 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import org.json.JSONException;
-import org.json.JSONWriter;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonGenerationException;
 
-import org.apache.jena.query.ResultSet;
+import org.shaded.apache.jena.query.ResultSet;
 
 /**
  * @author fadmaa
@@ -19,6 +19,6 @@ public interface QueryExecutor {
 	public ResultSet sparql(String sparql);
 	
 	public void save(String serviceId, FileOutputStream out) throws IOException;
-	public void write(JSONWriter writer)throws JSONException;
+	public void write(JsonGenerator writer) throws JsonGenerationException, IOException;
 	public void initialize(FileInputStream in);
 }

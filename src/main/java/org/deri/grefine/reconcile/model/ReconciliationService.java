@@ -4,8 +4,8 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import org.json.JSONException;
-import org.json.JSONWriter;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonGenerationException;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -103,8 +103,8 @@ public interface ReconciliationService{
 	 */
 	public void save(FileOutputStream out) throws IOException;
 
-	public void writeAsJson(JSONWriter w)throws JSONException;
-	public void writeAsJson(JSONWriter w, boolean saveMode)throws JSONException;
+	public void writeAsJson(JsonGenerator w) throws JsonGenerationException, IOException;
+	public void writeAsJson(JsonGenerator w, boolean saveMode)throws JsonGenerationException, IOException;
 	
 	/**
 	 * @param in inputstream to read a file containing a model for the service(dump-based only) in Turtle.

@@ -6,9 +6,12 @@ import java.io.Writer;
 import java.util.Properties;
 
 import org.deri.grefine.rdf.RdfSchema;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.json.JSONWriter;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonGenerationException;
 
 import com.google.refine.history.Change;
 import com.google.refine.history.HistoryEntry;
@@ -20,29 +23,29 @@ import com.google.refine.util.Pool;
 
 public class SaveRdfSchemaOperation extends AbstractOperation {
 
+    @JsonProperty("schema")
     final protected RdfSchema _schema;
 
-    public SaveRdfSchemaOperation(RdfSchema schema) {
+    @JsonCreator
+    public SaveRdfSchemaOperation(
+                @JsonProperty("schema")
+                RdfSchema schema) {
         this._schema = schema;
     }
 
-    static public AbstractOperation reconstruct(Project project, JSONObject obj)
+    static public AbstractOperation reconstruct(Project project, JsonNode obj)
             throws Exception {
         return new SaveRdfSchemaOperation(RdfSchema.reconstruct(obj
-                .getJSONObject("schema")));
+                .get("schema")));
     }
-
-    public void write(JSONWriter writer, Properties options)
-            throws JSONException {
-        writer.object();
-        writer.key("op");
-        writer.value(OperationRegistry.s_opClassToName.get(this.getClass()));
-        writer.key("description");
-        writer.value("Save RDF schema skeleton");
-        writer.key("schema");
-        _schema.write(writer, options);
-        writer.endObject();
-
+    
+    @JsonProperty("description")
+    public String getDescription() {
+    	return "Save RDF schema skeleton";
+    }
+    
+    public RdfSchema getSchema() {
+    	return _schema;
     }
 
     @Override
@@ -109,10 +112,10 @@ public class SaveRdfSchemaOperation extends AbstractOperation {
                 
                 if ("oldSchema".equals(field) && value.length() > 0) {
                     oldSchema = RdfSchema.reconstruct(ParsingUtilities
-                            .evaluateJsonStringToObject(value));
+                            .evaluateJsonStringToObjectNode(value));
                 } else if ("newSchema".equals(field) && value.length() > 0) {
                     newSchema = RdfSchema.reconstruct(ParsingUtilities
-                            .evaluateJsonStringToObject(value));
+                            .evaluateJsonStringToObjectNode(value));
                 }
             }
             
@@ -125,10 +128,10 @@ public class SaveRdfSchemaOperation extends AbstractOperation {
         static protected void writeRdfSchema(RdfSchema s, Writer writer)
                 throws IOException {
             if (s != null) {
-                JSONWriter jsonWriter = new JSONWriter(writer);
+                JsonGenerator jsonWriter = ParsingUtilities.mapper.getFactory().createGenerator(writer);
                 try {
                     s.write(jsonWriter, new Properties());
-                } catch (JSONException e) {
+                } catch (IOException e) {
                     e.printStackTrace();
                 }
             }

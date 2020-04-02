@@ -10,9 +10,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.deri.grefine.rdf.Util;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONWriter;
+
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.JsonNode;
 
 import com.google.refine.commands.expr.PreviewExpressionCommand;
 import com.google.refine.expr.EvalError;
@@ -25,7 +26,7 @@ import com.google.refine.util.ParsingUtilities;
 public class PreviewRdfValueExpressionCommand extends PreviewExpressionCommand{
 
 	@Override
-	public void doPost(HttpServletRequest request, HttpServletResponse response)
+	public void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		try {
             Project project = getProject(request);
@@ -46,15 +47,16 @@ public class PreviewRdfValueExpressionCommand extends PreviewExpressionCommand{
             try{
             	base = new URI(baseUri);
             }catch(URISyntaxException ex){
-            	respond(response, "{ \"code\" : \"error\", \"message\" : \"Invalie Base URI\" }");
+            	respond(response, "{ \"code\" : \"error\", \"message\" : \"Invalid Base URI\" }");
                 return;
             }
             response.setCharacterEncoding("UTF-8");
             response.setHeader("Content-Type", "application/json");
             
-            JSONArray rowIndices = ParsingUtilities.evaluateJsonStringToArray(rowIndicesString);
+            JsonNode rowIndices = ParsingUtilities.evaluateJsonStringToArrayNode(rowIndicesString);
             
-            JSONWriter writer = new JSONWriter(response.getWriter());
+            ObjectMapper mapper = new ObjectMapper();
+            JsonGenerator writer = mapper.getFactory().createGenerator(response.getWriter());
             if(isUri){
             	respondUriPreview(project, writer, rowIndices, expression, columnName, base);
             }else{
@@ -65,33 +67,33 @@ public class PreviewRdfValueExpressionCommand extends PreviewExpressionCommand{
         }
 	}
 	
-	private void respondUriPreview(Project project, JSONWriter writer, JSONArray rowIndices, String expression, String columnName, URI base) throws JSONException{
-		int length = rowIndices.length();
+	private void respondUriPreview(Project project, JsonGenerator writer, JsonNode rowIndices, String expression, String columnName, URI base) throws IOException{
+		int length = rowIndices.size();
         
-        writer.object();
+        writer.writeStartObject();
         
         try {
-            writer.key("results"); writer.array();
+            writer.writeArrayFieldStart("results");
             String[] absolutes = new String[length];
             for (int i = 0; i < length; i++) {
                 Object result = null;
                 absolutes[i] = null;
-                int rowIndex = rowIndices.getInt(i);
+                int rowIndex = rowIndices.get(i).asInt();
                 if (rowIndex >= 0 && rowIndex < project.rows.size()) {
                     Row row = project.rows.get(rowIndex);
                     result = Util.evaluateExpression(project, expression, columnName, row, rowIndex); 
                 }
                 
                 if (result == null) {
-                    writer.value(null);
+                    writer.writeNull();
                 } else if (ExpressionUtils.isError(result)) {
-                    writer.object();
-                    writer.key("message"); writer.value(((EvalError) result).message);
-                    writer.endObject();
+                    writer.writeStartObject();
+                    writer.writeStringField("message", ((EvalError) result).message);
+                    writer.writeEndObject();
                 } else {
                 	StringBuffer sb = new StringBuffer();
                     writeValue(sb, result, false);
-                    writer.value(sb.toString());
+                    writer.writeString(sb.toString());
                     //prepare absolute value                    
                 	if (result.getClass().isArray()) {
                 		int lngth = Array.getLength(result);
@@ -109,74 +111,78 @@ public class PreviewRdfValueExpressionCommand extends PreviewExpressionCommand{
                 	}
                 }
             }
-            writer.endArray();
+            writer.writeEndArray();
             
             //writing the absolutes
-            writer.key("absolutes"); writer.array();
+            writer.writeArrayFieldStart("absolutes");
             for (int i = 0; i < length; i++) {
-            	writer.value(absolutes[i]);
+            	writer.writeString(absolutes[i]);
             }
-            writer.endArray();
-            writer.key("code"); writer.value("ok");
+            writer.writeEndArray();
+            writer.writeStringField("code", "ok");
         } catch (ParsingException e) {
-        	writer.endArray();
-            writer.key("code"); writer.value("error");
-            writer.key("type"); writer.value("parser");
-            writer.key("message"); writer.value(e.getMessage());
+        	writer.writeEndArray();
+            writer.writeStringField("code", "error");
+            writer.writeStringField("type", "parser");
+            writer.writeStringField("message", e.getMessage());
         } catch (Exception e) {
-        	writer.endArray();
-            writer.key("code"); writer.value("error");
-            writer.key("type"); writer.value("other");
-            writer.key("message"); writer.value(e.getMessage());
+        	writer.writeEndArray();
+            writer.writeStringField("code", "error");
+            writer.writeStringField("type", "other");
+            writer.writeStringField("message", e.getMessage());
         }
         
-        writer.endObject();
+        writer.writeEndObject();
 
+        writer.flush();
+        writer.close();
 	}
 	
 	
-	private void respondLiteralPreview(Project project, JSONWriter writer, JSONArray rowIndices, String expression, String columnName) throws JSONException{
-		int length = rowIndices.length();
+	private void respondLiteralPreview(Project project, JsonGenerator writer, JsonNode rowIndices, String expression, String columnName) throws IOException{
+		int length = rowIndices.size();
         
-        writer.object();
+        writer.writeStartObject();
         
         try {
-            writer.key("results"); writer.array();
+            writer.writeArrayFieldStart("results");
             for (int i = 0; i < length; i++) {
                 Object result = null;
-                int rowIndex = rowIndices.getInt(i);
+                int rowIndex = rowIndices.get(i).asInt();
                 if (rowIndex >= 0 && rowIndex < project.rows.size()) {
                     Row row = project.rows.get(rowIndex);
                     result = Util.evaluateExpression(project, expression, columnName, row, rowIndex); 
                 }
                 
                 if (result == null) {
-                    writer.value(null);
+                    writer.writeNull();
                 } else if (ExpressionUtils.isError(result)) {
-                    writer.object();
-                    writer.key("message"); writer.value(((EvalError) result).message);
-                    writer.endObject();
+                    writer.writeStartObject();
+                    writer.writeStringField("message", ((EvalError) result).message);
+                    writer.writeEndObject();
                 } else {
                     StringBuffer sb = new StringBuffer();
                     writeValue(sb, result, false);
-                    writer.value(sb.toString());
+                    writer.writeString(sb.toString());
                 }
             }
-            writer.endArray();
+            writer.writeEndArray();
             
-            writer.key("code"); writer.value("ok");
+            writer.writeStringField("code", "ok");
         } catch (ParsingException e) {
-            writer.key("code"); writer.value("error");
-            writer.key("type"); writer.value("parser");
-            writer.key("message"); writer.value(e.getMessage());
+            writer.writeEndArray();
+            writer.writeStringField("code", "error");
+            writer.writeStringField("type", "parser");
+            writer.writeStringField("message", e.getMessage());
         } catch (Exception e) {
-        	writer.endArray();
-            writer.key("code"); writer.value("error");
-            writer.key("type"); writer.value("other");
-            writer.key("message"); writer.value(e.getMessage());
+        	writer.writeEndArray();
+            writer.writeStringField("code", "error");
+            writer.writeStringField("type", "other");
+            writer.writeStringField("message", e.getMessage());
         }
         
-        writer.endObject();
-
+        writer.writeEndObject();
+        writer.flush();
+        writer.close();
 	}
 }

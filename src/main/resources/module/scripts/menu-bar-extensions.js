@@ -153,11 +153,13 @@ function ReconciliationStanbolServiceDialog() {
             if (validateURI(uri)) {
                 inputUri.attr("disabled", "disabled");
                 inputUri.after($('<img src="extension/rdf-extension/images/spinner.gif" width="14" height="14" alt="'+$.i18n('rdf-ext-menu/fetching')+'..." class="validation" id="validation-img" />'));
-                $.post("command/rdf-extension/addStanbolService",
+                Refine.wrapCSRF(function(token) {
+                    $.post("command/rdf-extension/addStanbolService",
                         {
                             "uri": uri,
                             "engine": JSON.stringify(ui.browsingEngine.getJSON()),
-                            "project": theProject.id
+                            "project": theProject.id,
+                            "csrf_token": token
                         },
                         function(data) {
 
@@ -181,6 +183,7 @@ function ReconciliationStanbolServiceDialog() {
                             dialog.find("button#cancel").text($.i18n('rdf-ext-buttons/close'));
                         },
                         "json");
+                });
                 } else {
                     inputUri.addClass("error");
                     inputUri.after($('<img src="extension/rdf-extension/images/no.png" width="16" height="16" alt="invalid" class="validation" id="validation-img" />'));
@@ -295,28 +298,38 @@ ReconciliationRdfServiceDialog.prototype._footer = function(footer){
 		    }
 	    	
 	    	var services = ReconciliationManager.getAllServices();
-	    	
-	    	$.post("command/rdf-extension/addService",
-					{"datasource":"file_url","name":name,"url":file_url,properties:prop_uris, "file_format":file_format},
-					function(data){
-						self._dismissBusy();
-						RdfReconciliationManager.registerService(data,self._level);					
-			},"json");
+	    	Refine.wrapCSRF(function(token) {
+	    	    $.post("command/rdf-extension/addService",
+				{
+				    "csrf_token":token,
+				    "datasource":"file_url",
+					"name":name,"url":file_url,
+					properties:prop_uris,
+					"file_format":file_format
+				},
+				function(data){
+					self._dismissBusy();
+					RdfReconciliationManager.registerService(data,self._level);
+			    },"json");
+			});
 	    	return;
 	    }
 	    
 	    self._elmts.hidden_service_name.val(name);
 	    self._elmts.hidden_properties.val(prop_uris);
-	    
-	    self._elmts.file_upload_form.ajaxSubmit({
-	    	dataType:  'json',
-	    	type:'post',
-	    	success: function(data) {
-	    		self._dismissBusy();
-	    		RdfReconciliationManager.registerService(data,self._level);
-			}
+
+        Refine.wrapCSRF(function(token) {
+	        self._elmts.file_upload_form.ajaxSubmit({
+	    	    dataType: 'json',
+	    	    type:'post',
+	    	    headers: { 'X-CSRF-TOKEN': token },
+	    	    success: function(data) {
+	    		    self._dismissBusy();
+	    		    RdfReconciliationManager.registerService(data,self._level);
+			    }
+		    });
 		});
-	    
+
 	}).appendTo(footer);
 	
 	$('<button></button>').addClass('button').text($.i18n('rdf-ext-buttons/cancel')).click(function() {
@@ -403,12 +416,21 @@ ReconciliationSparqlServiceDialog.prototype._footer = function(footer){
 
                 RdfReconciliationManager.synchronizeServices(
                                 function(){
+                                    Refine.wrapCSRF(function(token) {
                                         $.post("command/rdf-extension/addService",
-                                              {"datasource":"sparql","name":name,"url":endpoint,"type":type,"graph":graph_uri,properties:prop_uris},
+                                              {
+                                                "datasource":"sparql",
+                                                "name":name,
+                                                "url":endpoint,
+                                                "type":type,
+                                                "graph":graph_uri,properties:prop_uris,
+                                                "csrf_token":token
+                                              },
                                                 function(data){
                                                     self._dismissBusy();
                                                     RdfReconciliationManager.registerService(data,self._level);
                                                  },"json");
+                                    });
                                 }
                 );
         }).appendTo(footer);
@@ -426,12 +448,19 @@ RdfReconciliationManager.synchronizeServices = function(onDone){
 			ids.push(services[i].url);
 		}
 	}
-	$.post("command/rdf-extension/initializeServices", {"services":JSON.stringify(ids)},function(data){
+	Refine.wrapCSRF(function(token) {
+	    $.post("command/rdf-extension/initializeServices",
+	    {
+	        "csrf_token": token,
+	        "services":JSON.stringify(ids)
+	    },
+	    function(data){
 		RdfReconciliationManager.registerService(data);
 		if(onDone){
 			onDone();
 		}
-	},"json");
+	    },"json");
+	});
 };
 
 

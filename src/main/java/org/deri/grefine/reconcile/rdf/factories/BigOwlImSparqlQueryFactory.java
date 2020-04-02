@@ -3,10 +3,12 @@ package org.deri.grefine.reconcile.rdf.factories;
 import org.deri.grefine.reconcile.model.ReconciliationRequest;
 import org.deri.grefine.reconcile.model.ReconciliationRequestContext.PropertyContext;
 import org.deri.grefine.reconcile.util.StringUtils;
-import org.json.JSONException;
-import org.json.JSONWriter;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonGenerationException;
 
 import com.google.common.collect.ImmutableList;
+
+import java.io.IOException;
 
 public class BigOwlImSparqlQueryFactory extends AbstractSparqlQueryFactory{
 
@@ -66,10 +68,10 @@ public class BigOwlImSparqlQueryFactory extends AbstractSparqlQueryFactory{
 	}
 
 	@Override
-	public void write(JSONWriter writer) throws JSONException {
-		writer.object();
-		writer.key("type");	writer.value("bigowlim");
-		writer.endObject();
+	public void write(JsonGenerator writer) throws JsonGenerationException, IOException {
+		writer.writeStartObject();
+		writer.writeStringField("type", "bigowlim");
+		writer.writeEndObject();
 	}
 
 	private static final String DEFAULT_BIGOWLIM_INDEX_PROPERTY = "http://www.ontotext.com/luceneQuery";

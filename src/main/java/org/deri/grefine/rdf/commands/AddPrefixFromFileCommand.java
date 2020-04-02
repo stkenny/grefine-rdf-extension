@@ -3,13 +3,11 @@ package org.deri.grefine.rdf.commands;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
-import java.util.Properties;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.google.refine.Jsonizable;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
@@ -18,17 +16,15 @@ import org.deri.grefine.rdf.RdfSchema;
 import org.deri.grefine.rdf.Util;
 import org.deri.grefine.rdf.app.ApplicationContext;
 import org.deri.grefine.rdf.vocab.VocabularyImporter;
-import org.json.JSONException;
 import org.eclipse.rdf4j.repository.Repository;
 import org.eclipse.rdf4j.repository.RepositoryConnection;
 import org.eclipse.rdf4j.repository.sail.SailRepository;
 import org.eclipse.rdf4j.rio.RDFFormat;
 import org.eclipse.rdf4j.sail.inferencer.fc.ForwardChainingRDFSInferencer;
 import org.eclipse.rdf4j.sail.memory.MemoryStore;
-import org.json.JSONWriter;
 
-import com.google.refine.model.Project;
 import com.google.refine.ProjectManager;
+import com.google.refine.model.Project;
 
 public class AddPrefixFromFileCommand extends RdfCommand {
 
@@ -38,13 +34,15 @@ public class AddPrefixFromFileCommand extends RdfCommand {
 
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        if(!hasValidCSRFTokenAsHeader(request)) {
+            respondCSRFError(response);
+            return;
+        }
         try {
             FileItemFactory factory = new DiskFileItemFactory();
-
             // Create a new file upload handler
             ServletFileUpload upload = new ServletFileUpload(factory);
-
-            String uri = null, prefix = null, format = null, projectId = null, filename = "";
+            String uri = null, prefix = null, format = null, projectId = null, filename = "", token = null;
             InputStream in = null;
             @SuppressWarnings("unchecked")
             List<FileItem> items = upload.parseRequest(request);
@@ -67,7 +65,6 @@ public class AddPrefixFromFileCommand extends RdfCommand {
                     new ForwardChainingRDFSInferencer(new MemoryStore()));
             repository.initialize();
             RepositoryConnection con = repository.getConnection();
-
             RDFFormat rdfFormat;
             if (format.equals("auto-detect")) {
                 rdfFormat = guessFormat(filename);
@@ -89,24 +86,13 @@ public class AddPrefixFromFileCommand extends RdfCommand {
             getRdfContext().getVocabularySearcher().importAndIndexVocabulary(
                     prefix, uri, repository, projectId, new VocabularyImporter());
 
-            respondJSON(response, new Jsonizable() {
-
-                @Override
-                public void write(JSONWriter writer, Properties options)
-                        throws JSONException {
-                    writer.object();
-                    writer.key("code"); writer.value("ok");
-                    writer.endObject();
-                }
-            });
-        } catch (JSONException e){
+            respondJSON(response, CodeResponse.ok);
+        } catch (IOException e){
             respondException(response, e);
         } catch (org.eclipse.rdf4j.RDF4JException e){
             respondException(response, e);
         } catch (Exception e){
-            response.setCharacterEncoding("UTF-8");
-            response.setHeader("Content-Type", "application/json");
-            respond(response,"{\"code\":\"ok\"}");
+            respondException(response, e);
         }
     }
 

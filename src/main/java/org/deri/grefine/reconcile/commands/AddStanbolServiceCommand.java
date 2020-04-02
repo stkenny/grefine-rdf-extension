@@ -17,17 +17,20 @@ import org.apache.http.HttpEntity;
 
 import org.deri.grefine.rdf.utils.HttpUtils;
 import org.deri.grefine.reconcile.model.ReconciliationStanbolSite;
-import org.json.JSONArray;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.refine.commands.Command;
-import org.apache.jena.query.QueryExecution;
-import org.apache.jena.query.QueryExecutionFactory;
-import org.apache.jena.query.QuerySolution;
-import org.apache.jena.query.ResultSet;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.ModelFactory;
+import org.shaded.apache.jena.query.QueryExecution;
+import org.shaded.apache.jena.query.QueryExecutionFactory;
+import org.shaded.apache.jena.query.QuerySolution;
+import org.shaded.apache.jena.query.ResultSet;
+import org.shaded.apache.jena.rdf.model.Model;
+import org.shaded.apache.jena.rdf.model.ModelFactory;
 
 /**
  * Command for adding Stanbol Reconciliation services
@@ -50,6 +53,10 @@ public class AddStanbolServiceCommand extends Command {
 	 */
 	@Override
 	public void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+		if(!hasValidCSRFToken(req)) {
+			respondCSRFError(res);
+			return;
+		}
 		String uri = req.getParameter("uri") + ENTITYHUB_PATH;
 		log.debug("Requesting referenced site to Stanbol EntityHub '" + uri + "'...");
 		Set<ReconciliationStanbolSite> reconciliations = retrieveReconciliations(uri);
@@ -99,9 +106,10 @@ public class AddStanbolServiceCommand extends Command {
 	}
 
 	private void serializeReconciliations(HttpServletResponse res, Set<ReconciliationStanbolSite> reconciliations) throws IOException {
-		JSONArray json = new JSONArray();
+		ObjectMapper mapper = new ObjectMapper();
+		ArrayNode json = mapper.createArrayNode();
 		for (ReconciliationStanbolSite reconciliation : reconciliations) {
-			json.put(reconciliation.getJSON());
+			json.add(reconciliation.getJSON());
 		}
 		res.setStatus(HttpServletResponse.SC_OK);
 		res.setContentType(JSON);

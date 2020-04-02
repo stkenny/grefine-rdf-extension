@@ -1,32 +1,40 @@
 package org.deri.grefine.rdf.vocab;
 
-import org.json.JSONException;
-import org.json.JSONWriter;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonGenerationException;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import java.io.IOException;
 
 public class Vocabulary {
 	private String name;
 	private String uri;
 
-    public Vocabulary(String name, String uri){
+	@JsonCreator
+    public Vocabulary(@JsonProperty("name") String name, @JsonProperty("uri") String uri){
     	this.name = name;
     	this.uri = uri;
     }
     
-
+    @JsonProperty("name")
 	public String getName() {
 		return name;
 	}
+    
+    @JsonProperty("uri")
 	public String getUri() {
 		return uri;
 	}
 	
-    public void write(JSONWriter writer)throws JSONException {
-        writer.object();
+    public void write(JsonGenerator writer)throws JsonGenerationException, IOException {
+        writer.writeStartObject();
         
-        writer.key("name"); writer.value(name);
-        writer.key("uri"); writer.value(uri);
+        writer.writeStringField("name", name);
+        writer.writeStringField("uri", uri);
         
-        writer.endObject();
+        writer.writeEndObject();
     }
 
 

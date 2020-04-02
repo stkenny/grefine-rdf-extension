@@ -1,13 +1,12 @@
 package org.deri.grefine.rdf.vocab;
 
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonGenerationException;
+
 import java.util.Properties;
+import java.io.IOException;
 
-import org.json.JSONException;
-import org.json.JSONWriter;
-
-import com.google.refine.Jsonizable;
-
-public class RDFNode implements Jsonizable{
+public class RDFNode {
     private String localPart;
     private String description;
     private String URI;
@@ -60,9 +59,9 @@ public class RDFNode implements Jsonizable{
         this.localPart = extractlocalPart();
     }
     
-    //TODO - refactor this constructor... it has amny arguments and of the same type. Use helper class? builder?
+    //TODO - refactor this constructor... it has many arguments and of the same type. Use helper class? builder?
     public RDFNode(String uRI, String label, String description, 
-            String prefix,String vocabularyUri, String lPart) {
+            String prefix, String vocabularyUri, String lPart) {
         this.description = description;
         URI = uRI;
         this.label = label;
@@ -89,23 +88,17 @@ public class RDFNode implements Jsonizable{
     	throw new UnsupportedOperationException(); 
     }
     
-    public void write(JSONWriter writer, Properties options)
-            throws JSONException {
-        writer.object();
-        
-        writer.key("type");
-        writer.value(this.getType());
-        writer.key("prefix");
-        writer.value(vocabularyPrefix);
-        writer.key("localPart");
-        writer.value(this.localPart);
-        writer.key("label");
-        writer.value(label);
-        writer.key("description");
-        writer.value(description);
-        writer.key("URI");
-        writer.value(URI);
-        writer.endObject();
+    public void write(JsonGenerator writer, Properties options)
+            throws JsonGenerationException, IOException {
+        writer.writeStartObject();
+
+        writer.writeStringField("type", this.getType());
+        writer.writeStringField("prefix", vocabularyPrefix);
+        writer.writeStringField("localPart", this.localPart);
+        writer.writeStringField("label", label);
+        writer.writeStringField("description", description);
+        writer.writeStringField("URI", URI.toString());
+        writer.writeEndObject();
     }
     
     @Override

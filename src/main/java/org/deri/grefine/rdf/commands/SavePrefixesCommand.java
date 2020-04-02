@@ -1,20 +1,18 @@
 package org.deri.grefine.rdf.commands;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.JsonNode;
+import org.deri.grefine.rdf.app.ApplicationContext;
+import org.deri.grefine.rdf.vocab.Vocabulary;
+
+import com.google.refine.util.ParsingUtilities;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.deri.grefine.rdf.app.ApplicationContext;
-import org.deri.grefine.rdf.vocab.Vocabulary;
-import org.json.JSONArray;
-import org.json.JSONObject;
-import org.json.JSONWriter;
-
-import com.google.refine.util.ParsingUtilities;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class SavePrefixesCommand extends RdfCommand{
 
@@ -24,25 +22,24 @@ public class SavePrefixesCommand extends RdfCommand{
 
 	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		try{
+		if(!hasValidCSRFToken(request)) {
+			respondCSRFError(response);
+			return;
+		}
+        try{
 			Map<String, Vocabulary> prefixesMap = new HashMap<String, Vocabulary>();
-			JSONArray prefixesArr = ParsingUtilities.evaluateJsonStringToArray(request.getParameter("prefixes"));
-			for(int i =0;i<prefixesArr.length();i++){
-				JSONObject prefixObj = prefixesArr.getJSONObject(i);
-				String name = prefixObj.getString("name");
-				prefixesMap.put(name,new Vocabulary(name, prefixObj.getString("uri")));
+			ArrayNode prefixesArr = ParsingUtilities.evaluateJsonStringToArrayNode(request.getParameter("prefixes"));
+			for(int i =0;i<prefixesArr.size();i++){
+				JsonNode prefixObj = prefixesArr.get(i);
+				String name = prefixObj.get("name").asText();
+				prefixesMap.put(name,new Vocabulary(name, prefixObj.get("uri").asText()));
 			}
 			getRdfSchema(request).setPrefixesMap(prefixesMap);
-			
+
 			String projectId = request.getParameter("project");
 			getRdfContext().getVocabularySearcher().synchronize(projectId, prefixesMap.keySet());
 			
-			response.setCharacterEncoding("UTF-8");
-	        response.setHeader("Content-Type", "application/json");
-	        JSONWriter writer = new JSONWriter(response.getWriter());
-            writer.object();
-            writer.key("code"); writer.value("ok");
-            writer.endObject();
+			respondJSON(response, CodeResponse.ok);
 		} catch (Exception e) {
             respondException(response, e);
         }

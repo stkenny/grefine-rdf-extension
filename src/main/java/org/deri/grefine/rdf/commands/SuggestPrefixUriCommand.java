@@ -1,13 +1,17 @@
 package org.deri.grefine.rdf.commands;
 
 import java.io.IOException;
+import java.io.Writer;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.deri.grefine.rdf.app.ApplicationContext;
-import org.json.JSONWriter;
+import com.google.refine.util.ParsingUtilities;
+
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 
 public class SuggestPrefixUriCommand extends RdfCommand{
@@ -23,11 +27,16 @@ public class SuggestPrefixUriCommand extends RdfCommand{
 		try{
 			response.setCharacterEncoding("UTF-8");
 	        response.setHeader("Content-Type", "application/json");
-	        JSONWriter writer = new JSONWriter(response.getWriter());
-            writer.object();
-            writer.key("code"); writer.value("ok");
-            writer.key("uri"); writer.value(uri);
-            writer.endObject();
+	        Writer w = response.getWriter();
+	        JsonGenerator writer = ParsingUtilities.mapper.getFactory().createGenerator(w);
+            writer.writeStartObject();
+            writer.writeStringField("code", "ok");
+            writer.writeStringField("uri", uri);
+            writer.writeEndObject();
+            writer.flush();
+            writer.close();
+            w.flush();
+            w.close();
 		}catch(Exception e){
 			respondException(response, e);
 		}

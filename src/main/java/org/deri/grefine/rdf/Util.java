@@ -1,23 +1,21 @@
 package org.deri.grefine.rdf;
 
+import com.google.refine.expr.Evaluable;
+import com.google.refine.expr.ExpressionUtils;
+import com.google.refine.expr.MetaParser;
+import com.google.refine.expr.ParsingException;
+import com.google.refine.model.Project;
+import com.google.refine.model.Row;
+import org.deri.grefine.rdf.app.ApplicationContext;
+import org.deri.grefine.rdf.expr.util.RdfExpressionUtil;
+import org.deri.grefine.rdf.vocab.VocabularyIndexException;
+
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.util.Properties;
-
-import org.deri.grefine.rdf.app.ApplicationContext;
-import org.deri.grefine.rdf.expr.util.RdfExpressionUtil;
-import org.deri.grefine.rdf.vocab.VocabularyIndexException;
-
-import com.google.refine.expr.Evaluable;
-import com.google.refine.expr.ExpressionUtils;
-import com.google.refine.expr.MetaParser;
-import com.google.refine.expr.ParsingException;
-import com.google.refine.model.Project;
-import com.google.refine.model.metadata.ProjectMetadata;
-import com.google.refine.model.Row;
 
 public class Util {
 

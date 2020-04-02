@@ -20,11 +20,11 @@ import org.deri.grefine.reconcile.model.ReconciliationRequestContext.TextualValu
 import org.deri.grefine.reconcile.rdf.executors.DumpQueryExecutor;
 import org.deri.grefine.reconcile.rdf.executors.QueryExecutor;
 import org.deri.grefine.reconcile.rdf.factories.PlainSparqlQueryFactory;
-import org.apache.jena.query.QuerySolution;
-import org.apache.jena.query.ResultSet;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.ModelFactory;
-import org.apache.jena.rdf.model.Resource;
+import org.shaded.apache.jena.query.QuerySolution;
+import org.shaded.apache.jena.query.ResultSet;
+import org.shaded.apache.jena.rdf.model.Model;
+import org.shaded.apache.jena.rdf.model.ModelFactory;
+import org.shaded.apache.jena.rdf.model.Resource;
 
 public class PlainSparqlQueryExecutorTest {
 
