@@ -36,30 +36,29 @@ NewPrefixWidget.prototype.show = function(msg,def_prefix, onDone){
     	self.suggestUri(def_prefix);
     }
 
-   Refine.wrapCSRF(function(token) {
-   self._elmts.file_upload_form.submit(function(e){
-	   e.preventDefault();
+    Refine.wrapCSRF(function(token) {
+        self._elmts.file_upload_form.submit(function(e){
+	        e.preventDefault();
 	   
-        var fetchOption = self._elmts.fetching_options_table.find('input[name="vocab_fetch_method"]:checked').val();
+            var fetchOption = self._elmts.fetching_options_table.find('input[name="vocab_fetch_method"]:checked').val();
 	   	
-    	var name = self._elmts.prefix.val();
-    	var uri = self._elmts.uri.val();
-    	if(self._prefixesManager._hasPrefix(name)){
-    		alert($.i18n('rdf-ext-prefix/pref')+' "' + name + '" '+$.i18n('rdf-ext-prefix/defined'));
-    		return;
-    	}
+    	    var name = self._elmts.prefix.val();
+    	    var uri = self._elmts.uri.val();
+    	    if(self._prefixesManager._hasPrefix(name)){
+    		    alert($.i18n('rdf-ext-prefix/pref')+' "' + name + '" '+$.i18n('rdf-ext-prefix/defined'));
+    		    return;
+    	    }
 
-    	var force_import = (self._elmts.forceImport.attr('checked') !== undefined);
+    	    var force_import = (self._elmts.forceImport.attr('checked') !== undefined);
+    	    var dismissBusy;
 
-    	var dismissBusy;
+    	    if(fetchOption === 'file'){
+    		    //prepare values
+    		    $('#vocab-hidden-prefix').val(name);
+    		    $('#vocab-hidden-uri').val(uri);
+    		    $('#vocab-hidden-project').val(theProject.id);
 
-    	if(fetchOption === 'file'){
-    		//prepare values
-    		$('#vocab-hidden-prefix').val(name);
-    		$('#vocab-hidden-uri').val(uri);
-    		$('#vocab-hidden-project').val(theProject.id);
-
-    		dismissBusy = DialogSystem.showBusy($.i18n('rdf-ext-prefix/voc-upload')+' ');
+    		    dismissBusy = DialogSystem.showBusy($.i18n('rdf-ext-prefix/voc-upload')+' ');
 
     		    $(this).ajaxSubmit({
     				url: "command/rdf-extension/upload-file-add-prefix",
@@ -80,14 +79,11 @@ NewPrefixWidget.prototype.show = function(msg,def_prefix, onDone){
     			    }
     		    });
 
+    		    return false;
+    	    }
 
-    		return false;
-    	}
-    	});
-    	
-		dismissBusy = DialogSystem.showBusy($.i18n('rdf-ext-prefix/try-upload')+' ' + uri);
-    	Refine.wrapCSRF(function(token) {
-		    $.post("command/rdf-extension/add-prefix",
+		    dismissBusy = DialogSystem.showBusy($.i18n('rdf-ext-prefix/try-upload')+' ' + uri);
+    	    $.post("command/rdf-extension/add-prefix",
     			{
     			    "csrf_token": token,
     				name:name,
@@ -97,8 +93,7 @@ NewPrefixWidget.prototype.show = function(msg,def_prefix, onDone){
     				"force-import": force_import,
     				fetch:fetchOption
 				},
-				function(data)
-				{
+				function(data) {
 					dismissBusy();
 		    		if (data.code === "error"){
 		    			alert('Error:' + data.message);
@@ -108,16 +103,13 @@ NewPrefixWidget.prototype.show = function(msg,def_prefix, onDone){
 		    				self._dismiss();
 		    			}
 		    		}
-
 				}
 			);
-		});
+        });
     });
-    
-    
+
     self._elmts.okButton.click(function() {
     	self._elmts.file_upload_form.submit();
-    	   	
     });
     
     self._elmts.cancelButton.click(function() {
@@ -147,7 +139,7 @@ NewPrefixWidget.prototype.show = function(msg,def_prefix, onDone){
     self._elmts.prefix.change(function(){
     	self.suggestUri($(this).val());
     	}).focus();
-};
+}
 
 NewPrefixWidget.prototype.suggestUri = function(prefix){
 	var self = this;
