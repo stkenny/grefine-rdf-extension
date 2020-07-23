@@ -2,7 +2,8 @@ package org.deri.grefine.reconcile.util;
 
 import java.util.List;
 
-import uk.ac.shef.wit.simmetrics.similaritymetrics.Levenshtein;
+import org.simmetrics.metrics.Levenshtein;
+import org.simmetrics.StringDistance;
 
 public class StringUtils {
 
@@ -55,6 +56,6 @@ public class StringUtils {
 	 * @return similarity between str1 and str2. current implementation uses Levenshtein 
 	 */
 	public static double getLevenshteinScore(String str1, String str2){
-		return new Levenshtein().getSimilarity(str1.toLowerCase(), str2.toLowerCase());
+		return new Levenshtein().compare(str1.toLowerCase(), str2.toLowerCase());
 	}
 }

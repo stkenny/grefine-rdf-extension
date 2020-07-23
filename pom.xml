@@ -22,10 +22,6 @@
 
     <repositories>
         <repository>
-            <id>IESL UMass</id>
-            <url>https://dev-iesl.cs.umass.edu/nexus/content/repositories/releases/</url>
-        </repository>
-        <repository>
           <id>maven-repository</id>
           <url>file:///${project.basedir}/project-repository</url>
         </repository>
@@ -163,10 +159,11 @@
             <version>${rdf4j.version}</version>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/com.github.mpkorstanje/simmetrics-core -->
         <dependency>
-            <groupId>uk.ac.shef.wit</groupId>
-            <artifactId>simmetrics</artifactId>
-            <version>${simmetrics.version}</version>
+            <groupId>com.github.mpkorstanje</groupId>
+            <artifactId>simmetrics-core</artifactId>
+            <version>4.1.1</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.apache.lucene/lucene-core -->
