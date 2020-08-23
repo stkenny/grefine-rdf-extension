@@ -114,14 +114,20 @@ RdfSchemaAlignmentDialog.prototype._previewRdf = function(){
     var self = this;
     var schema = self.getJSON();
     self._previewPane.empty().html('<img src="images/large-spinner.gif" title='+$.i18n('rdf-ext-schema/loading')+'"..."/>');
-    $.get(
-            "command/rdf-extension/preview-rdf?" + $.param({ project: theProject.id }),
-            { schema: JSON.stringify(schema), engine: JSON.stringify(ui.browsingEngine.getJSON()) },
-            function(data) {
-                self._previewPane.empty();
-                self._previewPane.html(linkify(data.v));
-            },
-            "json"
+    Refine.postProcess(
+        "rdf-extension",
+        "preview-rdf",
+        {},
+        { schema: JSON.stringify(schema),
+          engine: JSON.stringify(ui.browsingEngine.getJSON())
+        },
+        {},
+        {
+        onDone: function(data) {
+            self._previewPane.empty();
+            self._previewPane.html(linkify(data.v));
+        }
+        }
     );
 };
 

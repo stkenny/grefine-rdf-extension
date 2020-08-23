@@ -27,7 +27,7 @@ import java.io.StringWriter;
 public class PreviewRdfCommand extends Command {
 
     @Override
-    public void doGet(HttpServletRequest request, HttpServletResponse response)
+    public void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 		try {
             Project project = getProject(request);
