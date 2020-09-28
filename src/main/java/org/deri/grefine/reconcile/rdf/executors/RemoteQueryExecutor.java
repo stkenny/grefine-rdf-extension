@@ -10,6 +10,7 @@ import com.fasterxml.jackson.core.JsonGenerationException;
 import org.shaded.apache.jena.query.QueryExecution;
 import org.shaded.apache.jena.query.QueryExecutionFactory;
 import org.shaded.apache.jena.query.ResultSet;
+import org.shaded.apache.jena.query.ResultSetFactory;
 
 /**
  * @author fadmaa
@@ -19,7 +20,7 @@ public class RemoteQueryExecutor implements QueryExecutor{
 	protected String sparqlEndpointUrl;
 	protected String defaultGraphUri;
 	
-	public RemoteQueryExecutor(String sparqlEndpointUrl,String defaultGraphUri) {
+	public RemoteQueryExecutor(String sparqlEndpointUrl, String defaultGraphUri) {
 		this.sparqlEndpointUrl = sparqlEndpointUrl;
 		this.defaultGraphUri = defaultGraphUri;
 	}
@@ -30,14 +31,20 @@ public class RemoteQueryExecutor implements QueryExecutor{
 		if(defaultGraphUri==null){
 			qExec = QueryExecutionFactory.sparqlService(sparqlEndpointUrl, sparql);
 		}else{
-			qExec = QueryExecutionFactory.sparqlService(sparqlEndpointUrl, sparql,defaultGraphUri);
+			qExec = QueryExecutionFactory.sparqlService(sparqlEndpointUrl, sparql, defaultGraphUri);
 		}
-		ResultSet res = qExec.execSelect();
-		return res;
+		ResultSet results = null;
+		try {
+			ResultSet res = qExec.execSelect();
+			results = ResultSetFactory.copyResults(res);
+		} finally {
+			qExec.close();
+		}
+		return results;
 	}
 
 	@Override
-	public void save(String serviceId, FileOutputStream baseDir) throws IOException{
+	public void save(String serviceId, FileOutputStream baseDir) throws IOException {
 		//nothing to save... all data is external
 	}
 	
@@ -55,6 +62,5 @@ public class RemoteQueryExecutor implements QueryExecutor{
 	@Override
 	public void initialize(FileInputStream in) {
 		//nothing to initialize
-		
 	}
 }
