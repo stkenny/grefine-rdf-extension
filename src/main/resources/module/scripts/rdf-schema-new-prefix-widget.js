@@ -49,7 +49,7 @@ NewPrefixWidget.prototype.show = function(msg,def_prefix, onDone){
     		    return;
     	    }
 
-    	    var force_import = (self._elmts.forceImport.attr('checked') !== undefined);
+    	    var force_import = (self._elmts.forceImport.prop('checked') !== undefined);
     	    var dismissBusy;
 
     	    if(fetchOption === 'file'){
@@ -119,7 +119,7 @@ NewPrefixWidget.prototype.show = function(msg,def_prefix, onDone){
     self._elmts.advancedButton.click(function() {
         self._elmts.fetching_options_table.show();
         $('#advanced_options_button').hide();
-        $('#advanced_options_button').attr("disabled", "true");
+        $('#advanced_options_button').prop("disabled", "true");
     });
     
     self._elmts.fetching_options_table
@@ -128,7 +128,7 @@ NewPrefixWidget.prototype.show = function(msg,def_prefix, onDone){
 	.click(
 			function(){
 				var upload = $(this).val()!=='file';
-				self._elmts.fetching_options_table.find('.upload_file_inputs').attr('disabled',upload);
+				self._elmts.fetching_options_table.find('.upload_file_inputs').prop('disabled',upload);
 			}
 		);
     

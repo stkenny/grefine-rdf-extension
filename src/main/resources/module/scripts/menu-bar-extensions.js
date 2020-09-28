@@ -58,15 +58,15 @@ RdfExporterMenuBar.rdfExportRows = function(format, ext) {
 
     $('<input />')
         .attr("name", "engine")
-        .attr("value", JSON.stringify(ui.browsingEngine.getJSON()))
+        .val(JSON.stringify(ui.browsingEngine.getJSON()))
         .appendTo(form);
     $('<input />')
         .attr("name", "project")
-        .attr("value", theProject.id)
+        .val(theProject.id)
         .appendTo(form);
     $('<input />')
         .attr("name", "format")
-        .attr("value", format)
+        .val(format)
         .appendTo(form);
 
     document.body.appendChild(form);
@@ -151,7 +151,7 @@ function ReconciliationStanbolServiceDialog() {
             }
 
             if (validateURI(uri)) {
-                inputUri.attr("disabled", "disabled");
+                inputUri.prop("disabled", "disabled");
                 inputUri.after($('<img src="extension/rdf-extension/images/spinner.gif" width="14" height="14" alt="'+$.i18n('rdf-ext-menu/fetching')+'..." class="validation" id="validation-img" />'));
                 Refine.wrapCSRF(function(token) {
                     $.post("command/rdf-extension/addStanbolService",
@@ -233,7 +233,7 @@ function ReconciliationRdfServiceDialog(){
     this._elmts.rdfext_rdf_fullUri.text($.i18n('rdf-ext-rdf/full-uri'));
 
     this._elmts.other_label_chk.click(function(){
-        if($(this).attr("checked")){
+        if($(this).prop("checked")){
             self._elmts.other_properties.show();
         } else {
             self._elmts.other_properties.hide();
@@ -241,13 +241,13 @@ function ReconciliationRdfServiceDialog(){
     });
 
     this._elmts.file_source_upload.add(this._elmts.file_source_url).bind("click", function(){
-        var upload = self._elmts.file_source_upload.attr("checked");
+        var upload = self._elmts.file_source_upload.prop("checked");
         if(upload){
-            self._elmts.file_upload_input.attr("disabled",false);
-            self._elmts.file_url_input.attr("disabled",true);
+            self._elmts.file_upload_input.prop("disabled", false);
+            self._elmts.file_url_input.prop("disabled", true);
         } else {
-            self._elmts.file_upload_input.attr("disabled",true);
-            self._elmts.file_url_input.attr("disabled",false);
+            self._elmts.file_upload_input.prop("disabled", true);
+            self._elmts.file_url_input.prop("disabled", false);
         }
     });
 
@@ -288,7 +288,7 @@ ReconciliationRdfServiceDialog.prototype._footer = function(footer){
 	    	return;
 	    }
 	    
-	    if (self._elmts.file_source_url.attr('checked')){
+	    if (self._elmts.file_source_url.prop('checked')){
 	    	var file_url = self._elmts.file_url_input.val();
 	    	var file_format = self._elmts.file_format_input.val();
 	    	if(file_url.trim()===""){
@@ -361,7 +361,7 @@ function ReconciliationSparqlServiceDialog(){
         this._elmts.rdfext_sparql_fullUri.text($.i18n('rdf-ext-sparql/full-uri'));
 
         this._elmts.other_label_chk.click(function(){
-                if($(this).attr("checked")){
+                if($(this).prop("checked")){
                         self._elmts.other_properties.show();
                 }else{
                         self._elmts.other_properties.hide();

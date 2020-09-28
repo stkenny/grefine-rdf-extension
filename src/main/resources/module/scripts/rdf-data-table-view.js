@@ -80,7 +80,7 @@ RdfDataTableView.previewOnVisibleRows = function(isLiteral, column, title, expre
         	});
                 
         	uriPreviewWidget._elmts.expressionPreviewTextarea
-        	.attr("value", uriPreviewWidget.expression)
+        	.val(uriPreviewWidget.expression)
             .keyup(function(){
             	uriPreviewWidget._scheduleUpdate();
             })

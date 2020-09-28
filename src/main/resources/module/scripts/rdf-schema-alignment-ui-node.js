@@ -369,17 +369,17 @@ RdfSchemaAlignmentDialog.UINode.prototype._showNodeConfigDialog = function(){
         var tr = tableColumns.insertRow(tableColumns.rows.length);
         var radio = $('<input />')
             .attr("type", "radio")
-            .attr("value",column.name)
+            .val(column.name)
             .attr("name", "rdf-column-radio")
             .appendTo(tr.insertCell(0))
             .bind("click",function(){
-            	$("#rdf-constant-value-input").attr("disabled","disabled");
+            	$("#rdf-constant-value-input").prop("disabled","disabled");
             })
             ;
             
         var td = tr.insertCell(1);
         if (column.name == self._node.columnName) {
-            radio.attr("checked", "true");
+            radio.prop("checked", "true");
         }
         $('<span></span>').text(column.name).appendTo(td);
     };
@@ -388,13 +388,13 @@ RdfSchemaAlignmentDialog.UINode.prototype._showNodeConfigDialog = function(){
         var tr = tableColumns.insertRow(tableColumns.rows.length);
         $('<input />')
             .attr("type", "radio")
-            .attr("checked", checked)
-            .attr("value","")
+            .prop("checked", checked)
+            .val("")
             .attr("name", "rdf-column-radio")
             .attr("id","rdf-row-index-column-radio")
             .appendTo(tr.insertCell(0))
             .bind("click",function(){
-            	$("#rdf-constant-value-input").attr("disabled","disabled");
+            	$("#rdf-constant-value-input").prop("disabled","disabled");
             })
             ;
             
@@ -407,13 +407,13 @@ RdfSchemaAlignmentDialog.UINode.prototype._showNodeConfigDialog = function(){
     	var tr = tableColumns.insertRow(tableColumns.rows.length);
         $('<input />')
             .attr("type", "radio")
-            .attr("checked", checked)
-            .attr("value","")
+            .prop("checked", checked)
+            .val("")
             .attr("name", "rdf-column-radio")
             .attr("id","rdf-constant-value-radio")
             .appendTo(tr.insertCell(0))
             .bind("click",function(){
-            	$("#rdf-constant-value-input").removeAttr("disabled");
+            	$("#rdf-constant-value-input").prop("disabled", false);
             })
             ;
             
@@ -443,39 +443,39 @@ RdfSchemaAlignmentDialog.UINode.prototype._showNodeConfigDialog = function(){
     
     
     var initInputs = function(){
-    	elmts.rdf_content_lang_input.attr("disabled","disabled");
-    	elmts.rdf_content_type_input.attr("disabled","disabled");
+    	elmts.rdf_content_lang_input.prop("disabled","disabled");
+    	elmts.rdf_content_type_input.prop("disabled","disabled");
     	//setContentOptions();
     	if(self._node.nodeType==='resource' || self._node.nodeType==='cell-as-resource'){
-    		elmts.rdf_content_uri_radio.attr("checked",true);
+    		elmts.rdf_content_uri_radio.prop("checked", true);
     	}else if(self._node.nodeType==='cell-as-literal' || self._node.nodeType==='literal'){
     		if(self._node.lang){
-    			elmts.rdf_content_lang_radio.attr("checked",true);
-    			elmts.rdf_content_lang_input.removeAttr("disabled").val(self._node.lang);
+    			elmts.rdf_content_lang_radio.prop("checked", true);
+    			elmts.rdf_content_lang_input.prop("disabled", false).val(self._node.lang);
     		}else{
     			if(self._node.valueType){
     				if(self._node.valueType==='http://www.w3.org/2001/XMLSchema#int'){
-    					elmts.rdf_content_int_radio.attr("checked",true);
+    					elmts.rdf_content_int_radio.prop("checked",true);
     				}else if(self._node.valueType==='http://www.w3.org/2001/XMLSchema#double'){
-    					elmts.rdf_content_non_int_radio.attr("checked",true);
+    					elmts.rdf_content_non_int_radio.prop("checked",true);
     				}else if(self._node.valueType==='http://www.w3.org/2001/XMLSchema#date'){
-    					elmts.rdf_content_date_radio.attr("checked",true);
+    					elmts.rdf_content_date_radio.prop("checked",true);
     				}else if(self._node.valueType==='http://www.w3.org/2001/XMLSchema#dateTime'){
-    					elmts.rdf_content_date_time_radio.attr("checked",true);
+    					elmts.rdf_content_date_time_radio.prop("checked",true);
     				}else if(self._node.valueType==='http://www.w3.org/2001/XMLSchema#boolean'){
-    					elmts.rdf_content_boolean_radio.attr("checked",true);
+    					elmts.rdf_content_boolean_radio.prop("checked",true);
     				}
     				else{
-    					elmts.rdf_content_type_radio.attr("checked",true);
-    					elmts.rdf_content_type_input.removeAttr("disabled").val(self._node.valueType);
+    					elmts.rdf_content_type_radio.prop("checked",true);
+    					elmts.rdf_content_type_input.prop("disabled", false).val(self._node.valueType);
     				}
     			}else{
-    				elmts.rdf_content_txt_radio.attr("checked",true);
+    				elmts.rdf_content_txt_radio.prop("checked",true);
     			}
     		}
     	}else{
     		//blank node
-    		elmts.rdf_content_blank_radio.attr("checked",true);
+    		elmts.rdf_content_blank_radio.prop("checked",true);
     	}
     	
     	//set cell expression
@@ -488,28 +488,28 @@ RdfSchemaAlignmentDialog.UINode.prototype._showNodeConfigDialog = function(){
     	
     	//click events
     	elmts.rdf_content_uri_radio.bind("click",function(){
-    		$('input.rdf-text-attributes-input').add("#rdf-content-type-input").attr("disabled","disabled");
+    		$('input.rdf-text-attributes-input').add("#rdf-content-type-input").prop("disabled","disabled");
     	});
     	
     	elmts.rdf_content_txt_radio.add(elmts.rdf_content_int_radio[0]).add(elmts.rdf_content_non_int_radio[0])
     	.add(elmts.rdf_content_date_radio[0]).add(elmts.rdf_content_date_time_radio[0]).add(elmts.rdf_content_blank_radio[0])
     	.bind("click",function(){
-    		$('#rdf-content-lang-input').add("#rdf-content-type-input").attr("disabled","disabled");
+    		$('#rdf-content-lang-input').add("#rdf-content-type-input").prop("disabled","disabled");
     	});
     	
     	elmts.rdf_content_lang_radio.bind("click",function(){
-    		$('#rdf-content-lang-input').removeAttr("disabled");
+    		$('#rdf-content-lang-input').prop("disabled", false);
     	});
     	
     	elmts.rdf_content_type_radio.bind("click",function(){
-    		$('#rdf-content-type-input').removeAttr("disabled");
+    		$('#rdf-content-type-input').prop("disabled", false);
     	});
     	
     	//edit/preview
     	elmts.rdf_cell_expr_preview.bind("click",function(e){
     		e.preventDefault();
     		var nodeSubtype = $("input[name='rdf-content-radio']:checked")[0].value;
-    		if($("#rdf-constant-value-radio").attr('checked')){
+    		if($("#rdf-constant-value-radio").prop('checked')){
     			//constant node
     			var val = $('#rdf-constant-value-input').val();
     			if(nodeSubtype === 'blank'){
@@ -546,28 +546,28 @@ RdfSchemaAlignmentDialog.UINode.prototype._showNodeConfigDialog = function(){
      *--------------------------------------------------
      */
     var getResultJSON = function() {
-    	var nodeType = $("#rdf-constant-value-radio").attr('checked')?'':'cell-as-';
+    	var nodeType = $("#rdf-constant-value-radio").prop('checked')?'':'cell-as-';
     	var nodeSubtype = $("input[name='rdf-content-radio']:checked")[0].value;
         var node = {
             nodeType: nodeType + nodeSubtype
         };
         if (nodeSubtype === "literal") {
         	//get language
-        	if($('#rdf-content-lang-radio').attr('checked')){
+        	if($('#rdf-content-lang-radio').prop('checked')){
         		node.lang = $('#rdf-content-lang-input').val();
         	}else{
         		//get value type
-        		if($('#rdf-content-int-radio').attr('checked')){
+        		if($('#rdf-content-int-radio').prop('checked')){
         			node.valueType = 'http://www.w3.org/2001/XMLSchema#int';
-        		}else if($('#rdf-content-non-int-radio').attr('checked')){
+        		}else if($('#rdf-content-non-int-radio').prop('checked')){
         			node.valueType = 'http://www.w3.org/2001/XMLSchema#double';
-        		}else if($('#rdf-content-date-radio').attr('checked')){
+        		}else if($('#rdf-content-date-radio').prop('checked')){
         			node.valueType = 'http://www.w3.org/2001/XMLSchema#date';
-        		}else if($('#rdf-content-date-time-radio').attr('checked')){
+        		}else if($('#rdf-content-date-time-radio').prop('checked')){
         			node.valueType = 'http://www.w3.org/2001/XMLSchema#dateTime';
-        		}else if($('#rdf-content-boolean-radio').attr('checked')){
+        		}else if($('#rdf-content-boolean-radio').prop('checked')){
         			node.valueType = 'http://www.w3.org/2001/XMLSchema#boolean';
-        		}else if($('#rdf-content-type-radio').attr('checked')){
+        		}else if($('#rdf-content-type-radio').prop('checked')){
         			//check custom datatype URI
         			var val = $('#rdf-content-type-input').val();
         			if(!val){
