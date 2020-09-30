@@ -15,7 +15,7 @@
     <div class="rdf-resource-preview-flyout-content">
       <img src="/images/large-spinner.gif" /> 
       <div>
-        Fetching for information about $resourceUri
+        Fetching information about $resourceUri
       </div>
     </div>  
   </body>
