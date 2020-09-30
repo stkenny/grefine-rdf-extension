@@ -44,6 +44,12 @@ NewPrefixWidget.prototype.show = function(msg,def_prefix, onDone){
 	   	
     	    var name = self._elmts.prefix.val();
     	    var uri = self._elmts.uri.val();
+
+    	    if(uri == undefined || uri == "" ){
+                alert($.i18n('rdf-ext-prefix/pref')+' "' + name + '" '+$.i18n('rdf-ext-prefix/uri-cannot-be-blank'));
+                return;
+            }
+
     	    if(self._prefixesManager._hasPrefix(name)){
     		    alert($.i18n('rdf-ext-prefix/pref')+' "' + name + '" '+$.i18n('rdf-ext-prefix/defined'));
     		    return;

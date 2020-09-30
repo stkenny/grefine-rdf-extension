@@ -70,6 +70,7 @@
     "rdf-ext-schema/resolve": "Resolve", 
     "rdf-ext-prefix/pre": "Prefix", 
     "rdf-ext-prefix/defined": "is already defined",
+    "rdf-ext-prefix/uri-cannot-be-blank": "uri must be defined",
     "rdf-ext-prefix/fetch": "Try fetching vocabulary terms from the Web", 
     "rdf-ext-as/text": "Text", 
     "rdf-ext-virtuoso/credentials": "Credentials", 
