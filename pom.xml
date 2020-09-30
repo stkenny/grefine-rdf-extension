@@ -272,7 +272,8 @@
                 <artifactId>maven-assembly-plugin</artifactId>
                 <version>3.0.0</version>
                 <configuration>
-                    <descriptors>
+		    <appendAssemblyId>false</appendAssemblyId>	
+		    <descriptors>
                         <descriptor>src/assembly/module.xml</descriptor>
                     </descriptors>
                 </configuration>
