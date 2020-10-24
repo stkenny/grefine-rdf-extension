@@ -228,7 +228,7 @@ function ReconciliationRdfServiceDialog(){
     this._elmts.rdfext_rdf_ntriple.text($.i18n('rdf-ext-rdf/ntriple'));
     this._elmts.rdfext_rdf_labprop.text($.i18n('rdf-ext-rdf/label-prop'));
     this._elmts.rdfext_rdf_important.text($.i18n('rdf-ext-rdf/important'));
-    this._elmts.rdfext_rdf_impDesc.html($.i18n('rdf-ext-rdfimp-desc'));
+    this._elmts.rdfext_rdf_impDesc.html($.i18n('rdf-ext-rdf/imp-desc'));
     this._elmts.rdfext_rdf_other.text($.i18n('rdf-ext-rdf/other')+"...");
     this._elmts.rdfext_rdf_fullUri.text($.i18n('rdf-ext-rdf/full-uri'));
 
