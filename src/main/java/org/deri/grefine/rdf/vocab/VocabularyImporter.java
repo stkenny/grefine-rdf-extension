@@ -1,11 +1,11 @@
 package org.deri.grefine.rdf.vocab;
 
-import org.apache.any23.Any23;
-import org.apache.any23.http.HTTPClient;
-import org.apache.any23.source.DocumentSource;
-import org.apache.any23.source.HTTPDocumentSource;
-import org.apache.any23.writer.ReportingTripleHandler;
-import org.apache.any23.writer.RepositoryWriter;
+import org.shaded.apache.any23.Any23;
+import org.shaded.apache.any23.http.HTTPClient;
+import org.shaded.apache.any23.source.DocumentSource;
+import org.shaded.apache.any23.source.HTTPDocumentSource;
+import org.shaded.apache.any23.writer.ReportingTripleHandler;
+import org.shaded.apache.any23.writer.RepositoryWriter;
 
 import org.eclipse.rdf4j.model.Value;
 import org.eclipse.rdf4j.query.BindingSet;
@@ -25,13 +25,13 @@ import java.util.Set;
 
 public class VocabularyImporter {
 	
-	public void importVocabulary(String name, String uri, String fetchUrl, List<RDFSClass> classes, List<RDFSProperty> properties) throws VocabularyImportException{
+	public void importVocabulary(String name, String uri, String fetchUrl, List<RDFSClass> classes, List<RDFSProperty> properties) throws VocabularyImportException {
 		boolean strictlyRdf = faultyContentNegotiation(uri);
 		Repository repository = getModel(fetchUrl, strictlyRdf);
 		getTerms(repository, name, uri, classes, properties);
 	}
 	
-	public void importVocabulary(String name, String uri, Repository repository, List<RDFSClass> classes, List<RDFSProperty> properties) throws VocabularyImportException{
+	public void importVocabulary(String name, String uri, Repository repository, List<RDFSClass> classes, List<RDFSProperty> properties) throws VocabularyImportException {
 		getTerms(repository, name, uri, classes, properties);
 	}
 	
@@ -66,7 +66,7 @@ public class VocabularyImporter {
 			+ "FILTER regex(str(?resource), \"^";
 	private static final String PROPERTIES_QUERY_P2 = "\")}";
 
-	private Repository getModel(String url,boolean strictlyRdf) throws VocabularyImportException {
+	private Repository getModel(String url, boolean strictlyRdf) throws VocabularyImportException {
 		try {
 			Any23 runner;
 			if(strictlyRdf){
@@ -88,7 +88,7 @@ public class VocabularyImporter {
 
 			runner.extract(source, reporter);
 			return repository;
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			throw new VocabularyImportException(
 					"Unable to import vocabulary from " + url, e);
 		}
@@ -98,7 +98,6 @@ public class VocabularyImporter {
 		try {
 			RepositoryConnection con = repos.getConnection();
 			try {
-
 				TupleQuery query = con.prepareTupleQuery(QueryLanguage.SPARQL,CLASSES_QUERY_P1 + uri + CLASSES_QUERY_P2);
 				TupleQueryResult res = query.evaluate();
 

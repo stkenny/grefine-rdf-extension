@@ -89,14 +89,18 @@
         </dependency>
 
         <dependency>
-            <groupId>org.apache.any23</groupId>
-            <artifactId>apache-any23-core</artifactId>
+            <groupId>org.shaded.apache.any23</groupId>
+            <artifactId>apache-any23-shaded-core</artifactId>
             <version>${any23.version}</version>
 	    <exclusions>
               <exclusion>
                 <groupId>xerces</groupId>
                 <artifactId>xercesImpl</artifactId>
-              </exclusion>
+	      </exclusion>
+	      <exclusion>
+		<groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+	      </exclusion>
               <exclusion>
                 <groupId>commons-logging-api</groupId>
                 <artifactId>commons-logging-api</artifactId>
@@ -145,11 +149,29 @@
           </exclusions>
         </dependency>
 
-	<dependency>
+        <dependency>
             <groupId>org.apache.any23</groupId>
             <artifactId>apache-any23-mime</artifactId>
             <version>${any23.version}</version>
-	</dependency>
+            <exclusions>
+	    <exclusion>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-core</artifactId>
+              </exclusion>
+              <exclusion>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+	      </exclusion>
+              <exclusion>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-annotations</artifactId>
+              </exclusion>
+	      <exclusion>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpclient</artifactId>
+              </exclusion>
+            </exclusions>
+        </dependency>
 	
 	<dependency>
             <groupId>commons-fileupload</groupId>
