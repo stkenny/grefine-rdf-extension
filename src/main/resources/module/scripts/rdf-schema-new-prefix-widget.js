@@ -12,8 +12,9 @@ NewPrefixWidget.prototype.show = function(msg,def_prefix, onDone){
     self._elmts.dialogHeader.html($.i18n('rdf-ext-prefix/header'));
     self._elmts.rdfext_prefix_pre.html($.i18n('rdf-ext-prefix/pre')+":");
     self._elmts.rdfext_prefix_uri.html($.i18n('rdf-ext-prefix/uri')+":");
-    self._elmts.rdfext_prefix_force.html($.i18n('rdf-ext-prefix/force')+":");
+    //self._elmts.rdfext_prefix_force.html($.i18n('rdf-ext-prefix/force')+":");
     self._elmts.rdfext_prefix_voc.html($.i18n('rdf-ext-prefix/voc'));
+    self._elmts.rdfext_prefix_only.html($.i18n('rdf-ext-prefix/prefix'));
     self._elmts.rdfext_prefix_fetch.html($.i18n('rdf-ext-prefix/fetch'));
     self._elmts.rdfext_prefix_imp.html($.i18n('rdf-ext-prefix/imp'));
     self._elmts.rdfext_prefix_file.html($.i18n('rdf-ext-prefix/file')+":");
@@ -25,7 +26,7 @@ NewPrefixWidget.prototype.show = function(msg,def_prefix, onDone){
     self._elmts.rdfext_prefix_ntriple.html($.i18n('rdf-ext-prefix/ntriple'));
     self._elmts.okButton.html($.i18n('rdf-ext-buttons/ok'));
     self._elmts.cancelButton.html($.i18n('rdf-ext-buttons/cancel'));
-    self._elmts.advancedButton.html($.i18n('rdf-ext-buttons/advanced')+"...");
+    self._elmts.advancedButton.html($.i18n('rdf-ext-prefix/vocab-import')+"...");
     
     if(msg){
     	self._elmts.message.addClass('message').html(msg);
@@ -55,7 +56,7 @@ NewPrefixWidget.prototype.show = function(msg,def_prefix, onDone){
     		    return;
     	    }
 
-    	    var force_import = (self._elmts.forceImport.prop('checked') !== undefined);
+    	    var force_import = true;
     	    var dismissBusy;
 
     	    if(fetchOption === 'file'){
@@ -88,7 +89,11 @@ NewPrefixWidget.prototype.show = function(msg,def_prefix, onDone){
     		    return false;
     	    }
 
-		    dismissBusy = DialogSystem.showBusy($.i18n('rdf-ext-prefix/try-upload')+' ' + uri);
+            if(fetchOption === 'web'){
+		        dismissBusy = DialogSystem.showBusy($.i18n('rdf-ext-prefix/web-import')+' ' + uri);
+		    } else if (fetchOption === 'prefix'){
+		        dismissBusy = DialogSystem.showBusy($.i18n('rdf-ext-prefix/prefix-only')+' ' + uri);
+		    }
     	    $.post("command/rdf-extension/add-prefix",
     			{
     			    "csrf_token": token,

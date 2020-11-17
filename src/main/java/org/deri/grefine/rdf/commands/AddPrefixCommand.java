@@ -28,6 +28,7 @@ public class AddPrefixCommand extends RdfCommand{
         String projectId = request.getParameter("project");
         String fetchOption = request.getParameter("fetch");
         Boolean forceImport = Boolean.valueOf(request.getParameter("force-import"));
+        System.out.println(forceImport);
         try {
         	getRdfSchema(request).addPrefix(name, uri);
 			if(fetchOption.equals("web")){
@@ -42,12 +43,8 @@ public class AddPrefixCommand extends RdfCommand{
 			getRdfSchema(request).removePrefix(name);
 			respondException(response, e);
         } catch (VocabularyImportException e) {
-            if(forceImport) {
-				respondJSON(response, CodeResponse.ok);
-            } else {
-				getRdfSchema(request).removePrefix(name);
-				respondException(response, e);
-            }
+            getRdfSchema(request).removePrefix(name);
+			respondException(response, e);
         } catch (Exception e){
             respondException(response, e);
         }

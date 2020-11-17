@@ -100,7 +100,6 @@ public class VocabularySearcher implements IVocabularySearcher {
 		importer.importVocabulary(name, uri, fetchUrl, classes, properties);
 		indexTerms(name, uri, projectId, classes, properties);
 	}
-
 	
 	@Override
 	public void importAndIndexVocabulary(String name, String uri, Repository repository, String projectId, VocabularyImporter importer) throws VocabularyImportException, VocabularyIndexException,

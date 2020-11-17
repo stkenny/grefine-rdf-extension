@@ -13,13 +13,17 @@
         <div class="rdf-schema-alignment-note" bind="uri_note"></div>
       </td>
     </tr>
-    <tr><td bind="rdfext_prefix_force"></td><td><input type="checkbox" bind="forceImport"></td></tr>
   </table> 
   <div bind="fetching_options_table">
     <fieldset class="rdf-reconcile-fieldset">
       <legend><span bind="rdfext_prefix_voc"></span></legend>
-      <table>  
-        <tr>
+      <table>
+          <tr>
+              <td>
+                  <input type="radio" value="prefix" name="vocab_fetch_method" checked="checked" /><span bind="rdfext_prefix_only"></span>
+              </td>
+          </tr>
+          <tr>
           <td> 
     	    <input type="radio" value="web" name="vocab_fetch_method" checked="checked" /><span bind="rdfext_prefix_fetch"></span>
     	  </td>
