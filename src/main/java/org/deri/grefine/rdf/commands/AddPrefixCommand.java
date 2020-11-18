@@ -28,7 +28,6 @@ public class AddPrefixCommand extends RdfCommand{
         String projectId = request.getParameter("project");
         String fetchOption = request.getParameter("fetch");
         Boolean forceImport = Boolean.valueOf(request.getParameter("force-import"));
-        System.out.println(forceImport);
         try {
         	getRdfSchema(request).addPrefix(name, uri);
 			if(fetchOption.equals("web")){

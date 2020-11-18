@@ -6,4 +6,36 @@
   <artifactId>apache-any23-shaded-core</artifactId>
   <version>2.3</version>
   <description>POM was created from install:install-file</description>
+  <dependencies>
+    <dependency>
+      <groupId>net.sourceforge.owlapi</groupId>
+      <artifactId>owlapi-rio</artifactId>
+      <version>5.1.13</version>
+    </dependency>
+    <dependency> <!-- used by owlapi-rio -->
+      <groupId>net.sourceforge.owlapi</groupId>
+      <artifactId>owlapi-parsers</artifactId>
+      <version>5.1.13</version>
+    </dependency>
+    <dependency> <!-- used by owlapi-rio -->
+      <groupId>net.sourceforge.owlapi</groupId>
+      <artifactId>owlapi-api</artifactId>
+      <version>5.1.13</version>
+    </dependency>
+    <!-- Need to include apibinding in runtime scope to allow
+         dependency injection to work transparently inside of owlapi -->
+    <dependency>
+      <groupId>net.sourceforge.owlapi</groupId>
+      <artifactId>owlapi-apibinding</artifactId>
+      <version>5.1.13</version>
+      <scope>runtime</scope>
+    </dependency>
+    <!-- https://mvnrepository.com/artifact/org.rypt/f8 -->
+    <dependency>
+      <groupId>org.rypt</groupId>
+      <artifactId>f8</artifactId>
+      <version>1.1</version>
+    </dependency>
+  </dependencies>
+
 </project>
