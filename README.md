@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.com/stkenny/grefine-rdf-extension.svg?branch=main)](https://travis-ci.com/stkenny/grefine-rdf-extension)
+![Build Status](https://github.com/stkenny/grefine-rdf-extension/workflows/Java%20CI%20with%20Maven/badge.svg)
 
 This project adds a graphical user interface(GUI) for exporting data of OpenRefine projects in RDF format. The export is based on mapping the data to a template graph using the GUI. It also provides a service for reconciling data against SPARQL endpoints (e.g., DBpedia).
 
