@@ -24,30 +24,42 @@ public class Util {
 	private static final String XSD_DATE_URI = "http://www.w3.org/2001/XMLSchema#date";
 
 	public static String resolveUri(URI base, String rel) {
-		// FIXME
 		try {
 			URI relUri = new URI(rel);
 			if (relUri.isAbsolute()) {
-				return rel;
+			    return rel;
 			}
 		} catch (URISyntaxException e) {
-			// silent
+			String testRel = rel.toLowerCase();
+			if (testRel.startsWith("http://") || testRel.startsWith("https://") || testRel.startsWith("ftp://")) {
+				return "error:" + e.toString();
+			}
 		}
+
 		String res;
 		try{
-			res = resolveRelativeURI(base,rel);
+			res = resolveRelativeURI(base, rel);
 			new URI(res);
 			return res;
-		}catch(Exception ex){
+		} catch(Exception ex){
 			//try encoding
-			String encodedRel;
 			try {
-				encodedRel = URLEncoder.encode(rel, "UTF-8");
-			} catch (UnsupportedEncodingException e) {
-				//silent
-				return "";
+				if (!rel.startsWith("/")) {
+					rel = "/" + rel;
+				}
+				URI encodedRel = new URI(
+						base.getScheme(),
+						base.getUserInfo(),
+						base.getHost(),
+						base.getPort(),
+						rel,
+						null,
+						null);
+
+				return resolveRelativeURI(base, encodedRel.getRawPath());
+			} catch (URISyntaxException e) {
+				return "error:" + e.toString();
 			}
-			return resolveRelativeURI(base, encodedRel);
 		}
 	}
 
@@ -97,13 +109,11 @@ public class Util {
 		}
 	}
 	
-	public static Object evaluateExpression(Project project, String expression, String columnName, Row row, int rowIndex) throws ParsingException{
-		
+	public static Object evaluateExpression(Project project, String expression, String columnName, Row row, int rowIndex) throws ParsingException {
 		Properties bindings = ExpressionUtils.createBindings(project);
         Evaluable eval = MetaParser.parse(expression);
-        
         int cellIndex = (columnName==null||columnName.equals(""))?-1:project.columnModel.getColumnByName(columnName).getCellIndex();
         
-        return RdfExpressionUtil.evaluate(eval,bindings, row, rowIndex,columnName , cellIndex);
+        return RdfExpressionUtil.evaluate(eval, bindings, row, rowIndex, columnName, cellIndex);
 	}
 }

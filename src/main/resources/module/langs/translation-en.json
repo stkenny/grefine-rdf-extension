@@ -1,7 +1,8 @@
 {
     "rdf-ext-virtuoso/endpoint-type": "Endpoint type", 
     "rdf-ext-schema/alert-enter-const": "Alert enter const?", 
-    "rdf-ext-rdf/other": "Other", 
+    "rdf-ext-rdf/other": "Other",
+    "rdf-ext-rdf/error": "Error",
     "rdf-ext-schema/row-index": "Row index", 
     "rdf-ext-schema/use-content": "Use content", 
     "rdf-ext-sparql/type": "Type", 

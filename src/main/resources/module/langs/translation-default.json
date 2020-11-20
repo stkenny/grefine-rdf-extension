@@ -1,5 +1,6 @@
 {
-    "rdf-ext-rdf/table-resolved": "resolved against the base URI", 
+    "rdf-ext-rdf/table-resolved": "resolved against the base URI",
+    "rdf-ext-rdf/error": "Error",
     "rdf-ext-schema/alert-enter-const": "Alert enter const?", 
     "rdf-ext-rdf/other": "Other", 
     "rdf-ext-schema/row-index": "Row index", 

@@ -81,7 +81,7 @@ public class PreviewRdfValueExpressionCommand extends PreviewExpressionCommand{
                 int rowIndex = rowIndices.get(i).asInt();
                 if (rowIndex >= 0 && rowIndex < project.rows.size()) {
                     Row row = project.rows.get(rowIndex);
-                    result = Util.evaluateExpression(project, expression, columnName, row, rowIndex); 
+                    result = Util.evaluateExpression(project, expression, columnName, row, rowIndex);
                 }
                 
                 if (result == null) {
@@ -94,12 +94,13 @@ public class PreviewRdfValueExpressionCommand extends PreviewExpressionCommand{
                 	StringBuffer sb = new StringBuffer();
                     writeValue(sb, result, false);
                     writer.writeString(sb.toString());
+
                     //prepare absolute value                    
                 	if (result.getClass().isArray()) {
                 		int lngth = Array.getLength(result);
                 		StringBuilder resolvedUrisVal = new StringBuilder("[");
                 		for(int k=0;k<lngth;k++){
-                			resolvedUrisVal.append(Util.resolveUri(base,Array.get(result, k).toString()));
+                			resolvedUrisVal.append(Util.resolveUri(base, Array.get(result, k).toString()));
                 			if(k<lngth-1){
                 				resolvedUrisVal.append(",");
                 			}
@@ -107,7 +108,7 @@ public class PreviewRdfValueExpressionCommand extends PreviewExpressionCommand{
                 		resolvedUrisVal.append("]");
                 		absolutes[i] = resolvedUrisVal.toString();
                 	} else {
-                        absolutes[i] = Util.resolveUri(base,sb.toString());
+                        absolutes[i] = Util.resolveUri(base, sb.toString());
                 	}
                 }
             }
@@ -116,7 +117,14 @@ public class PreviewRdfValueExpressionCommand extends PreviewExpressionCommand{
             //writing the absolutes
             writer.writeArrayFieldStart("absolutes");
             for (int i = 0; i < length; i++) {
-            	writer.writeString(absolutes[i]);
+                String absolute = absolutes[i];
+                if (absolute.startsWith("error:")) {
+                    writer.writeStartObject();
+                    writer.writeStringField("message", absolute.substring(6));
+                    writer.writeEndObject();
+                } else {
+                    writer.writeString(absolute);
+                }
             }
             writer.writeEndArray();
             writer.writeStringField("code", "ok");

@@ -150,9 +150,10 @@ RdfDataTableView.getUriPreviewWidget = function(isLiteral,isRowNumberCell,baseUr
 		var renderValue = function(td, v) {
 			if (v !== null && v !== undefined) {
 				if ($.isPlainObject(v)) {
+				    console.log(v);
 					$('<span></span>').addClass("expression-preview-special-value").text($.i18n('rdf-ext-rdf/error')+": " + v.message).appendTo(td);
 				} else {
-					td.text(v);
+				    td.text(v);
 				}
 			} else {
 				$('<span>null</span>').addClass("expression-preview-special-value").appendTo(td);
@@ -182,6 +183,8 @@ RdfDataTableView.getUriPreviewWidget = function(isLiteral,isRowNumberCell,baseUr
 				var absolutTtdValue = $(tr.insertCell(3)).addClass("expression-preview-value");
 				if (this._results !== null) {
 					var v = data.absolutes[i]==null?this._results[i]:data.absolutes[i];
+					console.log(v);
+					console.log($.isPlainObject(v));
 					renderValue(absolutTtdValue, v);
 				}
 			}
