@@ -23,6 +23,8 @@ public class Util {
 	private static final String XSD_DOUBLE_URI = "http://www.w3.org/2001/XMLSchema#double";
 	private static final String XSD_DATE_URI = "http://www.w3.org/2001/XMLSchema#date";
 
+	private static final String[] PREFIXES = { "http://", "https://", "file://", "ftp://" };
+
 	public static String resolveUri(URI base, String rel) {
 		try {
 			URI relUri = new URI(rel);
@@ -31,7 +33,10 @@ public class Util {
 			}
 		} catch (URISyntaxException e) {
 			String testRel = rel.toLowerCase();
-			if (testRel.startsWith("http://") || testRel.startsWith("https://") || testRel.startsWith("ftp://")) {
+			if (testRel.matches("(" + PREFIXES[0] + "|"
+					+ PREFIXES[1] + "|"
+					+ PREFIXES[2] + "|"
+					+ PREFIXES[3] + ").*")) {
 				return "error:" + e.toString();
 			}
 		}
