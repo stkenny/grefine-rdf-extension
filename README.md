@@ -16,8 +16,13 @@ This project adds a graphical user interface(GUI) for exporting data of OpenRefi
 
 ## INSTALL
 
+### Prerequisites
+
+You need to have Java and OpenRefine installed on your machine.
+  * Java 8+
+  * OpenRefine 3.3+
+
 ### From compiled release
-You need to have OpenRefine installed on your machine.
 
 1. If it does not exist, create a folder named **extensions/rdf-extension** under your user workspace directory for OpenRefine. The workspace should be located in the following places depending on your operating system (see [OpenRefine FAQ](https://github.com/OpenRefine/OpenRefine/wiki/FAQ-Where-Is-Data-Stored) for more details):
     * Linux ~/.local/share/OpenRefine
