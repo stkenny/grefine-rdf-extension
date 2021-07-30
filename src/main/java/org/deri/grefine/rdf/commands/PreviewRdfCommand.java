@@ -17,6 +17,7 @@ import org.eclipse.rdf4j.rio.RDFFormat;
 import org.eclipse.rdf4j.rio.RDFHandlerException;
 import org.eclipse.rdf4j.rio.RDFWriter;
 import org.eclipse.rdf4j.rio.Rio;
+import org.eclipse.rdf4j.rio.helpers.BasicWriterSettings;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -42,16 +43,17 @@ public class PreviewRdfCommand extends Command {
 
 	        StringWriter sw = new StringWriter();
 	        RDFWriter w = Rio.createWriter(RDFFormat.TURTLE, sw);
+	        w.getWriterConfig().set(BasicWriterSettings.PRETTY_PRINT, false);
 	        RdfRowVisitor visitor = new RdfRowVisitor(schema, w) {
             	final int limit = 10;
             	int _count;
 				@Override
 				public boolean visit(Project project, int rowIndex, Row row) {
-					if(_count>=limit){
+					if(_count >= limit){
 		                return true;
 		            }
 					for(Node root:roots){
-						root.createNode(baseUri, factory, con, project, row, rowIndex,blanks);
+						root.createNode(baseUri, factory, con, project, row, rowIndex, blanks);
 					}
 		            _count +=1;
 

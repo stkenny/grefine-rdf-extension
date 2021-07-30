@@ -29,6 +29,7 @@ import org.eclipse.rdf4j.rio.RDFHandlerException;
 import org.eclipse.rdf4j.rio.RDFWriter;
 import org.eclipse.rdf4j.rio.Rio;
 import org.eclipse.rdf4j.sail.memory.MemoryStore;
+import org.eclipse.rdf4j.rio.helpers.BasicWriterSettings;
 
 import com.google.refine.browsing.Engine;
 import com.google.refine.browsing.FilteredRows;
@@ -67,6 +68,7 @@ public class RdfExporter implements WriterExporter {
 
 	private void export(Project project, Properties options, Engine engine,
 						RDFWriter writer) throws IOException {
+		writer.getWriterConfig().set(BasicWriterSettings.PRETTY_PRINT, false);
     	RdfSchema schema;
     	try{
     		schema = Util.getProjectSchema(applicationContext, project);
