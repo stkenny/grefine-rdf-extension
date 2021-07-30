@@ -571,7 +571,7 @@ RdfSchemaAlignmentDialog.UINode.prototype._showNodeConfigDialog = function(){
         			//check custom datatype URI
         			var val = $('#rdf-content-type-input').val();
         			if(!val){
-            			alert('Enter the custome type URI');
+            			alert('Enter the custom type URI');
             			return null;
             		}
         			node.valueType = val;
