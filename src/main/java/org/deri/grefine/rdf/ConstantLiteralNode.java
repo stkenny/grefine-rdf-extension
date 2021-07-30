@@ -76,9 +76,8 @@ public class ConstantLiteralNode implements Node{
 	public Value[] createNode(URI baseUri, ValueFactory factory, RepositoryConnection con, Project project,
             Row row, int rowIndex,BNode[] blanks) {
         if(this.value!=null && this.value.length()>0){
-            
             Literal l ;
-            if(this.valueType!=null){
+            if(this.valueType != null){
             	//TODO handle exception when valueType is not a valid URI
                 l = factory.createLiteral(this.value, factory.createURI(valueType));
             }else{

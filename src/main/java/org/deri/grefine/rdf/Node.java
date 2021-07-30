@@ -22,7 +22,7 @@ import java.io.IOException;
         property="nodeType")
 @JsonTypeIdResolver(NodeResolver.class)
 public interface Node {
-    Value[] createNode(URI baseUri, ValueFactory factory, RepositoryConnection con, Project project, Row row, int rowIndex,BNode[] blanks);
+    Value[] createNode(URI baseUri, ValueFactory factory, RepositoryConnection con, Project project, Row row, int rowIndex, BNode[] blanks);
     
     @JsonProperty("nodeType")
     public String getNodeType();

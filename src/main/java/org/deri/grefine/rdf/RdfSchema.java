@@ -178,7 +178,7 @@ public class RdfSchema implements OverlayModel {
                 	//TODO backward compatibility 
                 	exp = "value";
                 }
-                node = new CellLiteralNode(columnName, exp, valueType, lang,isRowNumberCell);
+                node = new CellLiteralNode(columnName, exp, valueType, lang, isRowNumberCell);
             } else if ("cell-as-blank".equals(nodeType)) {
             	//TODO blank nodes just accept value as expression
                 node = new CellBlankNode(columnName,"value", isRowNumberCell);
