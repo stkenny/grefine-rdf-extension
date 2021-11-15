@@ -6,13 +6,7 @@ This project adds a graphical user interface(GUI) for exporting data of OpenRefi
 
 ### Latest release
 
-[OpenRefine v1.3.1](https://github.com/stkenny/grefine-rdf-extension/releases/download/v1.3.1/rdf-extension-1.3.1.zip)
-
-### Previous releases for earlier versions of OpenRefine
-
-[OpenRefine 3.2 v1.1.8](https://github.com/stkenny/grefine-rdf-extension/releases/download/v1.1.8-orefine-3.2/rdf-extension-1.1.8-orefine-3.2.zip)
-
-[OpenRefine 3.1 v1.1.4](https://github.com/stkenny/grefine-rdf-extension/releases/download/v1.1.4/rdf-extension-1.1.4-orefine_31.zip)
+[RDF Extension v1.3.1](https://github.com/stkenny/grefine-rdf-extension/releases/download/v1.3.1/rdf-extension-1.3.1.zip)
 
 ## INSTALL
 
