@@ -3,7 +3,7 @@
 
     <groupId>nl.dtls</groupId>
     <artifactId>rdf-extension</artifactId>
-    <version>1.3.1</version>
+    <version>1.4.0</version>
     <packaging>jar</packaging>
 
     <properties>
@@ -11,13 +11,13 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
 
-        <openrefine.version>3.3</openrefine.version>
-        <slf4j.version>1.7.5</slf4j.version>
-        <guava.version>22.0</guava.version>
+        <openrefine.version>3.6.0</openrefine.version>
+        <slf4j.version>1.7.36</slf4j.version>
         <jena.version>3.9.0</jena.version>
         <rdf4j.version>2.4.3</rdf4j.version>
         <simmetrics.version>1.6.2</simmetrics.version>
-        <xerces.version>2.11.0</xerces.version>
+        <guava.version>31.1-jre</guava.version>
+	<xerces.version>2.11.0</xerces.version>
         <any23.version>2.3</any23.version>
     </properties>
 
@@ -37,21 +37,15 @@
     </repositories> 
 
     <dependencies>
-        <dependency>
-            <groupId>org.openrefine</groupId>
-            <artifactId>openrefine</artifactId>
-            <version>${openrefine.version}</version>
-	    <scope>provided</scope>
-        </dependency>
- 
-        <dependency>
-            <groupId>edu.mit.simile</groupId>
-            <artifactId>butterfly</artifactId>
-            <version>1.0.1</version>
-            <scope>provided</scope>
-        </dependency> 
-
-        <dependency>
+        <!-- https://mvnrepository.com/artifact/org.openrefine/main -->
+      <dependency>
+        <groupId>org.openrefine</groupId>
+        <artifactId>main</artifactId>
+        <version>3.6.0</version>
+        <scope>provided</scope>
+       </dependency>
+        
+       <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <version>${slf4j.version}</version>
@@ -61,7 +55,8 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>${guava.version}</version>
+	    <version>${guava.version}</version>
+	    <scope>provided</scope>
         </dependency>
 
         <dependency>
