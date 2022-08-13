@@ -39,7 +39,7 @@ public class VirtuosoSparqlQueryFactoryTest {
 			"WHERE" +
 			"{" +
 			"?entity ?p ?label. " +
-			"?label <bif:contains> \"'" + formattedQuery + "'\" OPTION(score ?score1). " +
+			"?label bif:contains \"'" + formattedQuery + "'\" OPTION(score ?score1). " +
 			"FILTER (?p=<http://www.w3.org/2000/01/rdf-schema#label> || ?p=<http://www.w3.org/2004/02/skos/core#prefLabel>). " +
 			"FILTER isIRI(?entity). } ORDER BY desc(?score1) LIMIT " + computedLimit;
 		
@@ -58,7 +58,7 @@ public class VirtuosoSparqlQueryFactoryTest {
 			"WHERE" +
 			"{" +
 			"?entity ?p ?label. " +
-			"?label <bif:contains> \"'" + formattedQuery + "'\" OPTION(score ?score1). " +
+			"?label bif:contains \"'" + formattedQuery + "'\" OPTION(score ?score1). " +
 			"FILTER (?p=<http://www.w3.org/2000/01/rdf-schema#label>). " +
 			"?entity a ?type. " +
 			"FILTER (?type IN (<http://xmlns.com/foaf/0.1/Agent>,<http://xmlns.com/foaf/0.1/Person>)). " + 
@@ -82,7 +82,7 @@ public class VirtuosoSparqlQueryFactoryTest {
 			"SELECT DISTINCT ?entity ?label ?score1 " +
 			"WHERE{" +
 			"?entity ?p ?label. " +
-			"?label <bif:contains> \"'+United +States'\" OPTION(score ?score1). " +
+			"?label bif:contains \"'+United +States'\" OPTION(score ?score1). " +
 			"FILTER (?p=<http://www.w3.org/2000/01/rdf-schema#label> " +
                     "|| ?p=<http://www.w3.org/2004/02/skos/core#prefLabel>). " +
 			"?entity a ?type. " +
@@ -111,7 +111,7 @@ public class VirtuosoSparqlQueryFactoryTest {
 			"{" +
 			"[] a ?type. " +
             "{ ?type <http://www.w3.org/2000/01/rdf-schema#label> ?label } UNION { ?type <http://www.w3.org/2004/02/skos/core#prefLabel> ?label } . " +
-			"?label <bif:contains> \"'+" + prefix + "*'\" OPTION(score ?score1). " +
+			"?label bif:contains \"'+" + prefix + "*'\" OPTION(score ?score1). " +
 			"} ORDER BY desc(?score1) LIMIT " + limit;
 		
 		assertEquals(sparql, expected);
@@ -134,7 +134,7 @@ public class VirtuosoSparqlQueryFactoryTest {
 			"[] a <http://xmlns.com/foaf/0.1/Person>; " +
 			"?p ?v. " +
             "{ ?p <http://www.w3.org/2000/01/rdf-schema#label> ?label } UNION { ?p <http://www.w3.org/2004/02/skos/core#prefLabel> ?label } . " +
-            "?label <bif:contains> \"'+" +prefix + "*'\" OPTION(score ?score1). " +
+            "?label bif:contains \"'+" +prefix + "*'\" OPTION(score ?score1). " +
 			"} ORDER BY desc(?score1) LIMIT " + limit;
 		
 		assertEquals(sparql, expected);
@@ -151,7 +151,7 @@ public class VirtuosoSparqlQueryFactoryTest {
 			"{" +
 			"[] ?p ?v. " +
 			"{ ?p <http://www.w3.org/2000/01/rdf-schema#label> ?label } UNION { ?p <http://www.w3.org/2004/02/skos/core#prefLabel> ?label } . " +
-			"?label <bif:contains> \"'+" +prefix + "*'\" OPTION(score ?score1). " +
+			"?label bif:contains \"'+" +prefix + "*'\" OPTION(score ?score1). " +
 			"} ORDER BY desc(?score1) LIMIT " + limit;
 		
 		assertEquals(sparql, expected);
@@ -171,7 +171,7 @@ public class VirtuosoSparqlQueryFactoryTest {
 				"WHERE" +
 				"{" +
 				"?entity ?p ?label. " +
-				"?label <bif:contains> \"'+" + prefix + "'\" OPTION(score ?score1). " +
+				"?label bif:contains \"'+" + prefix + "'\" OPTION(score ?score1). " +
 				"FILTER (?p=<http://www.w3.org/2000/01/rdf-schema#label> " +
                     "|| ?p=<http://www.w3.org/2004/02/skos/core#prefLabel>). " +
 				"FILTER isIRI(?entity). } ORDER BY desc(?score1) LIMIT " + limit;

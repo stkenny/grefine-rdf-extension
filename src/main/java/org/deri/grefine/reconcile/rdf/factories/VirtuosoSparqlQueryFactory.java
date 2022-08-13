@@ -127,7 +127,7 @@ public class VirtuosoSparqlQueryFactory extends AbstractSparqlQueryFactory{
 		"WHERE" +
 		"{" +
 		"?entity ?p ?label. " +
-		"?label <bif:contains> \"'[[QUERY]]'\" OPTION(score ?score1). " +
+		"?label bif:contains \"'[[QUERY]]'\" OPTION(score ?score1). " +
 		"[[PROPERTY_URIS_FILTER]]. " +
 		"[[TYPE_FILTER]]" +
 		"[[CONTEXT_FILTER]]" +
@@ -143,7 +143,7 @@ public class VirtuosoSparqlQueryFactory extends AbstractSparqlQueryFactory{
 		"[] a ?type. " +
         "{ ?type <http://www.w3.org/2000/01/rdf-schema#label> ?label } UNION " +
         "{ ?type <http://www.w3.org/2004/02/skos/core#prefLabel> ?label } . " +
-        "?label <bif:contains> \"'[[QUERY]]'\" OPTION(score ?score1). " +
+        "?label bif:contains \"'[[QUERY]]'\" OPTION(score ?score1). " +
 		"} ORDER BY desc(?score1) LIMIT [[LIMIT]]";
 	
 	private static final String SUGGEST_PROPERTY_QUERY_TEMPLATE = 
@@ -153,7 +153,7 @@ public class VirtuosoSparqlQueryFactory extends AbstractSparqlQueryFactory{
 		"[] ?p ?v. " +
         "{ ?p <http://www.w3.org/2000/01/rdf-schema#label> ?label } UNION " +
         "{ ?p <http://www.w3.org/2004/02/skos/core#prefLabel> ?label } . " +
-        "?label <bif:contains> \"'[[QUERY]]'\" OPTION(score ?score1). " +
+        "?label bif:contains \"'[[QUERY]]'\" OPTION(score ?score1). " +
 		"} ORDER BY desc(?score1) LIMIT [[LIMIT]]";
 	
 	private static final String SUGGEST_PROPERTY_WITH_SPECIFIC_SUBJECT_TYPE_QUERY_TEMPLATE =
@@ -164,7 +164,7 @@ public class VirtuosoSparqlQueryFactory extends AbstractSparqlQueryFactory{
 		"?p ?v. " +
         "{ ?p <http://www.w3.org/2000/01/rdf-schema#label> ?label } UNION " +
         "{ ?p <http://www.w3.org/2004/02/skos/core#prefLabel> ?label } . " +
-        "?label <bif:contains> \"'[[QUERY]]'\" OPTION(score ?score1). " +
+        "?label bif:contains \"'[[QUERY]]'\" OPTION(score ?score1). " +
 		"} ORDER BY desc(?score1) LIMIT [[LIMIT]]";
 	
 	private static final String SEARCH_ENTITY_QUERY_TEMPLATE =
@@ -172,7 +172,7 @@ public class VirtuosoSparqlQueryFactory extends AbstractSparqlQueryFactory{
 		"WHERE" +
 		"{" +
 		"?entity ?p ?label. " +
-		"?label <bif:contains> \"'[[QUERY]]'\" OPTION(score ?score1). " +
+		"?label bif:contains \"'[[QUERY]]'\" OPTION(score ?score1). " +
 		"[[PROPERTY_URIS_FILTER]]. " +
 		"FILTER isIRI(?entity). } ORDER BY desc(?score1) LIMIT [[LIMIT]]";
 	
