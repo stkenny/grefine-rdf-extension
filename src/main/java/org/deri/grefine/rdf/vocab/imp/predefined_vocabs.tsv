@@ -1,4 +1,4 @@
 rdf	http://www.w3.org/1999/02/22-rdf-syntax-ns#	http://www.w3.org/1999/02/22-rdf-syntax-ns#
 rdfs	http://www.w3.org/2000/01/rdf-schema#	http://www.w3.org/2000/01/rdf-schema#
 owl	http://www.w3.org/2002/07/owl#	http://www.w3.org/2002/07/owl#
-foaf	http://xmlns.com/foaf/0.1/	http://xmlns.com/foaf/spec/index.rdf
+foaf	http://xmlns.com/foaf/0.1/	https://databus.dbpedia.org/ontologies/xmlns.com/foaf--0--1/2020.06.10-215725/foaf--0--1_type=orig.rdf

@@ -65,8 +65,9 @@ public class PredefinedVocabularyManager implements IPredefinedVocabularyManager
 		// Read File Line By Line
 		while ((strLine = br.readLine()) != null) {
 			tokenizer = new StringTokenizer(strLine, "\t");
+			String name = "";
 			try {
-				String name = tokenizer.nextToken();
+				name = tokenizer.nextToken();
 				String uri = tokenizer.nextToken();
 				String url = tokenizer.nextToken();
 				//import and index
@@ -75,7 +76,7 @@ public class PredefinedVocabularyManager implements IPredefinedVocabularyManager
 			} catch (Exception e) {
 				// predefined vocabularies are not defined properly
 				// ignore the exception, just log it
-				logger.warn("unable to add predefined vocabularies", e);
+				logger.warn("unable to add predefined vocabulary: " + name, e);
 			}
 
 		}
