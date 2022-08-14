@@ -14,11 +14,11 @@
         <openrefine.version>3.6.0</openrefine.version>
         <slf4j.version>1.7.36</slf4j.version>
         <jena.version>3.9.0</jena.version>
-        <rdf4j.version>2.4.3</rdf4j.version>
+        <rdf4j.version>3.7.4</rdf4j.version>
         <simmetrics.version>1.6.2</simmetrics.version>
         <guava.version>31.1-jre</guava.version>
 	<xerces.version>2.11.0</xerces.version>
-        <any23.version>2.3</any23.version>
+        <any23.version>2.6</any23.version>
     </properties>
 
     <repositories>
@@ -84,8 +84,8 @@
         </dependency>
 
         <dependency>
-            <groupId>org.shaded.apache.any23</groupId>
-            <artifactId>apache-any23-shaded-core</artifactId>
+            <groupId>org.apache.any23</groupId>
+            <artifactId>apache-any23-core</artifactId>
             <version>${any23.version}</version>
 	    <exclusions>
               <exclusion>

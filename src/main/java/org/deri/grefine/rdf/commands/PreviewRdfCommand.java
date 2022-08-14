@@ -70,14 +70,9 @@ public class PreviewRdfCommand extends Command {
 		            return false;
 				}
 			};
-			
-	        for(Vocabulary v:schema.getPrefixesMap().values()){
-		        w.handleNamespace(v.getName(), v.getUri());
-	        }
-	        RdfExporter.buildModel(project, engine, visitor);
-
+			RdfExporter.buildModel(project, engine, visitor);
             respondJSON(response, new PreviewResponse(sw.getBuffer().toString()));
-        }catch (Exception e) {
+        } catch (Exception e) {
             respondException(response, e);
         }
     }

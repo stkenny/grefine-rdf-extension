@@ -76,10 +76,6 @@ public class RdfExporter implements WriterExporter {
     		throw new IOException("Unable to create index for RDF schema",ve);
     	}
         try{
-		  for(Vocabulary v:schema.getPrefixesMap().values()){
-		        writer.handleNamespace(v.getName(), v.getUri());
-		  }
-
 		  exportModel(project, engine, schema, writer);
         }catch(RDFHandlerException ex){
             throw new RuntimeException(ex);
@@ -128,7 +124,7 @@ public class RdfExporter implements WriterExporter {
         return true;
     }
     
-    public static abstract class RdfRowVisitor implements RowVisitor{
+    public static abstract class RdfRowVisitor implements RowVisitor {
         protected Repository model;
         protected URI baseUri;
         protected BNode[] blanks;
@@ -174,17 +170,9 @@ public class RdfExporter implements WriterExporter {
 
 		        // Open RDF output
 		        writer.startRDF();
-
-		        // Export namespace information
-		        RepositoryResult<Namespace> nsIter = con.getNamespaces();
-		        try {
-			    	while (nsIter.hasNext()) {
-						Namespace ns = nsIter.next();
-						writer.handleNamespace(ns.getPrefix(), ns.getName());
-					}
-			    } finally {
-		            nsIter.close();
-		        }
+				for(Vocabulary v:schema.getPrefixesMap().values()){
+					writer.handleNamespace(v.getName(), v.getUri());
+				}
         	} catch(RepositoryException ex){
         		throw new RuntimeException("",ex);
         	} catch (RDFHandlerException e) {
