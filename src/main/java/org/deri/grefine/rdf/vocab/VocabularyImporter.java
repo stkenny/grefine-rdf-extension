@@ -1,11 +1,11 @@
 package org.deri.grefine.rdf.vocab;
 
-import org.shaded.apache.any23.Any23;
-import org.shaded.apache.any23.http.HTTPClient;
-import org.shaded.apache.any23.source.DocumentSource;
-import org.shaded.apache.any23.source.HTTPDocumentSource;
-import org.shaded.apache.any23.writer.ReportingTripleHandler;
-import org.shaded.apache.any23.writer.RepositoryWriter;
+import org.apache.any23.Any23;
+import org.apache.any23.http.HTTPClient;
+import org.apache.any23.source.DocumentSource;
+import org.apache.any23.source.HTTPDocumentSource;
+import org.apache.any23.writer.ReportingTripleHandler;
+import org.apache.any23.writer.RepositoryWriter;
 
 import org.eclipse.rdf4j.model.Value;
 import org.eclipse.rdf4j.query.BindingSet;
