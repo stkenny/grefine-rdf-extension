@@ -18,10 +18,10 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonGenerationException;
 
 import com.google.common.collect.ImmutableList;
-import org.shaded.apache.jena.query.QuerySolution;
-import org.shaded.apache.jena.query.ResultSet;
-import org.shaded.apache.jena.rdf.model.Literal;
-import org.shaded.apache.jena.rdf.model.Resource;
+import org.apache.jena.query.QuerySolution;
+import org.apache.jena.query.ResultSet;
+import org.apache.jena.rdf.model.Literal;
+import org.apache.jena.rdf.model.Resource;
 
 public class PlainSparqlQueryFactory extends AbstractSparqlQueryFactory{
 

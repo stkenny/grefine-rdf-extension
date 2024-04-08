@@ -3,8 +3,8 @@ package org.deri.grefine.reconcile.util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.shaded.apache.jena.rdf.model.Model;
-import org.shaded.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
 
 public class RdfUtilitiesImpl implements RdfUtilities{
 

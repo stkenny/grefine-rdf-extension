@@ -10,11 +10,11 @@ import org.apache.commons.lang.StringUtils;
 
 import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.Multimap;
-import org.shaded.apache.jena.query.QuerySolution;
-import org.shaded.apache.jena.query.ResultSet;
-import org.shaded.apache.jena.rdf.model.Literal;
-import org.shaded.apache.jena.rdf.model.RDFNode;
-import org.shaded.apache.jena.rdf.model.Resource;
+import org.apache.jena.query.QuerySolution;
+import org.apache.jena.query.ResultSet;
+import org.apache.jena.rdf.model.Literal;
+import org.apache.jena.rdf.model.RDFNode;
+import org.apache.jena.rdf.model.Resource;
 
 public class PreviewResourceCannedQuery {
 

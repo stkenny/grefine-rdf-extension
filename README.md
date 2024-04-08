@@ -14,7 +14,7 @@ This project adds a graphical user interface(GUI) for exporting data of OpenRefi
 
 You need to have Java and OpenRefine installed on your machine.
   * Java 11
-  * OpenRefine 3.6
+  * OpenRefine 3.7
 
 ### From compiled release
 

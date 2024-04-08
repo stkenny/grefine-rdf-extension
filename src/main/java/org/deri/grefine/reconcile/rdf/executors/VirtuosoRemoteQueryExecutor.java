@@ -3,12 +3,13 @@ package org.deri.grefine.reconcile.rdf.executors;
 import java.util.Collections;
 import java.io.IOException;
 
-import org.shaded.apache.jena.query.ResultSetFactory;
+import org.apache.jena.query.ResultSetFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonGenerationException;
 
-import org.shaded.apache.jena.query.ResultSet;
-import org.shaded.apache.jena.sparql.engine.http.QueryEngineHTTP;
+import org.apache.jena.query.ResultSet;
+import org.apache.jena.sparql.exec.http.QueryExecutionHTTP;
+import org.apache.jena.sparql.exec.http.QueryExecutionHTTPBuilder;
 
 public class VirtuosoRemoteQueryExecutor extends RemoteQueryExecutor {
 
@@ -20,10 +21,13 @@ public class VirtuosoRemoteQueryExecutor extends RemoteQueryExecutor {
     public ResultSet sparql(String sparql) {
         // we use QueryEngineHTTP to skip query validation as Virtuoso
         // needs non-standardised extensions and will not pass ARQ validation
-        QueryEngineHTTP qExec = new QueryEngineHTTP(sparqlEndpointUrl, sparql);
-        if (defaultGraphUri != null) {
-            qExec.setDefaultGraphURIs(Collections.singletonList(defaultGraphUri));
-        }
+	QueryExecutionHTTPBuilder qBuilder = QueryExecutionHTTPBuilder.service(sparqlEndpointUrl);
+	qBuilder.addDefaultGraphURI(defaultGraphUri);
+	qBuilder.queryString(sparql);
+        QueryExecutionHTTP qExec = qBuilder.build();
+        //if (defaultGraphUri != null) {
+        //    qExec.setDefaultGraphURIs(Collections.singletonList(defaultGraphUri));
+        //}
         ResultSet results = null;
         try {
             ResultSet res = qExec.execSelect();

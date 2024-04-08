@@ -11,7 +11,7 @@ import com.fasterxml.jackson.core.JsonGenerationException;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Multimap;
-import org.shaded.apache.jena.query.ResultSet;
+import org.apache.jena.query.ResultSet;
 
 /**
  * @author fadmaa
