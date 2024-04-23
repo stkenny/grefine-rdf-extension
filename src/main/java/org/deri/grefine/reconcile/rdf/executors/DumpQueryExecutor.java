@@ -9,12 +9,12 @@ import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.vocabulary.RDFS;
 import org.apache.jena.vocabulary.SKOS;
 import org.apache.lucene.store.Directory;
-//import org.apache.lucene.store.RAMDirectory;
+import org.apache.lucene.store.RAMDirectory;
 import org.apache.lucene.store.ByteBuffersDirectory;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonGenerationException;
 
-import java.io.FileInputStream;
+import java.io.InputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
@@ -54,7 +54,7 @@ public class DumpQueryExecutor implements QueryExecutor {
         Dataset dataset = DatasetFactory.create();
         EntityDefinition entDef = createEntityDefinition(m);
         // Lucene, in memory.
-        Directory dir = new ByteBuffersDirectory();
+        Directory dir = new RAMDirectory();
 
         // Join together into a dataset
         this.index = TextDatasetFactory.createLucene(dataset, dir, new TextIndexConfig(entDef));
@@ -65,17 +65,15 @@ public class DumpQueryExecutor implements QueryExecutor {
 
     @Override
     public ResultSet sparql(String sparql) {
-        System.out.println("Sparql: " + sparql + " " + loaded);
         if (!loaded) {
             throw new RuntimeException("Model is not loaded");
         }
         this.index.begin(ReadWrite.READ);
-
+        //System.out.println(sparql);
         Query query = QueryFactory.create(sparql, Syntax.syntaxSPARQL_11);
         QueryExecution qExec = QueryExecutionFactory.create(query, this.index);
         ResultSet result = qExec.execSelect();
-        String resultsAsString = org.apache.jena.query.ResultSetFormatter.asText(result);
-        System.out.print(resultsAsString);
+
         this.index.end();
 
         return result;
@@ -97,7 +95,7 @@ public class DumpQueryExecutor implements QueryExecutor {
         this.index = null; //free the memory used for the model
     }
 
-    public synchronized void initialize(FileInputStream in) {
+    public synchronized void initialize(InputStream in) {
         if (this.loaded) {
             return;
         }
@@ -109,14 +107,10 @@ public class DumpQueryExecutor implements QueryExecutor {
         EntityDefinition entDef = createEntityDefinition(model);
 
         // Lucene, in memory.
-        Directory dir = new ByteBuffersDirectory();
+        Directory dir = new RAMDirectory();
 
         // Join together into a dataset
-        this.index = TextDatasetFactory.createLucene(dataset, dir, new TextIndexConfig(entDef));
-        this.index.getDefaultModel().add(model);
-
-        // Join together into a dataset
-        /*Dataset luceneDataset = TextDatasetFactory.createLucene(dataset, dir, new TextIndexConfig(entDef));
+        Dataset luceneDataset = TextDatasetFactory.createLucene(dataset, dir, new TextIndexConfig(entDef));
         luceneDataset.begin(ReadWrite.WRITE);
         try {
             luceneDataset.getDefaultModel().add(model);
@@ -124,7 +118,7 @@ public class DumpQueryExecutor implements QueryExecutor {
         } finally {
             luceneDataset.end();
         }
-        this.index = luceneDataset;*/
+        this.index = luceneDataset;
         this.loaded = true;
     }
 

@@ -1,6 +1,7 @@
 package org.deri.grefine.reconcile.rdf.executors;
 
 import java.io.FileInputStream;
+import java.io.InputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
@@ -20,5 +21,5 @@ public interface QueryExecutor {
 	
 	public void save(String serviceId, FileOutputStream out) throws IOException;
 	public void write(JsonGenerator writer) throws JsonGenerationException, IOException;
-	public void initialize(FileInputStream in);
+	public void initialize(InputStream in);
 }

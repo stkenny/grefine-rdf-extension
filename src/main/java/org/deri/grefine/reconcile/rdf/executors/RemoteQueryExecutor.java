@@ -1,6 +1,7 @@
 package org.deri.grefine.reconcile.rdf.executors;
 
 import java.io.FileInputStream;
+import java.io.InputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
@@ -60,7 +61,7 @@ public class RemoteQueryExecutor implements QueryExecutor{
 	}
 
 	@Override
-	public void initialize(FileInputStream in) {
+	public void initialize(InputStream in) {
 		//nothing to initialize
 	}
 }
