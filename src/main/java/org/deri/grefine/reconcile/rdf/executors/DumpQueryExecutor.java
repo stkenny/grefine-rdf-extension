@@ -9,7 +9,6 @@ import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.vocabulary.RDFS;
 import org.apache.jena.vocabulary.SKOS;
 import org.apache.lucene.store.Directory;
-import org.apache.lucene.store.RAMDirectory;
 import org.apache.lucene.store.ByteBuffersDirectory;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonGenerationException;
@@ -54,7 +53,7 @@ public class DumpQueryExecutor implements QueryExecutor {
         Dataset dataset = DatasetFactory.create();
         EntityDefinition entDef = createEntityDefinition(m);
         // Lucene, in memory.
-        Directory dir = new RAMDirectory();
+        Directory dir = new ByteBuffersDirectory();
 
         // Join together into a dataset
         this.index = TextDatasetFactory.createLucene(dataset, dir, new TextIndexConfig(entDef));
@@ -69,7 +68,6 @@ public class DumpQueryExecutor implements QueryExecutor {
             throw new RuntimeException("Model is not loaded");
         }
         this.index.begin(ReadWrite.READ);
-        //System.out.println(sparql);
         Query query = QueryFactory.create(sparql, Syntax.syntaxSPARQL_11);
         QueryExecution qExec = QueryExecutionFactory.create(query, this.index);
         ResultSet result = qExec.execSelect();
@@ -107,7 +105,7 @@ public class DumpQueryExecutor implements QueryExecutor {
         EntityDefinition entDef = createEntityDefinition(model);
 
         // Lucene, in memory.
-        Directory dir = new RAMDirectory();
+        Directory dir = new ByteBuffersDirectory();
 
         // Join together into a dataset
         Dataset luceneDataset = TextDatasetFactory.createLucene(dataset, dir, new TextIndexConfig(entDef));
