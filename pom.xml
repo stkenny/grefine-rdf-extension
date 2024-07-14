@@ -11,14 +11,14 @@
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
 
-        <openrefine.version>3.7.2</openrefine.version>
+        <openrefine.version>3.8.2</openrefine.version>
         <slf4j.version>2.0.5</slf4j.version>
-        <jena.version>4.6.1</jena.version>
+        <jena.version>4.10.0</jena.version>
         <rdf4j.version>3.7.4</rdf4j.version>
         <simmetrics.version>1.6.2</simmetrics.version>
         <guava.version>31.1-jre</guava.version>
 	<xerces.version>2.11.0</xerces.version>
-        <any23.version>2.6</any23.version>
+	<any23.version>2.6</any23.version>
     </properties>
 
     <repositories>
@@ -41,7 +41,7 @@
       <dependency>
         <groupId>org.openrefine</groupId>
         <artifactId>main</artifactId>
-        <version>3.7.2</version>
+        <version>3.8.2</version>
         <scope>provided</scope>
        </dependency>
         

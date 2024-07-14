@@ -5,6 +5,7 @@ import com.google.refine.browsing.Engine;
 import com.google.refine.expr.ExpressionUtils;
 import com.google.refine.grel.ControlFunctionRegistry;
 import com.google.refine.model.Project;
+import com.google.refine.ProjectManager;
 import com.google.refine.model.Row;
 import com.google.refine.util.ParsingUtilities;
 import org.deri.grefine.rdf.RdfSchema;
@@ -28,6 +29,8 @@ import java.io.ByteArrayInputStream;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 
+import static org.mockito.Mockito.mock;
+
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
@@ -43,6 +46,8 @@ public class RdfExporterMultiRootNodesTest {
 
 	@BeforeClass
 	public void init() throws Exception{
+		ProjectManager.singleton = mock(ProjectManager.class);
+
 		expected = buildExpectedModel();
 		ApplicationContext ctxt = new ApplicationContext();
 		schema = getRdfSchema();

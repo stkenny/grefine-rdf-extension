@@ -7,6 +7,7 @@ import com.google.refine.grel.ControlFunctionRegistry;
 import com.google.refine.model.Cell;
 import com.google.refine.model.Column;
 import com.google.refine.model.Project;
+import com.google.refine.ProjectManager;
 import com.google.refine.model.Row;
 import com.google.refine.util.ParsingUtilities;
 import org.deri.grefine.rdf.RdfSchema;
@@ -34,6 +35,8 @@ import java.io.ByteArrayInputStream;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 
+import static org.mockito.Mockito.mock;
+
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
@@ -49,6 +52,8 @@ public class RdfExporterTest {
 	
 	@BeforeClass
 	public void init()throws Exception{
+		ProjectManager.singleton = mock(ProjectManager.class);
+
 		expected = buildExpectedModel();
 		schema = getRdfSchema();
 		
@@ -72,7 +77,7 @@ public class RdfExporterTest {
 		finally {
 			con.close();
 		}
-
+        
 		assertEquals(project.rows.size(),2);
 		assertEquals(project.columnModel.getColumnIndexByName("Job Title"),3);
 	}
@@ -105,6 +110,7 @@ public class RdfExporterTest {
 	}
 	void buildTheSampleProject()throws Exception{
 		project = new Project();
+       
 		buildColumnModel();
 		Row row1 = new Row(17);
 		row1.cells.add(new Cell("101198", null));
