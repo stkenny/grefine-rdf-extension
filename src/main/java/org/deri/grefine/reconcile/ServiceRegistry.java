@@ -251,6 +251,8 @@ public class ServiceRegistry {
             return new VirtuosoSparqlQueryFactory();
         } else if (type.equals("jena-text")) {
             return new JenaTextSparqlQueryFactory();
+        } else if (type.equals("rdf4j-text")) {
+            return new Rdf4jTextSparqlQueryFactory();
         } else if (type.equals("bigowlim")) {
             return new BigOwlImSparqlQueryFactory();
         } else {

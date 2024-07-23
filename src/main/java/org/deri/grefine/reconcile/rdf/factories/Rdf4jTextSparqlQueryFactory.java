@@ -72,7 +72,7 @@ public class Rdf4jTextSparqlQueryFactory extends AbstractSparqlQueryFactory {
     @Override
     public void write(JsonGenerator writer) throws JsonGenerationException, IOException {
         writer.writeStartObject();
-        writer.writeStringField("type", "jena-text");
+        writer.writeStringField("type", "rdf4j-text");
         writer.writeEndObject();
     }
 
