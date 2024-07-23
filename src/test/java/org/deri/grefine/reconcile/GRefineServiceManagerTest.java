@@ -22,10 +22,11 @@ import org.deri.grefine.reconcile.rdf.endpoints.QueryEndpointImpl;
 import org.deri.grefine.reconcile.rdf.executors.DumpQueryExecutor;
 import org.deri.grefine.reconcile.rdf.executors.RemoteQueryExecutor;
 import org.deri.grefine.reconcile.rdf.factories.JenaTextSparqlQueryFactory;
+import org.deri.grefine.reconcile.rdf.factories.Rdf4jTextSparqlQueryFactory;
 import org.deri.grefine.reconcile.util.GRefineJsonUtilitiesImpl;
 
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.ModelFactory;
+import org.eclipse.rdf4j.model.Model;
+import org.eclipse.rdf4j.model.impl.DynamicModelFactory;
 import org.apache.commons.io.FileUtils;
 
 import com.google.refine.util.ParsingUtilities;
@@ -91,9 +92,9 @@ public class GRefineServiceManagerTest {
 		ServiceRegistry registry = new ServiceRegistry(new GRefineJsonUtilitiesImpl(), null);
 		GRefineServiceManager manager = new GRefineServiceManager(registry, dir);
 		
-		Model m = ModelFactory.createDefaultModel();
+		Model m = (new DynamicModelFactory()).createEmptyModel();
 		ReconciliationService service = new RdfReconciliationService(id, id,
-				new QueryEndpointImpl(new JenaTextSparqlQueryFactory(),
+				new QueryEndpointImpl(new Rdf4jTextSparqlQueryFactory(),
 				new DumpQueryExecutor(m)), 0);
 		manager.addAndSaveService(service);
 		

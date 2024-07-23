@@ -5,7 +5,7 @@ import org.deri.grefine.reconcile.rdf.executors.QueryExecutor;
 import org.deri.grefine.reconcile.rdf.factories.JenaTextSparqlQueryFactory;
 import org.deri.grefine.reconcile.rdf.factories.SparqlQueryFactory;
 
-import org.apache.jena.rdf.model.Model;
+import org.eclipse.rdf4j.model.Model;
 
 public class QueryEndpointFactory {
 

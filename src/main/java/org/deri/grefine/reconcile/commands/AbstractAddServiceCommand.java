@@ -18,6 +18,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import org.eclipse.rdf4j.rio.RDFFormat;
+
 public abstract class AbstractAddServiceCommand extends Command{
 
 	@Override
@@ -83,4 +85,20 @@ public abstract class AbstractAddServiceCommand extends Command{
 	}
 
 	protected abstract ReconciliationService getReconciliationService(HttpServletRequest request) throws IOException;
+
+	protected RDFFormat rdfFormat(String format) {
+        if (format.equals("TTL")) {
+            return RDFFormat.TURTLE;
+        } else if (format.equals("RDF/XML")) {
+            return RDFFormat.RDFXML;
+        } else if (format.equals(".owl")) {
+            return RDFFormat.RDFXML;
+        } else if (format.equals("N-TRIPLE")) {
+            return RDFFormat.NTRIPLES;
+        } else if (format.equals("N3")) {
+            return RDFFormat.N3;
+        }
+
+        return RDFFormat.RDFXML;
+    }
 }

@@ -1,21 +1,37 @@
 package org.deri.grefine.reconcile.rdf.executors;
 
-import org.apache.jena.query.*;
-import org.apache.jena.query.text.EntityDefinition;
-import org.apache.jena.query.text.TextDatasetFactory;
-import org.apache.jena.query.text.TextIndexConfig;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.ModelFactory;
-import org.apache.jena.vocabulary.RDFS;
-import org.apache.jena.vocabulary.SKOS;
-import org.apache.lucene.store.Directory;
-import org.apache.lucene.store.ByteBuffersDirectory;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonGenerationException;
 
+import org.eclipse.rdf4j.model.Value;
+import org.eclipse.rdf4j.model.Model;
+import org.eclipse.rdf4j.query.BindingSet;
+import org.eclipse.rdf4j.query.QueryLanguage;
+import org.eclipse.rdf4j.query.TupleQuery;
+import org.eclipse.rdf4j.query.TupleQueryResult;
+import org.eclipse.rdf4j.query.resultio.TupleQueryResultFormat;
+import org.eclipse.rdf4j.query.resultio.QueryResultIO;
+import org.eclipse.rdf4j.repository.Repository;
+import org.eclipse.rdf4j.repository.RepositoryConnection;
+import org.eclipse.rdf4j.repository.RepositoryException;
+import org.eclipse.rdf4j.repository.sail.SailRepository;
+import org.eclipse.rdf4j.sail.Sail;
+import org.eclipse.rdf4j.sail.lucene.LuceneSail;
+import org.eclipse.rdf4j.sail.memory.MemoryStore;
+import org.eclipse.rdf4j.rio.RDFFormat;
+import org.eclipse.rdf4j.rio.RDFWriter;
+import org.eclipse.rdf4j.rio.Rio;
+import org.eclipse.rdf4j.rio.helpers.BasicWriterSettings;
+
+import org.apache.jena.query.ResultSet;
+import org.apache.jena.query.ResultSetFactory;
+
 import java.io.InputStream;
 import java.io.FileOutputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.util.List;
 
 /**
  * @author fadmaa
@@ -26,13 +42,12 @@ import java.io.IOException;
  */
 public class DumpQueryExecutor implements QueryExecutor {
 
-    private Dataset index;
+    private Repository index;
     private boolean loaded = false;
     //property used for index/search (only if one property is used)
     private String propertyUri;
 
     public DumpQueryExecutor() {
-
     }
 
     public DumpQueryExecutor(String propertyUri) {
@@ -50,33 +65,41 @@ public class DumpQueryExecutor implements QueryExecutor {
     public DumpQueryExecutor(Model m, String propertyUri, boolean ngramIndex, int minGram, int maxGram) {
         this.propertyUri = propertyUri;
 
-        Dataset dataset = DatasetFactory.create();
-        EntityDefinition entDef = createEntityDefinition(m);
-        // Lucene, in memory.
-        Directory dir = new ByteBuffersDirectory();
+        Sail baseSail = new MemoryStore();
+        LuceneSail luceneSail = new LuceneSail();
+        luceneSail.setParameter(LuceneSail.LUCENE_RAMDIR_KEY, "true");
+        if(propertyUri != null){
+           luceneSail.setParameter(LuceneSail.INDEXEDFIELDS, "index.1=" + propertyUri); 
+        }
+        // wrap base sail
+        luceneSail.setBaseSail(baseSail);
+        this.index = new SailRepository(luceneSail);
 
-        // Join together into a dataset
-        this.index = TextDatasetFactory.createLucene(dataset, dir, new TextIndexConfig(entDef));
-        this.index.getDefaultModel().add(m);
-
-        loaded = true;
+        // Open a connection to the database
+        try (RepositoryConnection conn = this.index.getConnection()) {
+            conn.add(m);
+        }
+        this.loaded = true;
     }
 
     @Override
-    public ResultSet sparql(String sparql) {
+    public ResultSet sparql(String sparql){
         if (!loaded) {
             throw new RuntimeException("Model is not loaded");
         }
-        this.index.begin(ReadWrite.READ);
-        Query query = QueryFactory.create(sparql, Syntax.syntaxSPARQL_11);
-        QueryExecution qExec = QueryExecutionFactory.create(query, this.index);
-        ResultSet result = qExec.execSelect();
+        ResultSet results = null;
+        try (RepositoryConnection con = this.index.getConnection()) {
+            TupleQuery tupleQuery = con.prepareTupleQuery(sparql);
+            TupleQueryResult result = tupleQuery.evaluate();
+            ByteArrayOutputStream boas = new ByteArrayOutputStream();
+            QueryResultIO.writeTuple(result, TupleQueryResultFormat.SPARQL, boas);
+            results = ResultSetFactory.fromXML(new ByteArrayInputStream(boas.toByteArray()));
+        } catch(IOException e){
+            throw new RuntimeException("Error querying model");
+        }
 
-        this.index.end();
-
-        return result;
+        return results;
     }
-
 
     @Override
     public void write(JsonGenerator writer) throws JsonGenerationException, IOException {
@@ -89,7 +112,7 @@ public class DumpQueryExecutor implements QueryExecutor {
     }
 
     public void dispose() {
-        this.index.close();
+        this.index.shutDown();
         this.index = null; //free the memory used for the model
     }
 
@@ -97,46 +120,45 @@ public class DumpQueryExecutor implements QueryExecutor {
         if (this.loaded) {
             return;
         }
-        // -- Read and index all literal strings.
-        Model model = ModelFactory.createDefaultModel();
-        model.read(in, null, "TTL");
-
-        Dataset dataset = DatasetFactory.create();
-        EntityDefinition entDef = createEntityDefinition(model);
-
-        // Lucene, in memory.
-        Directory dir = new ByteBuffersDirectory();
-
-        // Join together into a dataset
-        Dataset luceneDataset = TextDatasetFactory.createLucene(dataset, dir, new TextIndexConfig(entDef));
-        luceneDataset.begin(ReadWrite.WRITE);
         try {
-            luceneDataset.getDefaultModel().add(model);
-            luceneDataset.commit();
-        } finally {
-            luceneDataset.end();
-        }
-        this.index = luceneDataset;
-        this.loaded = true;
+            Model model = Rio.parse(in, "", RDFFormat.TURTLE);
+
+            Sail baseSail = new MemoryStore();
+            LuceneSail luceneSail = new LuceneSail();
+            luceneSail.setParameter(LuceneSail.LUCENE_RAMDIR_KEY, "true");
+            if(propertyUri != null){
+                luceneSail.setParameter(LuceneSail.INDEXEDFIELDS, "index.1=" + propertyUri); 
+            }
+
+            // wrap base sail
+            luceneSail.setBaseSail(baseSail);
+            this.index = new SailRepository(luceneSail);
+
+            // Open a connection to the database
+            try (RepositoryConnection conn = this.index.getConnection()) {
+              // add the model
+              conn.add(model);
+            }
+            this.loaded = true;
+        } catch(IOException e){
+            this.loaded = false;
+        } 
     }
-
-    private EntityDefinition createEntityDefinition(Model model){
-        EntityDefinition entDef = new EntityDefinition(
-                "uri",
-                "text",
-                 model.getResource(propertyUri));
-        entDef.set("label", RDFS.label.asNode());
-        entDef.set("prefLabel", SKOS.prefLabel.asNode());
-
-        return entDef;
-    }
-
+   
     private static final int DEFAULT_MIN_NGRAM = 3;
     private static final int DEFAULT_MAX_NGRAM = 3;
 
     @Override
     public void save(String serviceId, FileOutputStream out) throws IOException {
-        this.index.getDefaultModel().write(out, "TTL");
-        out.close();
+        try (RepositoryConnection conn = this.index.getConnection()) {
+            RDFWriter writer = Rio.createWriter(RDFFormat.TURTLE, out);
+            // use pretty-printing (nice indentation)
+            writer.getWriterConfig().set(BasicWriterSettings.PRETTY_PRINT, true);
+            // inline blank nodes where possible
+            writer.getWriterConfig().set(BasicWriterSettings.INLINE_BLANK_NODES, true);
+            conn.export(writer);
+        } finally {
+            out.close();
+        }
     }
 }

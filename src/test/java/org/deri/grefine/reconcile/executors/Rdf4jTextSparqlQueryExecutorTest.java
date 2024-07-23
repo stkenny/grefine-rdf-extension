@@ -3,9 +3,12 @@ package org.deri.grefine.reconcile.executors;
 import com.google.common.collect.ImmutableList;
 import org.apache.jena.query.QuerySolution;
 import org.apache.jena.query.ResultSet;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Resource;
+import org.eclipse.rdf4j.model.Model;
+import org.eclipse.rdf4j.rio.RDFFormat;
+import org.eclipse.rdf4j.rio.RDFWriter;
+import org.eclipse.rdf4j.rio.Rio;
+
 import org.deri.grefine.reconcile.model.ReconciliationRequest;
 import org.deri.grefine.reconcile.model.ReconciliationRequestContext;
 import org.deri.grefine.reconcile.model.ReconciliationRequestContext.IdentifiedValueContext;
@@ -13,7 +16,7 @@ import org.deri.grefine.reconcile.model.ReconciliationRequestContext.PropertyCon
 import org.deri.grefine.reconcile.model.ReconciliationRequestContext.TextualValueContext;
 import org.deri.grefine.reconcile.rdf.executors.DumpQueryExecutor;
 import org.deri.grefine.reconcile.rdf.executors.QueryExecutor;
-import org.deri.grefine.reconcile.rdf.factories.JenaTextSparqlQueryFactory;
+import org.deri.grefine.reconcile.rdf.factories.Rdf4jTextSparqlQueryFactory;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -30,12 +33,12 @@ import static org.testng.Assert.*;
  * {@link org.deri.grefine.reconcile.rdf.factories.JenaTextSparqlQueryFactory JenaTextSparqlQueryFactory}
  * are correct (executable)
  */
-public class JenaTextSparqlQueryExecutorTest {
+public class Rdf4jTextSparqlQueryExecutorTest {
 
 	private String classPrefix = "/org/deri/grefine/reconcile/resources/";
 
 	QueryExecutor executor;
-    JenaTextSparqlQueryFactory factory;
+    Rdf4jTextSparqlQueryFactory factory;
 	
 	//query
 	int limit =8;
@@ -43,14 +46,12 @@ public class JenaTextSparqlQueryExecutorTest {
 	ImmutableList<String> searchPropertyUris = ImmutableList.of("http://www.w3.org/2000/01/rdf-schema#label",
 														"http://www.w3.org/2004/02/skos/core#prefLabel");
 	
-	/*@BeforeClass
-	public void init(){
-		Model m = ModelFactory.createDefaultModel();
-
-        InputStream in = this.getClass().getResourceAsStream(classPrefix + "films.ttl");
-        m.read(in, null, "TTL");
+	@BeforeClass
+	public void init() throws java.io.IOException {
+		InputStream in = this.getClass().getResourceAsStream(classPrefix + "films.ttl");
+        Model m = Rio.parse(in, "", RDFFormat.TURTLE);
         executor = new DumpQueryExecutor(m);
-        factory = new JenaTextSparqlQueryFactory();
+        factory = new Rdf4jTextSparqlQueryFactory();
     }
 	
 	@Test
@@ -99,12 +100,12 @@ public class JenaTextSparqlQueryExecutorTest {
 		}
 		
 		assertTrue(urisSet.isEmpty(), urisSet + " were not found in the result");
-	}*/
+	}
 	
 	/*
 	 * Suggest type 
 	 */
-	/*@Test
+	@Test
 	public void suggestTypeTest(){
 		String prefix = "fil";
 		String sparql = factory.getTypeSuggestSparqlQuery(prefix, limit);
@@ -124,23 +125,23 @@ public class JenaTextSparqlQueryExecutorTest {
 		}
 		
 		assertTrue(urisSet.isEmpty(), urisSet + " were not found in the result");
-	}*/
+	}
 	
 	/*
 	 * Suggest property 
 	 */
-	/*@Test
+	@Test
 	public void suggestPropertyTest(){
 		String prefix = "init";
 		String sparql = factory.getPropertySuggestSparqlQuery(prefix, "http://data.linkedmdb.org/resource/movie/film", limit);
 		ResultSet resultset = executor.sparql(sparql);
 		assertInResultset("p", resultset,"http://data.linkedmdb.org/resource/movie/initial_release_date");
-	}*/
+	}
 	
 	/*
 	 * sample instances
 	 */
-	/*@Test
+	@Test
 	public void sampleInstancesTest(){
 		String sparql = factory.getSampleInstancesSparqlQuery(
 		        "http://data.linkedmdb.org/resource/movie/film",
@@ -156,17 +157,17 @@ public class JenaTextSparqlQueryExecutorTest {
 		sol = resultset.nextSolution();
 		assertFalse(sol.getLiteral("label1").getString().isEmpty());
 		assertFalse(uri1.equals(sol.getResource("entity").getURI()));
-	}*/
+	}
 	
 	/*
 	 * search entities
 	 */
-	/*@Test
+	@Test
 	public void searchEntitiesTest(){
 		String prefix = "godf";
 		String sparql = factory.getEntitySearchSparqlQuery(prefix, searchPropertyUris, limit);
 		ResultSet resultset = executor.sparql(sparql);
 		assertInResultset("entity", resultset, "http://data.linkedmdb.org/resource/film_series/261",
 					"http://data.linkedmdb.org/resource/film/930","http://data.linkedmdb.org/resource/film/329");
-	}*/
+	}
 }

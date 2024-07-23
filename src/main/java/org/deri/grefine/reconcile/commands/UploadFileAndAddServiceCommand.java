@@ -23,7 +23,7 @@ import org.deri.grefine.reconcile.rdf.endpoints.QueryEndpoint;
 import org.deri.grefine.reconcile.rdf.endpoints.QueryEndpointImpl;
 import org.deri.grefine.reconcile.rdf.executors.DumpQueryExecutor;
 import org.deri.grefine.reconcile.rdf.executors.QueryExecutor;
-import org.deri.grefine.reconcile.rdf.factories.JenaTextSparqlQueryFactory;
+import org.deri.grefine.reconcile.rdf.factories.Rdf4jTextSparqlQueryFactory;
 import org.deri.grefine.reconcile.rdf.factories.SparqlQueryFactory;
 
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -31,10 +31,12 @@ import com.fasterxml.jackson.core.JsonGenerationException;
 import com.google.refine.util.ParsingUtilities;
 
 import com.google.common.collect.ImmutableList;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.ModelFactory;
 
-public class UploadFileAndAddServiceCommand extends AbstractAddServiceCommand{
+import org.eclipse.rdf4j.rio.RDFFormat;
+import org.eclipse.rdf4j.model.Model;
+import org.eclipse.rdf4j.rio.Rio;
+
+public class UploadFileAndAddServiceCommand extends AbstractAddServiceCommand {
 
 	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -93,11 +95,10 @@ public class UploadFileAndAddServiceCommand extends AbstractAddServiceCommand{
 				}
 			}
 			
-			model = ModelFactory.createDefaultModel();
 			if(format.equals("autodetect")){
 				format = guessFormat(filename);
 			}
-			model.read(in, null, format);
+            model = Rio.parse(in, "", rdfFormat(format));
 			
 			ImmutableList<String> propUris = asImmutableList(props);
 		
@@ -110,7 +111,7 @@ public class UploadFileAndAddServiceCommand extends AbstractAddServiceCommand{
 				throw new RuntimeException("name and at least one label property ar needed");
 			}
 			
-			SparqlQueryFactory queryFactory = new JenaTextSparqlQueryFactory();
+			SparqlQueryFactory queryFactory = new Rdf4jTextSparqlQueryFactory();
 			QueryExecutor queryExecutor;
 			if(propUris.size()==1){
 				queryExecutor = new DumpQueryExecutor(model,propUris.get(0));
@@ -165,5 +166,4 @@ public class UploadFileAndAddServiceCommand extends AbstractAddServiceCommand{
 		}
 		return "RDF/XML";
 	}
-
 }

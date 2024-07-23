@@ -5,8 +5,6 @@ import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 
 import com.google.common.collect.ImmutableList;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.ModelFactory;
 
 import org.deri.grefine.reconcile.GRefineServiceManager;
 import org.deri.grefine.reconcile.model.ReconciliationService;
@@ -20,9 +18,17 @@ import org.deri.grefine.reconcile.rdf.executors.RemoteQueryExecutor;
 import org.deri.grefine.reconcile.rdf.executors.VirtuosoRemoteQueryExecutor;
 import org.deri.grefine.reconcile.rdf.factories.BigOwlImSparqlQueryFactory;
 import org.deri.grefine.reconcile.rdf.factories.JenaTextSparqlQueryFactory;
+import org.deri.grefine.reconcile.rdf.factories.Rdf4jTextSparqlQueryFactory;
 import org.deri.grefine.reconcile.rdf.factories.PlainSparqlQueryFactory;
 import org.deri.grefine.reconcile.rdf.factories.SparqlQueryFactory;
 import org.deri.grefine.reconcile.rdf.factories.VirtuosoSparqlQueryFactory;
+
+import org.eclipse.rdf4j.rio.Rio;
+import org.eclipse.rdf4j.model.Model;
+import org.eclipse.rdf4j.rio.RDFFormat;
+
+import java.io.InputStream;
+import java.net.URL;
 
 public class AddServiceCommand extends AbstractAddServiceCommand{
 
@@ -62,23 +68,39 @@ public class AddServiceCommand extends AbstractAddServiceCommand{
 		return service;
 	}
 	
-	private ReconciliationService getRdfService(String name, String id, String url,String format, ImmutableList<String> propUris, HttpServletRequest request) {
-		Model model = ModelFactory.createDefaultModel();
-		if(format==null){
-			model.read(url);
-		}else{
-			model.read(url,format);
+	private ReconciliationService getRdfService(String name, String id, String url, String format, ImmutableList<String> propUris, HttpServletRequest request) {
+		InputStream in = null;
+		java.net.URL documentUrl = null;
+
+		try {
+			documentUrl = new URL(url);
+			in = documentUrl.openStream();
+		} catch(java.net.MalformedURLException e){
+			throw new RuntimeException("Malformed service URL: " + url);
+		} catch(java.io.IOException io){
+			throw new RuntimeException("Error getting service with id " + id);
 		}
 		
-		QueryExecutor queryExecutor;
-		if(propUris.size()==1){
-			queryExecutor = new DumpQueryExecutor(model, propUris.get(0));
+        RDFFormat rdfFormat = null;
+		if(format==null){
+			rdfFormat = Rio.getParserFormatForFileName(url).orElse(RDFFormat.RDFXML);
 		}else{
-			queryExecutor = new DumpQueryExecutor(model);
+			rdfFormat = rdfFormat(format);
 		}
-		SparqlQueryFactory queryFactory = new JenaTextSparqlQueryFactory();
-		QueryEndpoint queryEndpoint = new QueryEndpointImpl(queryFactory, queryExecutor);
-		return new RdfReconciliationService(id, name, queryEndpoint, DEFAULT_MATCH_THRESHOLD);
+		try {
+			Model model = Rio.parse(in, "", rdfFormat);
+			QueryExecutor queryExecutor;
+			if(propUris.size()==1){
+				queryExecutor = new DumpQueryExecutor(model, propUris.get(0));
+			}else{
+				queryExecutor = new DumpQueryExecutor(model);
+			}
+			SparqlQueryFactory queryFactory = new Rdf4jTextSparqlQueryFactory();
+			QueryEndpoint queryEndpoint = new QueryEndpointImpl(queryFactory, queryExecutor);
+			return new RdfReconciliationService(id, name, queryEndpoint, DEFAULT_MATCH_THRESHOLD);
+		} catch(IOException e){
+			throw new RuntimeException("Unable to load model for service " + id);
+		} 
 	}
 
 	private ReconciliationService getSparqlService(String name, String id,String url, ImmutableList<String> propUris, HttpServletRequest request) {

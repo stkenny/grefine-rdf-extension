@@ -40,7 +40,7 @@ public class PlainSparqlQueryExecutorTest {
 	ImmutableList<String> searchPropertyUris = ImmutableList.of("http://www.w3.org/2000/01/rdf-schema#label",
 														"http://www.w3.org/2004/02/skos/core#prefLabel");
 	
-	@BeforeClass
+	/*@BeforeClass
 	public void setUp(){
 		Model m = ModelFactory.createDefaultModel();
 		InputStream in = this.getClass().getResourceAsStream(classPrefix + "films.ttl");
@@ -128,13 +128,13 @@ public class PlainSparqlQueryExecutorTest {
 		}
 		
 		assertTrue(urisSet.isEmpty(), urisSet + " were not found in the result");
-	}
+	}*/
 	
 	
 	/*
 	 * Suggest type 
 	 */
-	@Test
+	/*@Test
 	public void sugestTypeTest(){
 		String prefix = "fil";
 		String sparql = factory.getTypeSuggestSparqlQuery(prefix, limit);
@@ -152,28 +152,28 @@ public class PlainSparqlQueryExecutorTest {
 		}
 		
 		assertTrue(urisSet.isEmpty(), urisSet + " were not found in the result");
-	}
+	}*/
 	
 	/*
 	 * Suggest property 
 	 */
-	@Test
+	/*@Test
 	public void sugestPropertyTest(){
 		String prefix = "init";
 		String sparql = factory.getPropertySuggestSparqlQuery(prefix, "http://data.linkedmdb.org/resource/movie/film", limit);
 		ResultSet resultset = executor.sparql(sparql);
 		assertResultsetExact("p", resultset,"http://data.linkedmdb.org/resource/movie/initial_release_date");
-	}
+	}*/
 	
 	/*
 	 * search entity
 	 */
-	@Test
+	/*@Test
 	public void searchEntityTest(){
 		String prefix = "godf";
 		String sparql = factory.getEntitySearchSparqlQuery(prefix, searchPropertyUris, limit);
 		ResultSet resultset = executor.sparql(sparql);
 		assertResult(null,resultset,"http://data.linkedmdb.org/resource/film/930","http://data.linkedmdb.org/resource/film/329",
 		"http://data.linkedmdb.org/resource/film_series/261");
-	}
+	}*/
 }

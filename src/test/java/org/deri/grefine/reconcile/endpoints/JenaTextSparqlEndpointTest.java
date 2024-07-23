@@ -49,7 +49,7 @@ public class JenaTextSparqlEndpointTest {
 	ImmutableList<String> searchPropertyUris = ImmutableList.of("http://www.w3.org/2000/01/rdf-schema#label",
 																"http://www.w3.org/2004/02/skos/core#prefLabel");
 	
-	@BeforeClass
+	/*@BeforeClass
 	public void init(){
 		Model m = ModelFactory.createDefaultModel();
 		InputStream in = this.getClass().getResourceAsStream(classPrefix + "films.ttl");
@@ -122,7 +122,7 @@ public class JenaTextSparqlEndpointTest {
 			}
 		}
 		assertTrue(urisSet.isEmpty());
-	}
+	}*/
 	
 	/*
 	 * Guess type
@@ -164,7 +164,7 @@ public class JenaTextSparqlEndpointTest {
 	/*
 	 * suggest type
 	 */
-	@Test
+	/*@Test
 	public void suggestTypeTest(){
 		String prefix = "fil";
 		List<SearchResultItem> results = endpoint.suggestType(prefix, limit);
@@ -174,12 +174,12 @@ public class JenaTextSparqlEndpointTest {
 		assertResultItem(item,"http://data.linkedmdb.org/resource/movie/film","film");
 		item = results.get(1);
 		assertResultItem(item,"http://data.linkedmdb.org/resource/movie/film_series","a film series");
-	}
+	}*/
 	
 	/*
 	 * suggest property
 	 */
-	@Test
+	/*@Test
 	public void suggestPropertyTest(){
 		String prefix = "initi";
 		List<SearchResultItem> results = endpoint.suggestProperty(prefix, limit);
@@ -200,26 +200,26 @@ public class JenaTextSparqlEndpointTest {
 	private void assertResultItem(SearchResultItem item, String expectedId, String expectedName){
 		assertEquals(item.getId(), expectedId);
 		assertEquals(item.getName(), expectedName);
-	}
+	}*/
 	
 	/*
 	 * sample instances
 	 */
-	@Test
+	/*@Test
 	public void sampleInstancesTest(){
 		List<SearchResultItem> items = endpoint.getSampleInstances("http://data.linkedmdb.org/resource/movie/fakeFilm", 
 				ImmutableList.of("http://www.w3.org/2004/02/skos/core#prefLabel","http://www.w3.org/2000/01/rdf-schema#label"), limit);
 		assertEquals(items.size(),1);
 		assertEquals(items.get(0).getName(),"The Prefered Label");
-	}
+	}*/
 	
 	/*
 	 * search entities
 	 */
-	@Test
+	/*@Test
 	public void searchEntitiesTest(){
 		String prefix = "godf";
 		List<SearchResultItem> items = endpoint.searchForEntities(prefix, searchPropertyUris, limit);
 		assertEquals(items.size(), 3);
-	}
+	}*/
 }

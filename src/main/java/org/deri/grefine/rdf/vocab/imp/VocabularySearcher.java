@@ -337,7 +337,7 @@ public class VocabularySearcher implements IVocabularySearcher {
 	private List<SearchResultItem> prepareSearchResults(TopDocs docs)
 			throws CorruptIndexException, IOException {
 		List<SearchResultItem> res = new ArrayList<SearchResultItem>();
-		for (int i = 0; i < docs.totalHits.value; i++) {
+		for (int i = 0; i < docs.totalHits; i++) {
 			Document doc = searcher.doc(docs.scoreDocs[i].doc);
 			String uri = doc.get("uri");
 			String label = doc.get("label");
@@ -355,7 +355,7 @@ public class VocabularySearcher implements IVocabularySearcher {
 	}
 	
 	private void addDocumentsToProject(TopDocs docs,String projectId) throws CorruptIndexException, IOException{
-		for(int i=0; i < docs.totalHits.value; i++){
+		for(int i=0; i < docs.totalHits; i++){
 			Document doc = searcher.doc(docs.scoreDocs[i].doc);
 			//TODO this needs to be changed into a more efficient impl
 			Document newdoc = new Document();
@@ -382,7 +382,7 @@ public class VocabularySearcher implements IVocabularySearcher {
 		Set<String> prefixes = new HashSet<String>();
 		Query query = new TermQuery(new Term("projectId",projectId));
 		TopDocs docs =  searcher.search(query, getMaxDoc());
-		for (int i = 0; i < docs.totalHits.value; i++) {
+		for (int i = 0; i < docs.totalHits; i++) {
 			Document doc = searcher.doc(docs.scoreDocs[i].doc);
 			prefixes.add(doc.get("prefix"));
 		}

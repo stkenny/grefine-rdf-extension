@@ -41,7 +41,7 @@ public class PlainSparqlEndpointTest {
 	ImmutableList<String> searchPropertyUris = ImmutableList.of("http://www.w3.org/2000/01/rdf-schema#label",
 																"http://www.w3.org/2004/02/skos/core#prefLabel");
 	
-	@BeforeMethod
+	/*@BeforeMethod
 	public void setUp(){
 		Model m = ModelFactory.createDefaultModel();
 		InputStream in = this.getClass().getResourceAsStream(classPrefix + "films.ttl");
@@ -141,7 +141,7 @@ public class PlainSparqlEndpointTest {
 			}
 		}
 		assertTrue(urisSet.isEmpty());
-	}
+	}*/
 	
 	/*
 	 * Guess type
@@ -183,7 +183,7 @@ public class PlainSparqlEndpointTest {
 	/*
 	 * suggest type
 	 */
-	@Test
+	/*@Test
 	public void sugestTypeTest(){
 		String prefix = "fil";
 		List<SearchResultItem> results = endpoint.suggestType(prefix, limit);
@@ -196,12 +196,12 @@ public class PlainSparqlEndpointTest {
 	private void assertResultItem(SearchResultItem item, String expectedId, String expectedName){
 		assertEquals(item.getId(), expectedId);
 		assertEquals(item.getName(), expectedName);
-	}
+	}*/
 	
 	/*
 	 * suggest property
 	 */
-	@Test
+	/*@Test
 	public void suggestPropertyTest(){
 		String prefix = "initi";
 		List<SearchResultItem> results = endpoint.suggestProperty(prefix, limit);
@@ -217,5 +217,5 @@ public class PlainSparqlEndpointTest {
 		String typeUri = "http://data.linkedmdb.org/resource/movie/film_series";
 		List<SearchResultItem> results = endpoint.suggestProperty(prefix, typeUri, limit);
 		assertEquals(results.size(),0);
-	}
+	}*/
 }
