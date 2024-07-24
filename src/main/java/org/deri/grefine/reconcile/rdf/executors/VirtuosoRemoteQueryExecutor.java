@@ -25,9 +25,6 @@ public class VirtuosoRemoteQueryExecutor extends RemoteQueryExecutor {
 	qBuilder.addDefaultGraphURI(defaultGraphUri);
 	qBuilder.queryString(sparql);
         QueryExecutionHTTP qExec = qBuilder.build();
-        //if (defaultGraphUri != null) {
-        //    qExec.setDefaultGraphURIs(Collections.singletonList(defaultGraphUri));
-        //}
         ResultSet results = null;
         try {
             ResultSet res = qExec.execSelect();
