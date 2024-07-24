@@ -7,6 +7,7 @@ import com.google.refine.grel.ControlFunctionRegistry;
 import com.google.refine.model.Cell;
 import com.google.refine.model.Column;
 import com.google.refine.model.Project;
+import com.google.refine.ProjectManager;
 import com.google.refine.model.Row;
 import com.google.refine.util.ParsingUtilities;
 import org.deri.grefine.rdf.RdfSchema;
@@ -33,6 +34,8 @@ import java.nio.charset.StandardCharsets;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
+import static org.mockito.Mockito.mock;
+
 public class RdfExporterFacultyDataTest {
 
 	Project project;
@@ -47,6 +50,7 @@ public class RdfExporterFacultyDataTest {
 	public void init() throws Exception{
 		expected = buildExpectedModel();
 
+		ProjectManager.singleton = mock(ProjectManager.class);
 		ApplicationContext ctxt = new ApplicationContext();
 		schema = getRdfSchema();
 		project = buildTheSampleProject(schema);
