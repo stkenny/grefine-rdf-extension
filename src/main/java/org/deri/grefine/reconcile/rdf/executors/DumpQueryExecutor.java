@@ -130,16 +130,13 @@ public class DumpQueryExecutor implements QueryExecutor {
                 luceneSail.setParameter(LuceneSail.INDEXEDFIELDS, "index.1=" + propertyUri); 
             }
 
-            // wrap base sail
             luceneSail.setBaseSail(baseSail);
             this.index = new SailRepository(luceneSail);
 
-            // Open a connection to the database
             try (RepositoryConnection conn = this.index.getConnection()) {
-              // add the model
               conn.add(model);
+              this.loaded = true;
             }
-            this.loaded = true;
         } catch(IOException e){
             this.loaded = false;
         } 
@@ -152,9 +149,7 @@ public class DumpQueryExecutor implements QueryExecutor {
     public void save(String serviceId, FileOutputStream out) throws IOException {
         try (RepositoryConnection conn = this.index.getConnection()) {
             RDFWriter writer = Rio.createWriter(RDFFormat.TURTLE, out);
-            // use pretty-printing (nice indentation)
             writer.getWriterConfig().set(BasicWriterSettings.PRETTY_PRINT, true);
-            // inline blank nodes where possible
             writer.getWriterConfig().set(BasicWriterSettings.INLINE_BLANK_NODES, true);
             conn.export(writer);
         } finally {
