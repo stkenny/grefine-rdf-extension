@@ -199,12 +199,12 @@ RdfSchemaAlignmentDialog.UINode.prototype._showExpandable = function() {
     
     //$(this._tdToggle).html("&nbsp;");
     $('<img />')
-        .attr("src", this._expanded ? "images/expanded.png" : "images/collapsed.png")
+        .attr("src", this._expanded ? "extension/rdf-extension/images/expanded.png" : "extension/rdf-extension/images/collapsed.png")
         .appendTo(this._tdToggle)
         .click(function() {
             self._expanded = !self._expanded;
             
-            $(this).attr("src", self._expanded ? "images/expanded.png" : "images/collapsed.png");
+            $(this).attr("src", self._expanded ? "extension/rdf-extension/images/expanded.png" : "extension/rdf-extension/images/collapsed.png");
             
             show();
         });

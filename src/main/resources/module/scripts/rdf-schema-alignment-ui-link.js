@@ -32,12 +32,12 @@ RdfSchemaAlignmentDialog.UILink = function(dialog, link, table, options, parentU
     
     //$(this._tdToggle).html("&nbsp;");
     $('<img />')
-        .attr("src", this._options.expanded ? "images/expanded.png" : "images/collapsed.png")
+        .attr("src", this._options.expanded ? "extension/rdf-extension/images/expanded.png" : "extension/rdf-extension/images/collapsed.png")
         .appendTo(this._tdToggle)
         .click(function() {
             self._options.expanded = !self._options.expanded;
             
-            $(this).attr("src", self._options.expanded ? "images/expanded.png" : "images/collapsed.png");
+            $(this).attr("src", self._options.expanded ? "extension/rdf-extension/images/expanded.png" : "extension/rdf-extension/images/collapsed.png");
             
             show();
         });
@@ -75,8 +75,8 @@ RdfSchemaAlignmentDialog.UILink.prototype._renderMain = function() {
             self._startEditProperty(this);
         });
         
-    $('<img />').attr("src", "images/arrow-start.png").prependTo(a);
-    $('<img />').attr("src", "images/arrow-end.png").appendTo(a);
+    $('<img />').attr("src", "extension/rdf-extension/images/arrow-start.png").prependTo(a);
+    $('<img />').attr("src", "extension/rdf-extension/images/arrow-end.png").appendTo(a);
 };
 
 RdfSchemaAlignmentDialog.UILink.prototype._renderDetails = function() {
