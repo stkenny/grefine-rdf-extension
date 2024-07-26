@@ -5,6 +5,11 @@
   padding:4px;
 }
 
+.rdf-flyout-content{
+  height: 90%;
+  width: 100%;
+}
+
 img.rdf-resource_preview_logo{
 	float:right;
 	width:30%;

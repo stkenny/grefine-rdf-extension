@@ -1,23 +1,11 @@
 <html>
 <head>
   <link rel="stylesheet" type="text/css" href="/extension/rdf-extension/styles/flyout.css"></link>
-  <script type="text/javascript">
-        var request = new XMLHttpRequest()
-        request.open('GET', "$previewResourceUrl", true)
-        request.onload = function () {
-            document.getElementById("rdf-resource-preview-flyout-content").innerHTML = this.response;
-        }
-        // Send request
-        request.send()
-  </script>
 </head>
 <body>
     <div><a href="$resourceUri">$resourceUri</a></div>
-    <div class="rdf-resource-preview-flyout-content" id="rdf-resource-preview-flyout-content">
-      <img src="/images/large-spinner.gif" /> 
-      <div>
-        Fetching information about $resourceUri
-      </div>
-    </div>  
+    <div class="fbs-flyout-content" id="rdf-resource-preview-flyout-content">
+        <iframe class="rdf-flyout-content" src="$resourceUri"></iframe>
+    </div>
   </body>
 </html>
