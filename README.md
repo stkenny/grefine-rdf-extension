@@ -6,7 +6,7 @@ This project adds a graphical user interface(GUI) for exporting data of OpenRefi
 
 ### Latest release
 
-[RDF Extension v1.4.0](https://github.com/stkenny/grefine-rdf-extension/releases/download/v1.4.0/rdf-extension-1.4.0.zip)
+[RDF Extension v1.5.0](https://github.com/stkenny/grefine-rdf-extension/releases/download/v1.5.0/rdf-extension-1.5.0.zip)
 
 ## INSTALL
 
@@ -14,7 +14,7 @@ This project adds a graphical user interface(GUI) for exporting data of OpenRefi
 
 You need to have Java and OpenRefine installed on your machine.
   * Java 11
-  * OpenRefine 3.7
+  * OpenRefine 3.8
 
 ### From compiled release
 
