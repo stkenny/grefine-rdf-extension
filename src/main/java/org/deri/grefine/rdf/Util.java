@@ -3,6 +3,7 @@ package org.deri.grefine.rdf;
 import com.google.refine.expr.Evaluable;
 import com.google.refine.expr.ExpressionUtils;
 import com.google.refine.expr.MetaParser;
+import com.google.refine.grel.Parser;
 import com.google.refine.expr.ParsingException;
 import com.google.refine.model.Project;
 import com.google.refine.model.Row;
@@ -116,9 +117,10 @@ public class Util {
 	
 	public static Object evaluateExpression(Project project, String expression, String columnName, Row row, int rowIndex) throws ParsingException {
 		Properties bindings = ExpressionUtils.createBindings(project);
-        Evaluable eval = MetaParser.parse(expression);
-        int cellIndex = (columnName==null||columnName.equals(""))?-1:project.columnModel.getColumnByName(columnName).getCellIndex();
+		MetaParser.registerLanguageParser("grel", "GREL", Parser.grelParser, "value");
+		Evaluable eval = MetaParser.parse(expression);
+                int cellIndex = (columnName==null||columnName.equals(""))?-1:project.columnModel.getColumnByName(columnName).getCellIndex();
         
-        return RdfExpressionUtil.evaluate(eval, bindings, row, rowIndex, columnName, cellIndex);
+                return RdfExpressionUtil.evaluate(eval, bindings, row, rowIndex, columnName, cellIndex);
 	}
 }
