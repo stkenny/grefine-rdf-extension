@@ -22,14 +22,14 @@ $.i18n().load(dictionary, lang);
 
 ExporterManager.MenuItems.push(
 		{
-			"id" : "exportRdfXml",
+		"id" : "exportRdfXml",
           	"label": $.i18n("rdf-ext-menu/rdf-xml"),
           	"click": function() { RdfExporterMenuBar.exportRDF("rdf", "rdf");}
 		}
 );
 ExporterManager.MenuItems.push(
 		{
-			"id" : "exportRdfTurtle",
+		"id" : "exportRdfTurtle",
         	"label": $.i18n("rdf-ext-menu/rdf-turtle"),
         	"click": function() { RdfExporterMenuBar.exportRDF("Turtle", "ttl"); }
 		}
@@ -53,9 +53,11 @@ RdfExporterMenuBar.rdfExportRows = function(format, ext) {
     $(form)
         .css("display", "none")
         .attr("method", "post")
-        .attr("action", "command/core/export-rows/" + name + "." + ext)
-        .attr("target", "gridworks-export");
+	.attr("target", "gridworks-export");
 
+	Refine.wrapCSRF(function(csrfToken) {
+            $(form).attr("action", "command/core/export-rows/" + name + "." + ext + "?" + $.param({csrf_token: csrfToken}))
+        });
     $('<input />')
         .attr("name", "engine")
         .val(JSON.stringify(ui.browsingEngine.getJSON()))
