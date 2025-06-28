@@ -36,3 +36,6 @@ If you have previously installed the extension you will need to replace it in th
 
 ## Documentation
 * [Documentation Wiki](https://github.com/stkenny/grefine-rdf-extension/wiki)
+
+##License 
+this is available under BSD 2-clause license.
